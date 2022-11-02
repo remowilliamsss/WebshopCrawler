@@ -1,6 +1,7 @@
 package ru.egorov.WebshopCrawler.models;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "product")
@@ -13,7 +14,7 @@ public class Product {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "scu")
+    @Column(name = "sku")
     private String sku;
 
     @Column(name = "category")
@@ -137,5 +138,18 @@ public class Product {
 
     public void setSizes(String sizes) {
         this.sizes = sizes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+        Product product = (Product) o;
+        return Double.compare(product.price, price) == 0 && name.equals(product.name) && sku.equals(product.sku) && Objects.equals(category, product.category) && Objects.equals(brand, product.brand) && Objects.equals(image, product.image) && Objects.equals(color, product.color) && Objects.equals(priceCurrency, product.priceCurrency) && Objects.equals(gender, product.gender) && Objects.equals(country, product.country) && Objects.equals(sizes, product.sizes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, sku, category, brand, image, color, price, priceCurrency, gender, country, sizes);
     }
 }
