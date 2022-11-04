@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 import ru.egorov.WebshopCrawler.models.Product;
 
 import java.io.IOException;
@@ -12,11 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Component
 public class ProductParser {
 
     /*    Принимает url-адрес, возвращает объект класса Product, созданный на основе информации,
     полученной с html-страницы по этому адресу.*/
-    public static Product parseProduct(String url) throws IOException {
+    public Product parseProduct(String url) throws IOException {
         Connection connection = Jsoup.connect(url).timeout(10000);
         Document doc = connection.get();
         Element element = doc.getElementById("neatsy-widget");
@@ -80,7 +82,7 @@ public class ProductParser {
 
     /*    Принимает список url-адресов, возвращает список объектов класса Product,
     созданных на основе информации, полученной с html-страниц по этим адресам.*/
-    public static List<Product> parseProducts (List<String> urls) throws IOException {
+    public List<Product> parseProducts (List<String> urls) throws IOException {
         List<Product> products = new ArrayList<>();
 
         for (String url : urls) {

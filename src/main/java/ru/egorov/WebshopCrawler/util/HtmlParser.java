@@ -5,16 +5,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+@Component
 public class HtmlParser {
 
     /*    Метод принимает set и добавляет в него ссылки с html-страницы по адресу url,
     содержащиеся в элементах с именем класса elementClassName.*/
-    public static void addLinks(String url, Set<String> set, String elementClassName) throws IOException {
+    public void addLinks(String url, Set<String> set, String elementClassName) throws IOException {
         Connection connection = Jsoup.connect(url).timeout(10000);
         Document document = connection.get();
         Elements elements = document.getElementsByClass(elementClassName);
@@ -28,7 +30,7 @@ public class HtmlParser {
 
     /*    Метод принимает set с url-адресами, добавляет в него ссылки,
     содержащиеся в элементах класса elementClassName html-страниц по этим адресам.*/
-    public static void addLinks(Set<String> set, String elementClassName) throws IOException {
+    public void addLinks(Set<String> set, String elementClassName) throws IOException {
         Set<String> setCopy = new HashSet<>(set);
 
         for (String url : setCopy) {
@@ -38,7 +40,7 @@ public class HtmlParser {
 
     /*    Метод принимает set с url-адресами, добавляет в него ссылки, содержащиеся в элементах
     класса elementClassName html-страниц по адресам из set, которые содержат containedString.*/
-    public static void addLinks(Set<String> set, String elementClassName, String containedString) throws IOException {
+    public void addLinks(Set<String> set, String elementClassName, String containedString) throws IOException {
         Set<String> setCopy = new HashSet<>(set);
 
         for (String url : setCopy) {
