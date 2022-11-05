@@ -81,11 +81,15 @@ public class SneakerheadProductParser {
     }
 
     /*    Принимает список url-адресов, возвращает список объектов класса Product,
-    созданных на основе информации, полученной с html-страниц по этим адресам.*/
-    public List<SneakerheadProduct> parseProducts (List<String> urls) throws IOException {
+    созданных на основе информации, полученной с html-страниц по этим адресам.
+    Параметр isStopped для прерывания выполнения метода извне.*/
+    public List<SneakerheadProduct> parseProducts (List<String> urls, Boolean isStopped) throws IOException {
         List<SneakerheadProduct> products = new ArrayList<>();
 
         for (String url : urls) {
+            if (isStopped)
+                return products;
+
             products.add(parseProduct(url));
         }
 

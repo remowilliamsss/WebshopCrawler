@@ -44,17 +44,19 @@ public class SneakerheadProductsService {
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been updated");
     }
 
-/*    Принимает список товаров. Обновляет информацию в базе данных о старых товарах, сохраняет новые.*/
+    /*    Принимает список товаров. Обновляет информацию в базе данных о старых товарах, сохраняет новые.
+    Параметр isStopped для прерывания выполнения метода извне.*/
     @Transactional
-    public void updateProducts(List<SneakerheadProduct> products) {
+    public void updateProducts(List<SneakerheadProduct> products, Boolean isStopped) {
         for (SneakerheadProduct product : products) {
+            if (isStopped)
+                return;
+
             Optional<SneakerheadProduct> foundProduct = findBySku(product.getSku());
 
             if (foundProduct.isPresent()) {
-
                 if (!foundProduct.get().equals(product))
                     update(foundProduct.get().getId(), product);
-
             } else {
                 save(product);
             }
@@ -68,9 +70,16 @@ public class SneakerheadProductsService {
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been removed");
     }
 
-/*    Принимает список товаров. Удаляет из базы данных товары, которых нет в списке.*/
+    /*    Принимает список товаров. Удаляет из базы данных товары, которых нет в списке.
+    Параметр isStopped для прерывания выполнения метода извне.*/
     @Transactional
-    public void deleteOther(List<SneakerheadProduct> products) {
-        findAll().stream().filter(p -> !products.contains(p)).forEach(this::delete);
+    public void deleteOther(List<SneakerheadProduct> products, Boolean isStopped) {
+        for (SneakerheadProduct product : findAll()) {
+            if (isStopped)
+                return;
+
+            if (!products.contains(product))
+                delete(product);
+        }
     }
 }

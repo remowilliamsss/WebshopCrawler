@@ -19,26 +19,34 @@ public class CrawlersController {
         this.sneakerheadCrawler = sneakerheadCrawler;
     }
 
-    @GetMapping("/sneakerhead/crawl")
-    public String crawl() {
-        try {
-            sneakerheadCrawler.crawl();
+    @GetMapping("/sneakerhead/scan")
+    public String scan() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sneakerheadCrawler.scan();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
 
-            return "Sneakerhead scan completed";
-        } catch (IOException e) {
-            return e.getMessage();
-        }
+        return "Sneakerhead scan started";
+    }
+
+    @GetMapping("/sneakerhead/stop_scan")
+    public String stopScan() {
+            sneakerheadCrawler.stopScan();
+
+            return "Sneakerhead scan stopped";
     }
 
     @GetMapping("sneakerhead/start")
     public String start() {
-        try {
-            sneakerheadCrawler.start();
+        sneakerheadCrawler.start();
 
-            return "Sneakerhead crawler started";
-        } catch (RuntimeException e) {
-            return e.getMessage();
-        }
+        return "Sneakerhead crawler started";
     }
 
     @GetMapping("sneakerhead/stop")

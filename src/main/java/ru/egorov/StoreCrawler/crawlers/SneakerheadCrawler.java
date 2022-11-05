@@ -16,10 +16,12 @@ public class SneakerheadCrawler {
     private final HtmlParser htmlParser;
     private final SneakerheadProductParser sneakerheadProductParser;
     private final SneakerheadProductsService sneakerheadProductsService;
+    private Boolean isStopped;
     private Timer timer;
 
     @Autowired
-    public SneakerheadCrawler(HtmlParser htmlParser, SneakerheadProductParser sneakerheadProductParser, SneakerheadProductsService sneakerheadProductsService) {
+    public SneakerheadCrawler(HtmlParser htmlParser, SneakerheadProductParser sneakerheadProductParser,
+                              SneakerheadProductsService sneakerheadProductsService) {
         this.htmlParser = htmlParser;
         this.sneakerheadProductParser = sneakerheadProductParser;
         this.sneakerheadProductsService = sneakerheadProductsService;
@@ -27,35 +29,41 @@ public class SneakerheadCrawler {
 
     /*    Метод добавляет в базу данных все товары с сайта https://sneakerhead.ru/, которых еще нет в бд,
     обновляет информацию у существующих, удаляет товары, которых нет на сайте.*/
-    public void crawl() throws IOException {
+    public void scan() throws IOException {
         System.out.println("Sneakerhead crawler started scanning at " + new Date());
+
+        isStopped = false;
 
         Set<String> urls = new HashSet<>();
 
-        htmlParser.addLinks("https://sneakerhead.ru/", urls, "new-header__navbar");
-        htmlParser.addLinks(urls, "links");
-        htmlParser.addLinks(urls, "links", "PAGEN");
-        htmlParser.addLinks(urls, "product-cards__item");
+        htmlParser.addLinks("https://sneakerhead.ru/", urls, "new-header__navbar", isStopped);
+        htmlParser.addLinks(urls, "links", isStopped);
+        htmlParser.addLinks(urls, "links", "PAGEN", isStopped);
+        htmlParser.addLinks(urls, "product-cards__item", isStopped);
 
-        List<SneakerheadProduct> products = sneakerheadProductParser.parseProducts(new ArrayList<>(urls));
+        List<SneakerheadProduct> products = sneakerheadProductParser.parseProducts(new ArrayList<>(urls), isStopped);
 
-        sneakerheadProductsService.updateProducts(products);
-        sneakerheadProductsService.deleteOther(products);
+        sneakerheadProductsService.updateProducts(products, isStopped);
+        sneakerheadProductsService.deleteOther(products, isStopped);
 
         System.out.println("Sneakerhead crawler finished scanning at " + new Date());
     }
 
+    /*    Останавливает текущее сканирование.*/
+    public void stopScan() {
+        isStopped = true;
+    }
+
     /*  Запускает автоматическое сканирование сайта с интервалом один раз в сутки.*/
     public void start() {
-        if (timer != null)
-            timer.cancel();
+        stop();
 
         timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 try {
-                    crawl();
+                    scan();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -67,5 +75,7 @@ public class SneakerheadCrawler {
     public void stop() {
         if (timer != null)
             timer.cancel();
+
+        stopScan();
     }
 }
