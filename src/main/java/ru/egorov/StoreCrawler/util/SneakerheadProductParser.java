@@ -1,4 +1,4 @@
-package ru.egorov.WebshopCrawler.util;
+package ru.egorov.StoreCrawler.util;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-import ru.egorov.WebshopCrawler.models.Product;
+import ru.egorov.StoreCrawler.models.SneakerheadProduct;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class ProductParser {
+public class SneakerheadProductParser {
 
     /*    Принимает url-адрес, возвращает объект класса Product, созданный на основе информации,
     полученной с html-страницы по этому адресу.*/
-    public Product parseProduct(String url) throws IOException {
+    public SneakerheadProduct parseProduct(String url) throws IOException {
         Connection connection = Jsoup.connect(url).timeout(10000);
         Document doc = connection.get();
         Element element = doc.getElementById("neatsy-widget");
@@ -26,7 +26,7 @@ public class ProductParser {
         if (element == null)
             return null;
 
-        Product product = new Product();
+        SneakerheadProduct product = new SneakerheadProduct();
 
         product.setName(element.attr("data-name"));
         product.setSku(element.attr("data-sku"));
@@ -82,8 +82,8 @@ public class ProductParser {
 
     /*    Принимает список url-адресов, возвращает список объектов класса Product,
     созданных на основе информации, полученной с html-страниц по этим адресам.*/
-    public List<Product> parseProducts (List<String> urls) throws IOException {
-        List<Product> products = new ArrayList<>();
+    public List<SneakerheadProduct> parseProducts (List<String> urls) throws IOException {
+        List<SneakerheadProduct> products = new ArrayList<>();
 
         for (String url : urls) {
             products.add(parseProduct(url));

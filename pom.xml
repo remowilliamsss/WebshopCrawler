@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.egorov</groupId>
-	<artifactId>WebshopCrawler</artifactId>
+	<artifactId>StoreCrawler</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>WebshopCrawler</name>
+	<name>StoreCrawler</name>
 	<description>Application for crawling store pages</description>
 	<properties>
 		<java.version>11</java.version>

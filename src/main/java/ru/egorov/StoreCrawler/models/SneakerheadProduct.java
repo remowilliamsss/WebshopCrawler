@@ -1,11 +1,11 @@
-package ru.egorov.WebshopCrawler.models;
+package ru.egorov.StoreCrawler.models;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "product")
-public class Product {
+@Table(name = "sneakerhead_product")
+public class SneakerheadProduct {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -143,8 +143,8 @@ public class Product {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Product)) return false;
-        Product product = (Product) o;
+        if (!(o instanceof SneakerheadProduct)) return false;
+        SneakerheadProduct product = (SneakerheadProduct) o;
         return Double.compare(product.price, price) == 0 && name.equals(product.name) && sku.equals(product.sku) && Objects.equals(category, product.category) && Objects.equals(brand, product.brand) && Objects.equals(image, product.image) && Objects.equals(color, product.color) && Objects.equals(priceCurrency, product.priceCurrency) && Objects.equals(gender, product.gender) && Objects.equals(country, product.country) && Objects.equals(sizes, product.sizes);
     }
 

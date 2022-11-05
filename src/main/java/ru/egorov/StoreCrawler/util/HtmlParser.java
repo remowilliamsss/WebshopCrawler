@@ -1,4 +1,4 @@
-package ru.egorov.WebshopCrawler.util;
+package ru.egorov.StoreCrawler.util;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
