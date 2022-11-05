@@ -1,10 +1,10 @@
-package ru.egorov.WebshopCrawler;
+package ru.egorov.StoreCrawler;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WebshopCrawlerApplicationTests {
+class StoreCrawlerApplicationTests {
 
 	@Test
 	void contextLoads() {
