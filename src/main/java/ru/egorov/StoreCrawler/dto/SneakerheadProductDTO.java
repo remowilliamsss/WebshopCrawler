@@ -1,56 +1,17 @@
-package ru.egorov.StoreCrawler.models;
+package ru.egorov.StoreCrawler.dto;
 
-import javax.persistence.*;
-import java.util.Objects;
-
-@Entity
-@Table(name = "sneakerhead_product")
-public class SneakerheadProduct extends Product {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "name")
+public class SneakerheadProductDTO extends ProductDTO {
     private String name;
-
-    @Column(name = "sku")
     private String sku;
-
-    @Column(name = "category")
     private String category;
-
-    @Column(name = "brand")
     private String brand;
-
-    @Column(name = "image")
     private String image;
-
-    @Column(name = "color")
     private String color;
-
-    @Column(name = "price")
     private double price;
-
-    @Column(name = "price_currency")
     private String priceCurrency;
-
-    @Column(name = "gender")
     private String gender;
-
-    @Column(name = "country")
     private String country;
-
-    @Column(name = "sizes")
     private String sizes;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -138,18 +99,5 @@ public class SneakerheadProduct extends Product {
 
     public void setSizes(String sizes) {
         this.sizes = sizes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SneakerheadProduct)) return false;
-        SneakerheadProduct product = (SneakerheadProduct) o;
-        return Double.compare(product.price, price) == 0 && name.equals(product.name) && sku.equals(product.sku) && Objects.equals(category, product.category) && Objects.equals(brand, product.brand) && Objects.equals(image, product.image) && Objects.equals(color, product.color) && Objects.equals(priceCurrency, product.priceCurrency) && Objects.equals(gender, product.gender) && Objects.equals(country, product.country) && Objects.equals(sizes, product.sizes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, sku, category, brand, image, color, price, priceCurrency, gender, country, sizes);
     }
 }

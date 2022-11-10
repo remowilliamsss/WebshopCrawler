@@ -5,18 +5,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.egorov.StoreCrawler.crawlers.SneakerheadCrawler;
+import ru.egorov.StoreCrawler.dto.SneakerheadProductDTO;
+import ru.egorov.StoreCrawler.dto.SneakerheadProductsResponse;
+import ru.egorov.StoreCrawler.services.SneakerheadProductsService;
+import ru.egorov.StoreCrawler.util.ProductConvertor;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("crawlers")
 public class CrawlersController {
 
     private final SneakerheadCrawler sneakerheadCrawler;
+    private final SneakerheadProductsService sneakerheadProductsService;
+    private final ProductConvertor productConvertor;
 
     @Autowired
-    public CrawlersController(SneakerheadCrawler sneakerheadCrawler) {
+    public CrawlersController(SneakerheadCrawler sneakerheadCrawler, SneakerheadProductsService sneakerheadProductsService, ProductConvertor productConvertor) {
         this.sneakerheadCrawler = sneakerheadCrawler;
+        this.sneakerheadProductsService = sneakerheadProductsService;
+        this.productConvertor = productConvertor;
     }
 
     @GetMapping("/sneakerhead/scan")
@@ -54,5 +63,12 @@ public class CrawlersController {
             sneakerheadCrawler.stop();
 
             return "Sneakerhead crawler stopped";
+    }
+
+    @GetMapping("sneakerhead/products")
+    public SneakerheadProductsResponse getSneakerheadProducts() {
+        return new SneakerheadProductsResponse(sneakerheadProductsService.findAll().stream()
+                .map(product -> productConvertor.convertToProductDTO(SneakerheadProductDTO.class, product))
+                .map(productDTO -> (SneakerheadProductDTO) productDTO).collect(Collectors.toList()));
     }
 }

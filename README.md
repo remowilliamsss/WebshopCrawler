@@ -10,3 +10,5 @@
    сканирование.
 4. GET-запрос на адрес "crawlers/sneakerhead/stop_scan" - прерывает
    происходящее сканирование.
+5. GET-запрос на адрес "crawlers/sneakerhead/products" - в ответе
+   приходит JSON со всеми товарами с сайта Sneakerhead
