@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "sneakerhead_product")
-public class SneakerheadProduct extends Product {
+@Table(name = "footbox_product")
+public class FootboxProduct extends Product {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,14 +35,20 @@ public class SneakerheadProduct extends Product {
     @Column(name = "price_currency")
     private String priceCurrency;
 
+    @Column(name = "gender")
+    private String gender;
+
     @Column(name = "country")
     private String country;
 
     @Column(name = "sizes")
     private String sizes;
 
-    @Column(name = "gender")
-    private String gender;
+    @Column(name = "composition")
+    private String composition;
+
+    @Column(name = "coloring")
+    private String coloring;
 
     public int getId() {
         return id;
@@ -116,6 +122,14 @@ public class SneakerheadProduct extends Product {
         this.priceCurrency = priceCurrency;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public String getCountry() {
         return country;
     }
@@ -132,24 +146,32 @@ public class SneakerheadProduct extends Product {
         this.sizes = sizes;
     }
 
-    public String getGender() {
-        return gender;
+    public String getComposition() {
+        return composition;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setComposition(String composition) {
+        this.composition = composition;
+    }
+
+    public String getColoring() {
+        return coloring;
+    }
+
+    public void setColoring(String coloring) {
+        this.coloring = coloring;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SneakerheadProduct)) return false;
-        SneakerheadProduct that = (SneakerheadProduct) o;
-        return name.equals(that.name) && sku.equals(that.sku) && Objects.equals(category, that.category) && Objects.equals(brand, that.brand) && Objects.equals(image, that.image) && Objects.equals(color, that.color) && Objects.equals(price, that.price) && Objects.equals(priceCurrency, that.priceCurrency) && Objects.equals(country, that.country) && Objects.equals(sizes, that.sizes) && Objects.equals(gender, that.gender);
+        if (!(o instanceof FootboxProduct)) return false;
+        FootboxProduct that = (FootboxProduct) o;
+        return name.equals(that.name) && sku.equals(that.sku) && Objects.equals(category, that.category) && Objects.equals(brand, that.brand) && Objects.equals(image, that.image) && Objects.equals(color, that.color) && Objects.equals(price, that.price) && Objects.equals(priceCurrency, that.priceCurrency) && Objects.equals(gender, that.gender) && Objects.equals(country, that.country) && Objects.equals(sizes, that.sizes) && Objects.equals(composition, that.composition) && Objects.equals(coloring, that.coloring);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, sku, category, brand, image, color, price, priceCurrency, country, sizes, gender);
+        return Objects.hash(name, sku, category, brand, image, color, price, priceCurrency, gender, country, sizes, composition, coloring);
     }
 }

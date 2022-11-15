@@ -61,4 +61,18 @@ public class HtmlParser {
                 addLinks(url, set, elementClassName, isStopped);
         }
     }
+
+    /*    Метод принимает set с url-адресами, добавляет в него ссылки, содержащиеся в элементах
+    класса elementClassName html-страниц по адресам из set, которые содержат containedString.
+    Параметр isStopped для прерывания выполнения метода извне.
+    Операция повторяется равное times количество раз.*/
+    public void addLinks(Set<String> set, String elementClassName,
+                         String containedString, Boolean isStopped, int times) throws IOException {
+        for (int i = 0; i < times; i++) {
+            if (isStopped)
+                return;
+
+            addLinks(set, elementClassName, containedString, isStopped);
+        }
+    }
 }

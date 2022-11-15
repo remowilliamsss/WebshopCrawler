@@ -2,22 +2,19 @@ package ru.egorov.StoreCrawler.crawlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.egorov.StoreCrawler.models.SneakerheadProduct;
+import ru.egorov.StoreCrawler.models.Product;
 import ru.egorov.StoreCrawler.services.SneakerheadProductsService;
 import ru.egorov.StoreCrawler.util.HtmlParser;
-import ru.egorov.StoreCrawler.util.SneakerheadProductParser;
+import ru.egorov.StoreCrawler.parsers.SneakerheadProductParser;
 
 import java.io.IOException;
 import java.util.*;
 
 @Component
-public class SneakerheadCrawler {
-
+public class SneakerheadCrawler extends Crawler {
     private final HtmlParser htmlParser;
     private final SneakerheadProductParser sneakerheadProductParser;
     private final SneakerheadProductsService sneakerheadProductsService;
-    private Boolean isStopped;
-    private Timer timer;
 
     @Autowired
     public SneakerheadCrawler(HtmlParser htmlParser, SneakerheadProductParser sneakerheadProductParser,
@@ -27,55 +24,28 @@ public class SneakerheadCrawler {
         this.sneakerheadProductsService = sneakerheadProductsService;
     }
 
-    /*    Метод добавляет в базу данных все товары с сайта https://sneakerhead.ru/, которых еще нет в бд,
-    обновляет информацию у существующих, удаляет товары, которых нет на сайте.*/
+    @Override
     public void scan() throws IOException {
         System.out.println("Sneakerhead crawler started scanning at " + new Date());
 
-        isStopped = false;
+        setStopped(false);
 
         Set<String> urls = new HashSet<>();
 
-        htmlParser.addLinks("https://sneakerhead.ru/", urls, "new-header__navbar", isStopped);
-        htmlParser.addLinks(urls, "links", isStopped);
-        htmlParser.addLinks(urls, "links", "PAGEN", isStopped);
-        htmlParser.addLinks(urls, "product-cards__item", isStopped);
+        urls.add("https://sneakerhead.ru/shoes/");
+        urls.add("https://sneakerhead.ru/clothes/");
+        urls.add("https://sneakerhead.ru/stuff/");
+        urls.add("https://sneakerhead.ru/kiosk/");
 
-        List<SneakerheadProduct> products = sneakerheadProductParser.parseProducts(new ArrayList<>(urls), isStopped);
+        htmlParser.addLinks(urls, "pagination", getStopped());
+        htmlParser.addLinks(urls, "pagination", "PAGEN", getStopped());
+        htmlParser.addLinks(urls, "product-cards__item", getStopped());
 
-        sneakerheadProductsService.updateProducts(products, isStopped);
-        sneakerheadProductsService.deleteOther(products, isStopped);
+        List<Product> products = sneakerheadProductParser.parseProducts(new ArrayList<>(urls), getStopped());
+
+        sneakerheadProductsService.updateProducts(products, getStopped());
+        sneakerheadProductsService.deleteOther(products, getStopped());
 
         System.out.println("Sneakerhead crawler finished scanning at " + new Date());
-    }
-
-    /*    Останавливает текущее сканирование.*/
-    public void stopScan() {
-        isStopped = true;
-    }
-
-    /*  Запускает автоматическое сканирование сайта с интервалом один раз в сутки.*/
-    public void start() {
-        stop();
-
-        timer = new Timer(true);
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    scan();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, 0, 24*60*60*1000);
-    }
-
-    /*  Останавливает автоматическое сканирование сайта.*/
-    public void stop() {
-        if (timer != null)
-            timer.cancel();
-
-        stopScan();
     }
 }

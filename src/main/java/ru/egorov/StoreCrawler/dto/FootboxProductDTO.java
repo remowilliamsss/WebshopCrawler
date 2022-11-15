@@ -1,6 +1,6 @@
 package ru.egorov.StoreCrawler.dto;
 
-public class SneakerheadProductDTO extends ProductDTO {
+public class FootboxProductDTO extends ProductDTO {
     private String name;
     private String sku;
     private String category;
@@ -9,9 +9,11 @@ public class SneakerheadProductDTO extends ProductDTO {
     private String color;
     private Double price;
     private String priceCurrency;
+    private String gender;
     private String country;
     private String sizes;
-    private String gender;
+    private String composition;
+    private String coloring;
 
     public String getName() {
         return name;
@@ -77,6 +79,14 @@ public class SneakerheadProductDTO extends ProductDTO {
         this.priceCurrency = priceCurrency;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public String getCountry() {
         return country;
     }
@@ -93,11 +103,19 @@ public class SneakerheadProductDTO extends ProductDTO {
         this.sizes = sizes;
     }
 
-    public String getGender() {
-        return gender;
+    public String getComposition() {
+        return composition;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setComposition(String composition) {
+        this.composition = composition;
+    }
+
+    public String getColoring() {
+        return coloring;
+    }
+
+    public void setColoring(String coloring) {
+        this.coloring = coloring;
     }
 }

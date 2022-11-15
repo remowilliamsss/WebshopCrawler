@@ -3,43 +3,44 @@ package ru.egorov.StoreCrawler.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.egorov.StoreCrawler.models.FootboxProduct;
 import ru.egorov.StoreCrawler.models.Product;
-import ru.egorov.StoreCrawler.models.SneakerheadProduct;
-import ru.egorov.StoreCrawler.repositories.SneakerheadProductsRepository;
+import ru.egorov.StoreCrawler.repositories.FootboxProductsRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class SneakerheadProductsService {
-    private final SneakerheadProductsRepository sneakerheadProductsRepository;
+public class FootboxProductsService {
+    private final FootboxProductsRepository footboxProductsRepository;
 
     @Autowired
-    public SneakerheadProductsService(SneakerheadProductsRepository sneakerheadProductsRepository) {
-        this.sneakerheadProductsRepository = sneakerheadProductsRepository;
+    public FootboxProductsService(FootboxProductsRepository footboxProductsRepository) {
+        this.footboxProductsRepository = footboxProductsRepository;
     }
 
-    public Optional<SneakerheadProduct> findBySku(String sku) {
-        return sneakerheadProductsRepository.findBySku(sku);
+
+    public Optional<FootboxProduct> findBySku(String sku) {
+        return footboxProductsRepository.findBySku(sku);
     }
 
-    public List<SneakerheadProduct> findAll() {
-        return sneakerheadProductsRepository.findAll();
+    public List<FootboxProduct> findAll() {
+        return footboxProductsRepository.findAll();
     }
 
     @Transactional
-    public void save(SneakerheadProduct product) {
-        sneakerheadProductsRepository.save(product);
+    public void save(FootboxProduct product) {
+        footboxProductsRepository.save(product);
 
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been saved");
     }
 
     @Transactional
-    public void update(int id, SneakerheadProduct product) {
+    public void update(int id, FootboxProduct product) {
         product.setId(id);
 
-        sneakerheadProductsRepository.save(product);
+        footboxProductsRepository.save(product);
 
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been updated");
     }
@@ -52,22 +53,22 @@ public class SneakerheadProductsService {
             if (isStopped)
                 return;
 
-            SneakerheadProduct sneakerheadProduct = (SneakerheadProduct) product;
+            FootboxProduct footboxProduct = (FootboxProduct) product;
 
-            Optional<SneakerheadProduct> foundProduct = findBySku(sneakerheadProduct.getSku());
+            Optional<FootboxProduct> foundProduct = findBySku(footboxProduct.getSku());
 
             if (foundProduct.isPresent()) {
-                if (!foundProduct.get().equals(sneakerheadProduct))
-                    update(foundProduct.get().getId(), sneakerheadProduct);
+                if (!foundProduct.get().equals(footboxProduct))
+                    update(foundProduct.get().getId(), footboxProduct);
             } else {
-                save(sneakerheadProduct);
+                save(footboxProduct);
             }
         }
     }
 
     @Transactional
-    public void delete(SneakerheadProduct product) {
-        sneakerheadProductsRepository.delete(product);
+    public void delete(FootboxProduct product) {
+        footboxProductsRepository.delete(product);
 
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been removed");
     }
@@ -76,7 +77,7 @@ public class SneakerheadProductsService {
     Параметр isStopped для прерывания выполнения метода извне.*/
     @Transactional
     public void deleteOther(List<Product> products, Boolean isStopped) {
-        for (SneakerheadProduct product : findAll()) {
+        for (FootboxProduct product : findAll()) {
             if (isStopped)
                 return;
 

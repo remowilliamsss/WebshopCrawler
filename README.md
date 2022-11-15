@@ -1,14 +1,29 @@
 # StoreCrawler
- Application for crawling store pages
+REST-сервис, который собирает и заносит в базу данных информацию о товарах из
+ интернет-магазинов.
 
-1. GET-запрос на адрес "crawlers/sneakerhead/start" - запускает краулер
+Поддерживаемые сайты:
+1. sneakerhead.ru - при запросе используем sneakerhead вместо
+названия сайта
+2. footboxshop.ru - при запросе используем footbox вместо названия
+сайта
+
+Функционал:
+1. GET-запрос на адрес "crawlers/название сайта/start" - запускает краулер
    для сайта Sneakerhead. Краулер будет обходить сайт раз в сутки и
    обновлять информацию о товарах в базе данных.
-2. GET-запрос на адрес "crawlers/sneakerhead/stop" - прерывает работу
+2. GET-запрос на адрес "crawlers/название сайта/stop" - прерывает работу
    краулера для сайта Sneakerhead. Отменяет ежедневное сканирование.
-3. GET-запрос на адрес "crawlers/sneakerhead/scan" - запускает разовое
+3. GET-запрос на адрес "crawlers/название сайта/scan" - запускает разовое
    сканирование.
-4. GET-запрос на адрес "crawlers/sneakerhead/stop_scan" - прерывает
+4. GET-запрос на адрес "crawlers/название сайта/stop_scan" - прерывает
    происходящее сканирование.
-5. GET-запрос на адрес "crawlers/sneakerhead/products" - в ответе
+5. GET-запрос на адрес "crawlers/название сайта/products" - в ответе
    приходит JSON со всеми товарами с сайта Sneakerhead
+
+В проекте использовались:
+1. Spring Boot
+2. Spring REST
+3. Spring Data JPA
+4. jsoup
+5. PostgreSQL
