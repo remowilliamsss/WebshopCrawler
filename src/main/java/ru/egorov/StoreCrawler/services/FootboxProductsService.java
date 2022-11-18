@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.egorov.StoreCrawler.models.FootboxProduct;
 import ru.egorov.StoreCrawler.models.Product;
+import ru.egorov.StoreCrawler.models.SneakerheadProduct;
 import ru.egorov.StoreCrawler.repositories.FootboxProductsRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,5 +86,9 @@ public class FootboxProductsService {
             if (!products.contains(product))
                 delete(product);
         }
+    }
+
+    public List<FootboxProduct> findAllByName(String name) {
+        return footboxProductsRepository.findAllByNameContainingIgnoreCase(name).orElse(Collections.emptyList());
     }
 }

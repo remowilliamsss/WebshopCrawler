@@ -7,6 +7,7 @@ import ru.egorov.StoreCrawler.models.Product;
 import ru.egorov.StoreCrawler.models.SneakerheadProduct;
 import ru.egorov.StoreCrawler.repositories.SneakerheadProductsRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,5 +84,9 @@ public class SneakerheadProductsService {
             if (!products.contains(product))
                 delete(product);
         }
+    }
+
+    public List<SneakerheadProduct> findAllByName(String name) {
+        return sneakerheadProductsRepository.findAllByNameContainingIgnoreCase(name).orElse(Collections.emptyList());
     }
 }

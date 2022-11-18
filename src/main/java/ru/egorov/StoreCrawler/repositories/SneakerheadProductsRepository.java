@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.egorov.StoreCrawler.models.SneakerheadProduct;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -11,4 +12,6 @@ import java.util.Optional;
 public interface SneakerheadProductsRepository extends JpaRepository<SneakerheadProduct, Integer> {
 
     Optional<SneakerheadProduct> findBySku(String sku);
+
+    Optional<List<SneakerheadProduct>> findAllByNameContainingIgnoreCase(String name);
 }
