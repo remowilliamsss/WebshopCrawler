@@ -24,13 +24,6 @@ public class SneakerheadProductParser implements ProductParser {
 
         SneakerheadProduct product = new SneakerheadProduct();
 
-        for (Element element : doc.getElementsByAttributeValue("itemprop", "name")) {
-            if (element.hasAttr("content")) {
-                product.setName(element.attr("content"));
-                break;
-            }
-        }
-
         product.setSku(doc.getElementsByAttributeValue("itemprop", "sku").get(0)
                 .attr("content"));
         product.setCategory(doc.getElementsByAttributeValue("itemprop", "category").get(0)
@@ -41,6 +34,13 @@ public class SneakerheadProductParser implements ProductParser {
                 .attr("content"));
         product.setColor(doc.getElementsByAttributeValue("itemprop", "color").get(0)
                 .attr("content"));
+
+        for (Element element : doc.getElementsByAttributeValue("itemprop", "name")) {
+            if (element.hasAttr("content")) {
+                product.setName(product.getBrand() + " " + element.attr("content").trim());
+                break;
+            }
+        }
 
         if (!doc.getElementsByAttributeValue("itemprop", "price").get(0).attr("content").isBlank()) {
             product.setPrice(Double.parseDouble(doc.getElementsByAttributeValue("itemprop", "price")

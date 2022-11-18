@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.egorov.StoreCrawler.models.FootboxProduct;
 import ru.egorov.StoreCrawler.models.Product;
-import ru.egorov.StoreCrawler.models.SneakerheadProduct;
 import ru.egorov.StoreCrawler.repositories.FootboxProductsRepository;
 
 import java.util.Collections;
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class FootboxProductsService {
+public class FootboxProductsService extends ProductsService {
     private final FootboxProductsRepository footboxProductsRepository;
 
     @Autowired
@@ -23,7 +22,7 @@ public class FootboxProductsService {
     }
 
 
-    public Optional<FootboxProduct> findBySku(String sku) {
+    public Optional<Product> findBySku(String sku) {
         return footboxProductsRepository.findBySku(sku);
     }
 
@@ -57,7 +56,7 @@ public class FootboxProductsService {
 
             FootboxProduct footboxProduct = (FootboxProduct) product;
 
-            Optional<FootboxProduct> foundProduct = findBySku(footboxProduct.getSku());
+            Optional<Product> foundProduct = findBySku(footboxProduct.getSku());
 
             if (foundProduct.isPresent()) {
                 if (!foundProduct.get().equals(footboxProduct))
@@ -88,7 +87,7 @@ public class FootboxProductsService {
         }
     }
 
-    public List<FootboxProduct> findAllByName(String name) {
+    public List<Product> findAllByName(String name) {
         return footboxProductsRepository.findAllByNameContainingIgnoreCase(name).orElse(Collections.emptyList());
     }
 }

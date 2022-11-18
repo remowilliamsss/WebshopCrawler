@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class SneakerheadProductsService {
+public class SneakerheadProductsService extends ProductsService {
     private final SneakerheadProductsRepository sneakerheadProductsRepository;
 
     @Autowired
@@ -21,7 +21,7 @@ public class SneakerheadProductsService {
         this.sneakerheadProductsRepository = sneakerheadProductsRepository;
     }
 
-    public Optional<SneakerheadProduct> findBySku(String sku) {
+    public Optional<Product> findBySku(String sku) {
         return sneakerheadProductsRepository.findBySku(sku);
     }
 
@@ -55,7 +55,7 @@ public class SneakerheadProductsService {
 
             SneakerheadProduct sneakerheadProduct = (SneakerheadProduct) product;
 
-            Optional<SneakerheadProduct> foundProduct = findBySku(sneakerheadProduct.getSku());
+            Optional<Product> foundProduct = findBySku(sneakerheadProduct.getSku());
 
             if (foundProduct.isPresent()) {
                 if (!foundProduct.get().equals(sneakerheadProduct))
@@ -86,7 +86,7 @@ public class SneakerheadProductsService {
         }
     }
 
-    public List<SneakerheadProduct> findAllByName(String name) {
+    public List<Product> findAllByName(String name) {
         return sneakerheadProductsRepository.findAllByNameContainingIgnoreCase(name).orElse(Collections.emptyList());
     }
 }

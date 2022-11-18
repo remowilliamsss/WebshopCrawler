@@ -1,14 +1,12 @@
 package ru.egorov.StoreCrawler.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.egorov.StoreCrawler.models.FootboxProduct;
-import ru.egorov.StoreCrawler.models.SneakerheadProduct;
-import ru.egorov.StoreCrawler.services.FootboxProductsService;
-import ru.egorov.StoreCrawler.services.SneakerheadProductsService;
-import ru.egorov.StoreCrawler.util.SearchRequest;
-import ru.egorov.StoreCrawler.util.SearchResult;
-import ru.egorov.StoreCrawler.util.SearchResultResponse;
+import ru.egorov.StoreCrawler.models.Product;
+import ru.egorov.StoreCrawler.services.ProductsService;
+import ru.egorov.StoreCrawler.util.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -16,66 +14,53 @@ import java.util.*;
 @RestController
 @RequestMapping("crawlers")
 public class CrawlersController {
-    private final SneakerheadProductsService sneakerheadProductsService;
-    private final FootboxProductsService footboxProductsService;
+    private final List<ProductsService> productsServices;
 
     @Autowired
-    public CrawlersController(SneakerheadProductsService sneakerheadProductsService,
-                              FootboxProductsService footboxProductsService) {
-        this.sneakerheadProductsService = sneakerheadProductsService;
-        this.footboxProductsService = footboxProductsService;
+    public CrawlersController(ProductsService... productsServices) {
+        this.productsServices = new ArrayList<>(List.of(productsServices));
     }
 
     @PostMapping("/search")
     public SearchResultResponse search(@RequestBody SearchRequest request) {
         if (request.getQuery() == null)
-            return null;
+            throw new NullQueryException();
 
         SearchResultResponse response = new SearchResultResponse();
         List<SearchResult> resultList = new ArrayList<>();
 
-        List<FootboxProduct> foundFootboxProducts = footboxProductsService.findAllByName(request.getQuery());
+        for (ProductsService productsService : productsServices) {
+            List<Product> foundProducts = productsService.findAllByName(request.getQuery());
 
-        if (!foundFootboxProducts.isEmpty()) {
-            for (FootboxProduct footboxProduct : foundFootboxProducts) {
-                SearchResult searchResult = new SearchResult();
+            if (!foundProducts.isEmpty()) {
+                String name = foundProducts.get(0).getClass().getName();
+                name = name.substring(name.lastIndexOf('.') + 1, name.length() - 7);
 
-                searchResult.setItemName(footboxProduct.getName());
+                for (Product product : foundProducts) {
+                    if (resultList.stream().noneMatch(searchResult -> searchResult.getSku().equals(product.getSku()))) {
+                        SearchResult searchResult = new SearchResult();
+                        searchResult.setSku(product.getSku());
+                        searchResult.setItemName(product.getName());
 
-                Map<String, Double> priceList = new HashMap<>();
+                        Map<String, Double> priceList = new HashMap<>();
+                        priceList.put(name, product.getPrice());
+                        searchResult.setPriceList(priceList);
 
-                priceList.put(footboxProduct.getClass().getName(), footboxProduct.getPrice());
+                        resultList.add(searchResult);
+                    } else {
+                        SearchResult searchResult = resultList.stream().filter(
+                                sr -> sr.getSku().equals(product.getSku())).findFirst().get();
 
-                Optional<SneakerheadProduct> foundSneakerheadProduct = sneakerheadProductsService.findBySku(
-                        footboxProduct.getSku());
-
-                if (foundSneakerheadProduct.isPresent()) {
-                    SneakerheadProduct sneakerheadProduct = foundSneakerheadProduct.get();
-                    priceList.put(sneakerheadProduct.getClass().getName(), sneakerheadProduct.getPrice());
-                }
-                searchResult.setPriceList(priceList);
-
-                resultList.add(searchResult);
-            }
-        } else {
-            List<SneakerheadProduct> foundSneakerheadProducts = sneakerheadProductsService.findAllByName(request.getQuery());
-
-            if (!foundSneakerheadProducts.isEmpty()) {
-                for (SneakerheadProduct sneakerheadProduct : foundSneakerheadProducts) {
-                    SearchResult searchResult = new SearchResult();
-
-                    searchResult.setItemName(sneakerheadProduct.getName());
-
-                    Map<String, Double> priceList = new HashMap<>();
-
-                    priceList.put(sneakerheadProduct.getClass().getName(), sneakerheadProduct.getPrice());
-
-                    searchResult.setPriceList(priceList);
-
-                    resultList.add(searchResult);
+                        searchResult.getPriceList().put(name, product.getPrice());
+                    }
                 }
             }
         }
+        if (resultList.isEmpty())
+            throw new NothingFoundException();
+
+        Collections.sort(resultList);
+
         response.setResultList(resultList);
 
         return response;
@@ -84,5 +69,19 @@ public class CrawlersController {
     @GetMapping("/test")
     public String test() throws IOException {
         return "test";
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<SearchErrorResponse> handleException(NullQueryException e) {
+        SearchErrorResponse response = new SearchErrorResponse("Query is null", System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<SearchErrorResponse> handleException(NothingFoundException e) {
+        SearchErrorResponse response = new SearchErrorResponse("Nothing found", System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
