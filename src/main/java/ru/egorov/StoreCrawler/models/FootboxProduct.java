@@ -50,6 +50,7 @@ public class FootboxProduct extends Product {
     @Column(name = "coloring")
     private String coloring;
 
+    @Override
     public int getId() {
         return id;
     }
@@ -58,6 +59,7 @@ public class FootboxProduct extends Product {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -66,6 +68,7 @@ public class FootboxProduct extends Product {
         this.name = name;
     }
 
+    @Override
     public String getSku() {
         return sku;
     }
@@ -82,6 +85,7 @@ public class FootboxProduct extends Product {
         this.category = category;
     }
 
+    @Override
     public String getBrand() {
         return brand;
     }
@@ -106,6 +110,7 @@ public class FootboxProduct extends Product {
         this.color = color;
     }
 
+    @Override
     public Double getPrice() {
         return price;
     }

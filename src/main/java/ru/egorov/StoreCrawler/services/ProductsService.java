@@ -9,5 +9,9 @@ public abstract class ProductsService {
 
     public abstract Optional<Product> findBySku(String sku);
 
+    public abstract List<Product> findAll();
+
     public abstract List<Product> findAllByName(String name);
+
+    public abstract String getStoreName();
 }

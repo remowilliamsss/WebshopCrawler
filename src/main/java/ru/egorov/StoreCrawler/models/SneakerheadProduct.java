@@ -44,6 +44,7 @@ public class SneakerheadProduct extends Product {
     @Column(name = "gender")
     private String gender;
 
+    @Override
     public int getId() {
         return id;
     }
@@ -52,6 +53,7 @@ public class SneakerheadProduct extends Product {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -60,6 +62,7 @@ public class SneakerheadProduct extends Product {
         this.name = name;
     }
 
+    @Override
     public String getSku() {
         return sku;
     }
@@ -76,6 +79,7 @@ public class SneakerheadProduct extends Product {
         this.category = category;
     }
 
+    @Override
     public String getBrand() {
         return brand;
     }
@@ -100,6 +104,7 @@ public class SneakerheadProduct extends Product {
         this.color = color;
     }
 
+    @Override
     public Double getPrice() {
         return price;
     }

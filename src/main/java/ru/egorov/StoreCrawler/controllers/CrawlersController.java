@@ -4,84 +4,100 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.egorov.StoreCrawler.models.Product;
-import ru.egorov.StoreCrawler.services.ProductsService;
-import ru.egorov.StoreCrawler.util.*;
+import ru.egorov.StoreCrawler.crawlers.Crawler;
+import ru.egorov.StoreCrawler.exceptions.StoreNotFoundException;
+import ru.egorov.StoreCrawler.http.ErrorResponse;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("crawlers")
 public class CrawlersController {
-    private final List<ProductsService> productsServices;
+    private final List<Crawler> crawlers;
 
     @Autowired
-    public CrawlersController(ProductsService... productsServices) {
-        this.productsServices = new ArrayList<>(List.of(productsServices));
+    public CrawlersController(Crawler... crawlers) {
+        this.crawlers = new ArrayList<>(List.of(crawlers));
     }
 
-    @PostMapping("/search")
-    public SearchResultResponse search(@RequestBody SearchRequest request) {
-        if (request.getQuery() == null)
-            throw new NullQueryException();
+    @GetMapping("{storeName}/scan")
+    public String scan(@PathVariable("storeName") String storeName) {
+        Optional<Crawler> foundCrawler = crawlers.stream().filter(c -> c.getStoreName()
+                .equalsIgnoreCase(storeName)).findFirst();
 
-        SearchResultResponse response = new SearchResultResponse();
-        List<SearchResult> resultList = new ArrayList<>();
+        if (foundCrawler.isPresent()) {
+            Crawler crawler = foundCrawler.get();
 
-        for (ProductsService productsService : productsServices) {
-            List<Product> foundProducts = productsService.findAllByName(request.getQuery());
-
-            if (!foundProducts.isEmpty()) {
-                String name = foundProducts.get(0).getClass().getName();
-                name = name.substring(name.lastIndexOf('.') + 1, name.length() - 7);
-
-                for (Product product : foundProducts) {
-                    if (resultList.stream().noneMatch(searchResult -> searchResult.getSku().equals(product.getSku()))) {
-                        SearchResult searchResult = new SearchResult();
-                        searchResult.setSku(product.getSku());
-                        searchResult.setItemName(product.getName());
-
-                        Map<String, Double> priceList = new HashMap<>();
-                        priceList.put(name, product.getPrice());
-                        searchResult.setPriceList(priceList);
-
-                        resultList.add(searchResult);
-                    } else {
-                        SearchResult searchResult = resultList.stream().filter(
-                                sr -> sr.getSku().equals(product.getSku())).findFirst().get();
-
-                        searchResult.getPriceList().put(name, product.getPrice());
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        crawler.scan();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }
-            }
+            }).start();
+
+            return crawler.getStoreName() + " scan started";
         }
-        if (resultList.isEmpty())
-            throw new NothingFoundException();
 
-        Collections.sort(resultList);
-
-        response.setResultList(resultList);
-
-        return response;
+        throw new StoreNotFoundException();
     }
 
-    @GetMapping("/test")
-    public String test() throws IOException {
-        return "test";
+    @GetMapping("{storeName}/stop_scan")
+    public String stopScan(@PathVariable("storeName") String storeName) {
+        Optional<Crawler> foundCrawler = crawlers.stream().filter(c -> c.getStoreName()
+                .equalsIgnoreCase(storeName)).findFirst();
+
+        if (foundCrawler.isPresent()) {
+            Crawler crawler = foundCrawler.get();
+
+            crawler.stopScan();
+
+            return crawler.getStoreName() + " scan stopped";
+        }
+        throw new StoreNotFoundException();
+    }
+
+    @GetMapping("{storeName}/start")
+    public String start(@PathVariable("storeName") String storeName) {
+        Optional<Crawler> foundCrawler = crawlers.stream().filter(c -> c.getStoreName()
+                .equalsIgnoreCase(storeName)).findFirst();
+
+        if (foundCrawler.isPresent()) {
+            Crawler crawler = foundCrawler.get();
+
+            crawler.start();
+
+            return crawler.getStoreName() + " crawler started";
+        }
+        throw new StoreNotFoundException();
+    }
+
+    @GetMapping("{storeName}/stop")
+    public String stop(@PathVariable("storeName") String storeName) {
+        Optional<Crawler> foundCrawler = crawlers.stream().filter(c -> c.getStoreName()
+                .equalsIgnoreCase(storeName)).findFirst();
+
+        if (foundCrawler.isPresent()) {
+            Crawler crawler = foundCrawler.get();
+
+            crawler.stop();
+
+            return crawler.getStoreName() + " crawler stopped";
+        }
+        throw new StoreNotFoundException();
     }
 
     @ExceptionHandler
-    private ResponseEntity<SearchErrorResponse> handleException(NullQueryException e) {
-        SearchErrorResponse response = new SearchErrorResponse("Query is null", System.currentTimeMillis());
+    private ResponseEntity<ErrorResponse> handleException(StoreNotFoundException e) {
+        ErrorResponse response = new ErrorResponse(
+                "The store with this name is not supported", System.currentTimeMillis());
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<SearchErrorResponse> handleException(NothingFoundException e) {
-        SearchErrorResponse response = new SearchErrorResponse("Nothing found", System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

@@ -1,10 +1,10 @@
-package ru.egorov.StoreCrawler.util;
+package ru.egorov.StoreCrawler.http;
 
-public class SearchErrorResponse {
+public class ErrorResponse {
     private String message;
     private long timestamp;
 
-    public SearchErrorResponse(String message, long timestamp) {
+    public ErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

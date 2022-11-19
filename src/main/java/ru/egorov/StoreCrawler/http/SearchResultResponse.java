@@ -1,4 +1,6 @@
-package ru.egorov.StoreCrawler.util;
+package ru.egorov.StoreCrawler.http;
+
+import ru.egorov.StoreCrawler.util.SearchResult;
 
 import java.util.List;
 

@@ -47,4 +47,9 @@ public class FootboxCrawler extends Crawler {
 
         System.out.println("Footbox crawler finished scanning at " + new Date());
     }
+
+    @Override
+    public String getStoreName() {
+        return "Footbox";
+    }
 }

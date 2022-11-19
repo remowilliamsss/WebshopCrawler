@@ -49,4 +49,6 @@ public abstract class Crawler {
     public void setStopped(Boolean stopped) {
         isStopped = stopped;
     }
+
+    public abstract String getStoreName();
 }

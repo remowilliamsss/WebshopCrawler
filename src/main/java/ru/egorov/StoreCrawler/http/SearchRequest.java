@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.util;
+package ru.egorov.StoreCrawler.http;
 
 public class SearchRequest {
     private String query;

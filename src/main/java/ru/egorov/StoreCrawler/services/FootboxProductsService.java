@@ -7,6 +7,7 @@ import ru.egorov.StoreCrawler.models.FootboxProduct;
 import ru.egorov.StoreCrawler.models.Product;
 import ru.egorov.StoreCrawler.repositories.FootboxProductsRepository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,13 +22,13 @@ public class FootboxProductsService extends ProductsService {
         this.footboxProductsRepository = footboxProductsRepository;
     }
 
-
+    @Override
     public Optional<Product> findBySku(String sku) {
         return footboxProductsRepository.findBySku(sku);
     }
 
-    public List<FootboxProduct> findAll() {
-        return footboxProductsRepository.findAll();
+    public List<Product> findAll() {
+        return new ArrayList<>(footboxProductsRepository.findAll());
     }
 
     @Transactional
@@ -68,8 +69,8 @@ public class FootboxProductsService extends ProductsService {
     }
 
     @Transactional
-    public void delete(FootboxProduct product) {
-        footboxProductsRepository.delete(product);
+    public void delete(Product product) {
+        footboxProductsRepository.delete((FootboxProduct) product);
 
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been removed");
     }
@@ -78,7 +79,7 @@ public class FootboxProductsService extends ProductsService {
     Параметр isStopped для прерывания выполнения метода извне.*/
     @Transactional
     public void deleteOther(List<Product> products, Boolean isStopped) {
-        for (FootboxProduct product : findAll()) {
+        for (Product product : findAll()) {
             if (isStopped)
                 return;
 
@@ -87,7 +88,13 @@ public class FootboxProductsService extends ProductsService {
         }
     }
 
+    @Override
     public List<Product> findAllByName(String name) {
         return footboxProductsRepository.findAllByNameContainingIgnoreCase(name).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public String getStoreName() {
+        return "Footbox";
     }
 }

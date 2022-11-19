@@ -7,9 +7,11 @@ import ru.egorov.StoreCrawler.models.Product;
 import ru.egorov.StoreCrawler.models.SneakerheadProduct;
 import ru.egorov.StoreCrawler.repositories.SneakerheadProductsRepository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,12 +23,13 @@ public class SneakerheadProductsService extends ProductsService {
         this.sneakerheadProductsRepository = sneakerheadProductsRepository;
     }
 
+    @Override
     public Optional<Product> findBySku(String sku) {
         return sneakerheadProductsRepository.findBySku(sku);
     }
 
-    public List<SneakerheadProduct> findAll() {
-        return sneakerheadProductsRepository.findAll();
+    public List<Product> findAll() {
+        return new ArrayList<>(sneakerheadProductsRepository.findAll());
     }
 
     @Transactional
@@ -67,8 +70,8 @@ public class SneakerheadProductsService extends ProductsService {
     }
 
     @Transactional
-    public void delete(SneakerheadProduct product) {
-        sneakerheadProductsRepository.delete(product);
+    public void delete(Product product) {
+        sneakerheadProductsRepository.delete((SneakerheadProduct) product);
 
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been removed");
     }
@@ -77,7 +80,7 @@ public class SneakerheadProductsService extends ProductsService {
     Параметр isStopped для прерывания выполнения метода извне.*/
     @Transactional
     public void deleteOther(List<Product> products, Boolean isStopped) {
-        for (SneakerheadProduct product : findAll()) {
+        for (Product product : findAll()) {
             if (isStopped)
                 return;
 
@@ -86,7 +89,13 @@ public class SneakerheadProductsService extends ProductsService {
         }
     }
 
+    @Override
     public List<Product> findAllByName(String name) {
         return sneakerheadProductsRepository.findAllByNameContainingIgnoreCase(name).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public String getStoreName() {
+        return "Sneakerhead";
     }
 }

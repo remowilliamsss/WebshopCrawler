@@ -8,4 +8,6 @@ public abstract class Product {
     public abstract String getName();
 
     public abstract Double getPrice();
+
+    public abstract String getBrand();
 }

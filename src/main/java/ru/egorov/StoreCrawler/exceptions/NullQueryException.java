@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.util;
+package ru.egorov.StoreCrawler.exceptions;
 
 public class NullQueryException extends RuntimeException {
 }

@@ -48,4 +48,9 @@ public class SneakerheadCrawler extends Crawler {
 
         System.out.println("Sneakerhead crawler finished scanning at " + new Date());
     }
+
+    @Override
+    public String getStoreName() {
+        return "Sneakerhead";
+    }
 }
