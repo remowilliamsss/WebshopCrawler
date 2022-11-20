@@ -11,6 +11,8 @@ public class FootboxProduct extends Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    // TODO: 20.11.2022 Почти любая ORM тебе автоматически соотнесет названия,
+    //  если поле и колонка названы одинаково
     @Column(name = "name")
     private String name;
 
@@ -32,6 +34,7 @@ public class FootboxProduct extends Product {
     @Column(name = "price")
     private Double price;
 
+    // TODO: 20.11.2022 Не уверен, давно не трогал хибернейт, но такое он вроде тоже сам умеет мапить
     @Column(name = "price_currency")
     private String priceCurrency;
 
@@ -168,10 +171,17 @@ public class FootboxProduct extends Product {
     }
 
     @Override
+    // TODO: 20.11.2022 if или цикл без без {} - зло. Даже если в одну строку.
+    //  И даже если идея сама это сгенерила
     public boolean equals(Object o) {
         if (this == o) return true;
+        // TODO: 20.11.2022 Лучше сравнивать по .getClass(), если выбор instanceof не был осознанным
         if (!(o instanceof FootboxProduct)) return false;
         FootboxProduct that = (FootboxProduct) o;
+        // TODO: 20.11.2022 С equals энтити вообще стоит быть поаккуратней, они замедляют работу ORM.
+        //  Но даже если он тебе нужен - почему недостаточно сравнения по id или другим уникальные полям?
+        //  Зачем сравнивать вообще все?
+        //  И никогда не делай это в одну строку:)
         return name.equals(that.name) && sku.equals(that.sku) && Objects.equals(category, that.category) && Objects.equals(brand, that.brand) && Objects.equals(image, that.image) && Objects.equals(color, that.color) && Objects.equals(price, that.price) && Objects.equals(priceCurrency, that.priceCurrency) && Objects.equals(gender, that.gender) && Objects.equals(country, that.country) && Objects.equals(sizes, that.sizes) && Objects.equals(composition, that.composition) && Objects.equals(coloring, that.coloring);
     }
 

@@ -15,6 +15,7 @@ import java.util.List;
 public class SneakerheadProductParser implements ProductParser {
 
     @Override
+    // TODO: 20.11.2022 для начала советую декомпозировать на методы. Слишком много кода в одном методе
     public SneakerheadProduct parseProduct(String url) throws IOException {
         Connection connection = Jsoup.connect(url).timeout(20000);
         Document doc = connection.get();

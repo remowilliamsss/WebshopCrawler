@@ -14,6 +14,7 @@ import java.util.List;
 @Component
 public class FootboxProductParser implements ProductParser {
     @Override
+    // TODO: 20.11.2022 для начала советую декомпозировать на методы. Слишком много кода в одном методе
     public FootboxProduct parseProduct(String url) throws IOException {
         Connection connection = Jsoup.connect(url).timeout(10000);
         Document doc = connection.get();

@@ -2,6 +2,7 @@ package ru.egorov.StoreCrawler.util;
 
 import java.util.Map;
 
+// TODO: 20.11.2022 не очень понимаю назначение этого класса
 public class SearchResult implements Comparable<SearchResult> {
     private String sku;
     private String itemName;

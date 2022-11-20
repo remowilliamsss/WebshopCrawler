@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.*;
 
 @Component
+// TODO: 20.11.2022 Ты уверен, что на уровне слоя  Crawler вообще есть смысл
+//  в разделении релазиаций на 2 сервиса? Кажется, это оверинжиниринг
 public class SneakerheadCrawler extends Crawler {
     private final HtmlParser htmlParser;
     private final SneakerheadProductParser sneakerheadProductParser;

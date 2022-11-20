@@ -2,6 +2,7 @@ package ru.egorov.StoreCrawler.dto;
 
 import java.util.List;
 
+// TODO: 20.11.2022 не очень понимаю необходимость написания кастомной обертки над респонсом
 public class ProductsResponse {
     private List<ProductDTO> products;
 

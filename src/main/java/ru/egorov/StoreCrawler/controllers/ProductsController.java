@@ -36,10 +36,13 @@ public class ProductsController {
 
         if (query == null)
             throw new NullQueryException();
-
+// TODO: 20.11.2022 очень перегруженный контроллер. Логика эндпоинта должна заключаться в конвертации
+//  данных и вызове сервиса. Или просто  в вызове сервиса, если сервис работает с дто.
+//  В твоем случае сервисная логика описана в эндпоинте
         SearchResultResponse response = new SearchResultResponse();
         List<SearchResult> resultList = new ArrayList<>();
 
+        // TODO: 20.11.2022 Очень советую познакомиться с функциональным стилем поближе
         for (ProductsService productsService : productsServices) {
             List<Product> foundProducts = productsService.findAllByName(query);
 
@@ -97,6 +100,7 @@ public class ProductsController {
     }
 
     @ExceptionHandler
+//    TODO: некорректное использование эксепшна. Почему пустой результат вообще выбрасывает ошибку?
     private ResponseEntity<NothingFoundResponse> handleException(NothingFoundException e) {
         NothingFoundResponse response = new NothingFoundResponse();
 

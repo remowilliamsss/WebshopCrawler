@@ -27,18 +27,24 @@ public class FootboxProductsService extends ProductsService {
         return footboxProductsRepository.findBySku(sku);
     }
 
+    // TODO: 20.11.2022 мб стоит прикрутить пагинацию? Что будет, если найдет миллион записей?
     public List<Product> findAll() {
         return new ArrayList<>(footboxProductsRepository.findAll());
     }
 
     @Transactional
+    // TODO: 20.11.2022 Методы create и update должны возвращать обновленное значение
     public void save(FootboxProduct product) {
         footboxProductsRepository.save(product);
 
+        // TODO: 20.11.2022 Советую познакомиться с логгерами. logback, log4j, log4j2 - на твой выбор
         System.out.println("product " + product.getBrand() + " " + product.getName() + " has been saved");
     }
 
     @Transactional
+    // TODO: 20.11.2022 Никогда так не делай. product не под управлением EM,
+    //  пытаться его обновить в транзакции - не самая разумная затея.
+    //  Я вообще не уверен, что этот метод работает у тебя так, как ты ожидаешь:)
     public void update(int id, FootboxProduct product) {
         product.setId(id);
 
@@ -77,6 +83,7 @@ public class FootboxProductsService extends ProductsService {
 
     /*    Принимает список товаров. Удаляет из базы данных товары, которых нет в списке.
     Параметр isStopped для прерывания выполнения метода извне.*/
+    // TODO: 20.11.2022 как ты представляешь прерывание метода извне?
     @Transactional
     public void deleteOther(List<Product> products, Boolean isStopped) {
         for (Product product : findAll()) {

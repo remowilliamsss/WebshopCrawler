@@ -8,6 +8,7 @@ import ru.egorov.StoreCrawler.models.Product;
 
 @Component
 public class ProductConvertor {
+    // TODO: 20.11.2022 Выбор неплохой, но рекомендовал бы mapStruct как более популярное решение
     private final ModelMapper modelMapper;
 
     @Autowired

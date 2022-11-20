@@ -1,5 +1,8 @@
 package ru.egorov.StoreCrawler.dto;
 
+// TODO: 20.11.2022 Вкусовщина, но советовал бы DTO -> Dto.
+//  Кроме того, dto выглядит перегруженным. Чего только стоит количество дублирований
+//  в соседней реализации. Не уверен, но мб имело бы смысл разделить на большее число объектов
 public class FootboxProductDTO extends ProductDTO {
     private String name;
     private String sku;
@@ -15,6 +18,8 @@ public class FootboxProductDTO extends ProductDTO {
     private String composition;
     private String coloring;
 
+    // TODO: 20.11.2022 Ты даже не представляешь,
+    //  как прекрасна станет твоя жизнь после знакомтсва с ломбоком)
     public String getName() {
         return name;
     }

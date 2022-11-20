@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+// TODO: 20.11.2022 Не очень понятно назначение класса в таком виде. Возможно, твои разъяснения
+//  позволят посоветовать что-то дельное
 public abstract class Crawler {
     private Boolean isStopped;
     private Timer timer;
@@ -30,6 +32,7 @@ public abstract class Crawler {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                // TODO: 20.11.2022 https://www.baeldung.com/spring-scheduled-tasks
             }
         }, 0, 24*60*60*1000);
     }
