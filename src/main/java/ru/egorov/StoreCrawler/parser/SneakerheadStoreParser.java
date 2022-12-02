@@ -12,6 +12,7 @@ import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Component
@@ -60,6 +61,9 @@ public class SneakerheadStoreParser extends StoreParser {
 
         } catch (IOException e) {
             log.error("Failed connection: {}", e.getMessage());
+            return null;
+        } catch (NoSuchElementException e) {
+            log.error("Failed to parse name: {}", e.getMessage());
             return null;
         }
     }
