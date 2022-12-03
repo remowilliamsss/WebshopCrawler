@@ -3,6 +3,8 @@ package ru.egorov.StoreCrawler.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.egorov.StoreCrawler.dto.SearchResponse;
+import ru.egorov.StoreCrawler.dto.FoundProduct;
+import ru.egorov.StoreCrawler.dto.ProductDifferences;
 
 import java.util.*;
 
@@ -11,32 +13,46 @@ import java.util.*;
 public class Search {
     private final List<ProductsService> productsServices;
 
-    public List<SearchResponse> search(String query) {
-        List<SearchResponse> resultList = new ArrayList<>();
+    public SearchResponse search(String query) {
+        List<FoundProduct> foundProductList = new ArrayList<>();
 
         productsServices.stream()
             .map(productsService -> productsService.findAllByName(query))
             .filter(products -> !products.isEmpty())
             .forEach(products -> {
                 products.forEach(product -> {
-                    if (resultList.stream()
-                            .noneMatch(searchResponse -> searchResponse.getSku().equals(product.getSku()))) {
-                        HashMap<String, Double> priceList = new HashMap<>(
-                                Map.of(product.getStore().getName(), product.getPrice()));
-                        resultList.add(new SearchResponse(product.getSku(), product.getName(), priceList));
+                    if (foundProductList.stream()
+                            .noneMatch(foundProduct -> foundProduct.getSku().equals(product.getSku()))) {
+
+                        List<ProductDifferences> differences = new ArrayList<>();
+                        differences.add(new ProductDifferences(
+                                product.getStore().getName(),
+                                product.getPrice(), product.getPriceCurrency(),
+                                product.getSizes(), product.getUrl()));
+
+                        foundProductList.add(new FoundProduct(
+                                product.getName(), product.getSku(),
+                                product.getImage(), product.getCategory(),
+                                product.getBrand(), product.getColor(),
+                                product.getCountry(), product.getGender(),
+                                differences));
                     } else {
-                        resultList.stream()
-                                .filter(searchResponse -> searchResponse.getSku().equals(product.getSku()))
+                        foundProductList.stream()
+                                .filter(foundProduct -> foundProduct.getSku().equals(product.getSku()))
                                 .findFirst()
                                 .get()
-                                .getPriceList()
-                                .put(product.getStore().getName(), product.getPrice());
+                                .getDifferences()
+                                .add(new ProductDifferences(
+                                        product.getStore().getName(),
+                                        product.getPrice(), product.getPriceCurrency(),
+                                        product.getSizes(), product.getUrl()));
                     }
                 });
             });
 
-        Collections.sort(resultList);
+        foundProductList.forEach(foundProduct -> Collections.sort(foundProduct.getDifferences()));
+        Collections.sort(foundProductList);
 
-        return resultList;
+        return new SearchResponse(foundProductList);
     }
 }

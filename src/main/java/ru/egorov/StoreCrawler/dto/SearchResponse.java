@@ -4,18 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
 @Setter
-public class SearchResponse implements Comparable<SearchResponse> {
-    private String sku;
-    private String itemName;
-    private Map<String, Double> priceList;
-
-    @Override
-    public int compareTo(SearchResponse o) {
-        return getItemName().compareTo(o.getItemName());
-    }
+public class SearchResponse {
+    private List<FoundProduct> foundProductList;
 }

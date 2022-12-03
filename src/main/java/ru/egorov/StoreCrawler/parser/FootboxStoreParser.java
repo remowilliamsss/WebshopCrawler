@@ -56,12 +56,14 @@ public class FootboxStoreParser extends StoreParser {
 
             enrichProduct(product, doc);
 
+            product.setUrl(url);
+
             log.debug("Item with name \"{}\" was parsed", product.getName());
 
             return product;
 
         } catch (IOException e) {
-            log.error("Failed connection: {}", e.getMessage());
+            log.error("Failed connection to {}: {}", url, e.getMessage());
             return null;
         }
     }
@@ -109,8 +111,7 @@ public class FootboxStoreParser extends StoreParser {
     }
 
     private String parseImage(Document doc) {
-        return "https://footboxshop.ru" + doc.getElementsByAttributeValue("itemprop", "image")
-                .get(0)
+        return "https://footboxshop.ru" + doc.getElementsByClass("item-slider__main-image").get(0)
                 .attr("src");
     }
 
