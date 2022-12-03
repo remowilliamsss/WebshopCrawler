@@ -28,6 +28,9 @@ public abstract class Product {
     private String country;
     private String sizes;
     private String gender;
+    @NotEmpty
+    @Column(unique = true)
+    private String url;
 
     @Transient
     public abstract Store getStore();

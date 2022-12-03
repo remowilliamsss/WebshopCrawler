@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum Store {
-    SNEAKERHEAD("sneakerhead"),
-    FOOTBOX("footbox");
+    SNEAKERHEAD("Sneakerhead"),
+    FOOTBOX("Footbox");
 
     private final String name;
 

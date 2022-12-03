@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.egorov.StoreCrawler.Dispatcher;
 import ru.egorov.StoreCrawler.dto.*;
+import ru.egorov.StoreCrawler.service.Crawler;
 import ru.egorov.StoreCrawler.service.Search;
 import ru.egorov.StoreCrawler.validator.StoreName;
 
@@ -24,18 +25,19 @@ public class ProductsController {
     private static final Logger log = LoggerFactory.getLogger(ProductsController.class);
     private final Search search;
     private final Dispatcher dispatcher;
+    private final Crawler crawler;
 
     @PostMapping("/search")
-    public ResponseEntity<List<SearchResponse>> search(@Valid @RequestBody SearchRequest request) {
+    public ResponseEntity<SearchResponse> search(@Valid @RequestBody SearchRequest request) {
         String query = request.getQuery();
 
         log.info("Search for \"{}\" starts", query);
 
-        List<SearchResponse> searchResults = search.search(query);
+        SearchResponse searchResponse = search.search(query);
 
-        log.info("Search for \"{}\" finished with {} results", query, searchResults.size());
+        log.info("Search for \"{}\" finished with {} results", query, searchResponse.getFoundProductList().size());
 
-        return new ResponseEntity<>(searchResults, HttpStatus.OK);
+        return new ResponseEntity<>(searchResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{storeName}")
@@ -61,9 +63,11 @@ public class ProductsController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("test")
+    @GetMapping("/test")
     public void test() {
         log.debug("Testing starts");
+
+        crawler.crawl();
 
         log.debug("Testing finishes");
     }

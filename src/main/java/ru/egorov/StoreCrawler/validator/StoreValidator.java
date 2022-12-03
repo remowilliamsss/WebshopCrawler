@@ -11,6 +11,6 @@ public class StoreValidator implements ConstraintValidator<StoreName, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         return Arrays.stream(Store.values())
-                .anyMatch(store -> store.getName().equals(value));
+                .anyMatch(store -> store.getName().equalsIgnoreCase(value));
     }
 }

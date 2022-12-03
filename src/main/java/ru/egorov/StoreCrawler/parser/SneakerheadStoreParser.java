@@ -55,12 +55,14 @@ public class SneakerheadStoreParser extends StoreParser {
 
             enrichProduct(product, doc);
 
+            product.setUrl(url);
+
             log.debug("Item with name \"{}\" was parsed", product.getName());
 
             return product;
 
         } catch (IOException e) {
-            log.error("Failed connection: {}", e.getMessage());
+            log.error("Failed connection to {}: {}", url, e.getMessage());
             return null;
         } catch (NoSuchElementException e) {
             log.error("Failed to parse name: {}", e.getMessage());

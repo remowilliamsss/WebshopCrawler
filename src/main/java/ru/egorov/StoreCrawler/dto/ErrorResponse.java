@@ -5,6 +5,6 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Response {
+public class ErrorResponse {
     private String message;
 }

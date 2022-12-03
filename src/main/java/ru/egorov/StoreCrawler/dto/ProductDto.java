@@ -17,4 +17,5 @@ public abstract class ProductDto {
     private String country;
     private String sizes;
     private String gender;
+    private String url;
 }
