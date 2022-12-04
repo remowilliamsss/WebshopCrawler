@@ -14,6 +14,10 @@ public class Search {
     private final List<ProductsService> productsServices;
 
     public SearchResponse search(String query) {
+        if (query.isBlank()) {
+            return new SearchResponse(Collections.emptyList());
+        }
+
         List<FoundProduct> foundProductList = new ArrayList<>();
 
         productsServices.stream()
