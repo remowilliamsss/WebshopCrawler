@@ -10,6 +10,7 @@ import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 import ru.egorov.StoreCrawler.repository.SneakerheadProductsRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +46,11 @@ public class SneakerheadProductsService extends ProductsService {
                 .stream()
                 .map(product -> (SneakerheadProduct) product)
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    public Optional<SneakerheadProduct> findBySku(String sku) {
+        return sneakerheadProductsRepository.findBySku(sku);
     }
 
     @Override

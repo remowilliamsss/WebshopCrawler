@@ -40,6 +40,19 @@ public class ProductsController {
         return new ResponseEntity<>(searchResponse, HttpStatus.OK);
     }
 
+    @PostMapping("/find_by_sku")
+    public ResponseEntity<FoundProduct> findBySku(@Valid @RequestBody SearchRequest request) {
+        String query = request.getQuery();
+
+        log.info("Search for \"{}\" starts", query);
+
+        FoundProduct product = search.findBySku(query);
+
+        log.info("Search for \"{}\" finished", query);
+
+        return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
     @GetMapping("/{storeName}")
     public ResponseEntity<List<ProductDto>> getProducts(@PathVariable("storeName") @StoreName String storeName,
                                 @RequestParam(value = "page", required = false) Integer page,

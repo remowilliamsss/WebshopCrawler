@@ -10,6 +10,7 @@ import ru.egorov.StoreCrawler.model.Product;
 import ru.egorov.StoreCrawler.repository.FootboxProductsRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +46,11 @@ public class FootboxProductsService extends ProductsService {
                 .stream()
                 .map(product -> (FootboxProduct) product)
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    public Optional<FootboxProduct> findBySku(String sku) {
+        return footboxProductsRepository.findBySku(sku);
     }
 
     @Override
