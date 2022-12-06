@@ -41,16 +41,16 @@ public class ProductsController {
     }
 
     @PostMapping("/find_by_sku")
-    public ResponseEntity<FoundProduct> findBySku(@Valid @RequestBody SearchRequest request) {
+    public ResponseEntity<SearchResponse> findBySku(@Valid @RequestBody SearchRequest request) {
         String query = request.getQuery();
 
         log.info("Search for \"{}\" starts", query);
 
-        FoundProduct product = search.findBySku(query);
+        SearchResponse searchResponse = search.findBySku(query);
 
         log.info("Search for \"{}\" finished", query);
 
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        return new ResponseEntity<>(searchResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{storeName}")

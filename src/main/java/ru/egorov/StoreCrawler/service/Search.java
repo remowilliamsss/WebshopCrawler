@@ -47,43 +47,31 @@ public class Search {
         return new SearchResponse(foundProductList);
     }
 
-    public FoundProduct findBySku(String sku) {
-        FoundProduct foundProduct = new FoundProduct();
-
-        productsServices.forEach(productsService -> {
-            Optional<? extends Product> optionalProduct = productsService.findBySku(sku);
-
-            if (optionalProduct.isPresent()) {
-                Product product = optionalProduct.get();
-
-                if (foundProduct.getSku() == null) {
-                    enrichFoundProduct(foundProduct, product);
-                } else {
-                    foundProduct.getDifferences()
-                            .add(createProductDifferences(product));
-                }
-            }
-        });
-
-        Collections.sort(foundProduct.getDifferences());
-
-        return foundProduct;
-    }
-
-    private void enrichFoundProduct(FoundProduct foundProduct, Product product) {
-            foundProduct.setName(product.getName());
-            foundProduct.setSku(product.getSku());
-            foundProduct.setImage(product.getImage());
-            foundProduct.setCategory(product.getCategory());
-            foundProduct.setBrand(product.getBrand());
-            foundProduct.setColor(product.getColor());
-            foundProduct.setCountry(product.getCountry());
-            foundProduct.setGender(foundProduct.getGender());
-
-            List<ProductDifferences> differences = new ArrayList<>();
-            differences.add(createProductDifferences(product));
-            foundProduct.setDifferences(differences);
+    public SearchResponse findBySku(String sku) {
+        if (sku.isBlank()) {
+            return new SearchResponse(Collections.emptyList());
         }
+
+        List<FoundProduct> foundProductList = new ArrayList<>(1);
+
+        productsServices.stream()
+                .map(productsService -> productsService.findBySku(sku))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(product -> {
+                    if (foundProductList.isEmpty()) {
+                        foundProductList.add(createFoundProduct(product));
+                    } else {
+                        foundProductList.get(0)
+                                .getDifferences()
+                                .add(createProductDifferences(product));
+                    }
+                });
+
+        Collections.sort(foundProductList.get(0).getDifferences());
+
+        return new SearchResponse(foundProductList);
+    }
 
     private FoundProduct createFoundProduct(Product product) {
         List<ProductDifferences> differences = new ArrayList<>();
