@@ -7,6 +7,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+// TODO: 13.12.2022 никогда не именуй сущности во множественном числе.
+//  Исключение разве что классы, содержащие только константы
 public class ProductDifferences implements Comparable<ProductDifferences> {
     private String storeName;
     private Double price;
@@ -14,6 +16,7 @@ public class ProductDifferences implements Comparable<ProductDifferences> {
     private String sizes;
     private String url;
 
+    // TODO: 13.12.2022 зачем?
     @Override
     public int compareTo(ProductDifferences o) {
         return getPrice().compareTo(o.getPrice());

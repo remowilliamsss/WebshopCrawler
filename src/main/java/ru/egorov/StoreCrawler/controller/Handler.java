@@ -10,6 +10,7 @@ import ru.egorov.StoreCrawler.dto.ErrorResponse;
 
 import javax.validation.ConstraintViolationException;
 
+// TODO: 13.12.2022 вынеси в подпакет. И назвать лучше более развернуто. Аля ControllerExceptionHandler
 @RestControllerAdvice
 public class Handler {
     private static final Logger log = LoggerFactory.getLogger(Handler.class);
@@ -25,6 +26,7 @@ public class Handler {
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.NOT_FOUND);
     }
 
+    // TODO: 13.12.2022 каким образом ты планируешь допускать чект эксепшн в контроллере?
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException e) {
         String message = e.getFieldError().getDefaultMessage();

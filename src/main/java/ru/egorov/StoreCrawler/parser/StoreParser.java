@@ -40,6 +40,7 @@ public abstract class StoreParser {
 
     public abstract Store getStore();
 
+    // TODO: 13.12.2022 возможно, стоит разбить парсер магазина и парсер продукта
     public abstract Product parseProduct(String url);
 
     public List<Product> parseProducts (Collection<String> urls) {

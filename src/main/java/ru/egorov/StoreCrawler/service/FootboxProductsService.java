@@ -20,6 +20,7 @@ public class FootboxProductsService extends ProductsService {
     private final FootboxProductsRepository footboxProductsRepository;
 
     @Override
+    // TODO: 13.12.2022 советую прикрутить пагинацию. Посмотри на Pageable, Page и @PageableDefault
     public List<FootboxProduct> findAll() {
         return footboxProductsRepository.findAll();
     }
@@ -31,12 +32,15 @@ public class FootboxProductsService extends ProductsService {
     }
 
     @Override
+    // TODO: 13.12.2022 тут рановато, но для гибких фильтров познакомься с Criteria API
     public List<FootboxProduct> findAllByName(String name) {
         return footboxProductsRepository.findAllByNameContainingIgnoreCase(name);
     }
 
     @Override
     @Transactional
+    // TODO: 13.12.2022 updateMany()? Немного странно, когда в названии и метода, и сервиса
+    //  дублируется имя сущности
     public List<FootboxProduct> updateProducts(List<Product> products) {
         footboxProductsRepository.deleteAll();
 
@@ -49,11 +53,13 @@ public class FootboxProductsService extends ProductsService {
     }
 
     @Override
+    // TODO: 13.12.2022 Optional из crud-сервиса - допустимое, но неоднозначное решение
     public Optional<FootboxProduct> findBySku(String sku) {
         return footboxProductsRepository.findBySku(sku);
     }
 
     @Override
+    // TODO: 13.12.2022
     public Store getStore() {
         return Store.FOOTBOX;
     }

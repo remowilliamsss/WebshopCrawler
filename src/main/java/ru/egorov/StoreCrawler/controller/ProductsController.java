@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.egorov.StoreCrawler.Dispatcher;
-import ru.egorov.StoreCrawler.dto.*;
+import ru.egorov.StoreCrawler.dto.ProductDto;
+import ru.egorov.StoreCrawler.dto.SearchRequest;
+import ru.egorov.StoreCrawler.dto.SearchResponse;
 import ru.egorov.StoreCrawler.service.Crawler;
 import ru.egorov.StoreCrawler.service.Search;
 import ru.egorov.StoreCrawler.validator.StoreName;
@@ -22,7 +24,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Validated
 public class ProductsController {
+    // TODO: 13.12.2022 lombok, @Slf4j
     private static final Logger log = LoggerFactory.getLogger(ProductsController.class);
+    // TODO: 13.12.2022 Сервис. SearchService, DispatcherService и т.д.
+    //  Если твой класс процессит бизнес-логику, он должен быть сервисом.
+    //  И аннотация внутри дб соответствующей
     private final Search search;
     private final Dispatcher dispatcher;
     private final Crawler crawler;
@@ -30,7 +36,7 @@ public class ProductsController {
     @PostMapping("/search")
     public ResponseEntity<SearchResponse> search(@Valid @RequestBody SearchRequest request) {
         String query = request.getQuery();
-
+// TODO: 13.12.2022 логи в контроллере - это извращение
         log.info("Search for \"{}\" starts", query);
 
         SearchResponse searchResponse = search.search(query);
@@ -55,8 +61,28 @@ public class ProductsController {
 
     @GetMapping("/{storeName}")
     public ResponseEntity<List<ProductDto>> getProducts(@PathVariable("storeName") @StoreName String storeName,
-                                @RequestParam(value = "page", required = false) Integer page,
+                                @RequestParam(value = "page", required = false) Integer page,// TODO: 13.12.2022 Pageable
                                 @RequestParam(value = "productsPerPage", required = false) Integer productsPerPage) {
+        // TODO: 13.12.2022 контроллер должен только вызывать сервис.
+        //  Максимум - вызывать мапперы и сервис. У тебя он явно перегружен
+        // TODO: 13.12.2022 если тернарка не влазит в одну строку, лучше переноси так:
+        //  condition
+        //      ? logic
+        //      : logic
+
+        // TODO: 13.12.2022 Если уже и писать подобное, то лучше так:
+//        var productsService = dispatcher.getService(storeName);
+//        var products = page == null || productsPerPage == null
+//                ? productsService.findAll()
+//                : productsService.findAll(page, productsPerPage);
+//
+//        var mapper = dispatcher.getMapper(storeName);
+//        var productDtos = products.stream()
+//                .map(mapper::toDto)
+//                .collect(Collectors.toList());
+//
+//        return new ResponseEntity<>(productDtos);
+
         List<ProductDto> response = (page == null || productsPerPage == null) ?
                 dispatcher.getService(storeName)
                         .findAll()

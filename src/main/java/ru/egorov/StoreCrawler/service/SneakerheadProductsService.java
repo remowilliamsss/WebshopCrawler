@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+// TODO: 13.12.2022 не стал ревьюить, не думаю, что есть большие отличия от Footbox
 public class SneakerheadProductsService extends ProductsService {
     private final SneakerheadProductsRepository sneakerheadProductsRepository;
 

@@ -6,6 +6,8 @@ import ru.egorov.StoreCrawler.model.Product;
 import java.util.List;
 import java.util.Optional;
 
+// TODO: 13.12.2022 выглядит как интерфейс
+// TODO: 13.12.2022 ProductService. В ед.ч.
 public abstract class ProductsService {
     public abstract List<? extends Product> findAll();
 

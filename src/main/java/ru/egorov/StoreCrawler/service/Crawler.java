@@ -22,7 +22,8 @@ public class Crawler {
         log.info("Crawling starts...");
 
         parsers.forEach(parser ->
-            new Thread(() -> {
+                // TODO: 13.12.2022 executorService. Никогда не работай с голыми тредами в spring-приложении
+            new Thread(() -> {// TODO: 13.12.2022 избыточные {} в однострочной лямбде
                 dispatcher.getService(parser.getStore())
                     .updateProducts(parser
                         .parseProducts());

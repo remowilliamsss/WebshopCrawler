@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Component
+// TODO: 13.12.2022 замечания те же, что и для парсера выше
 public class SneakerheadStoreParser extends StoreParser {
     private static final Logger log = LoggerFactory.getLogger(SneakerheadStoreParser.class);
 
@@ -64,6 +65,7 @@ public class SneakerheadStoreParser extends StoreParser {
         } catch (IOException e) {
             log.error("Failed connection to {}: {}", url, e.getMessage());
             return null;
+            // TODO: 13.12.2022 если приходится кэтчить анчект эксепшн - ты где-то свернул не туда
         } catch (NoSuchElementException e) {
             log.error("Failed to parse name: {}", e.getMessage());
             return null;

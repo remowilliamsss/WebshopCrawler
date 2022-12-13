@@ -10,6 +10,7 @@ import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 public interface SneakerheadProductMapper extends ProductMapper {
 
     @Override
+    // TODO: 13.12.2022 замечания те же, что и в предыдущем маппере
     default SneakerheadProductDto toDto(Product product) {
         return toDto((SneakerheadProduct) product);
     }

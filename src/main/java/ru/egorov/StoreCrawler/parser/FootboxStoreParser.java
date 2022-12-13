@@ -43,9 +43,19 @@ public class FootboxStoreParser extends StoreParser {
         log.debug("Parsing starts for url: \"{}\"", url);
 
         try {
+            // TODO: 13.12.2022 try-with-resource. Или хотя бы закрывай ресурс в finally.
+            //  Создаешь утечки памяти на ровном месте
             Connection connection = Jsoup.connect(url).timeout(10000);
             Document doc = connection.get();
 
+            // TODO: 13.12.2022 условие if стоит вынести в приватный boolean-метод.
+            //  И подумай насчет вынесения литералов в константы
+            // TODO: 13.12.2022 при последовательном вызове методов используй правило "одна строчка - одна точка":
+            //  doc.getElementsByClass("not-avail")
+            //      .first()
+            //      .attr("style")
+            //      .equals("display: flex;")
+            //      больше двух методов подряд в одной строке - нечитаемо
             if (doc.getElementsByClass("item-container").isEmpty()
                     || doc.getElementsByClass("not-avail").first()
                     .attr("style").equals("display: flex;")) {
@@ -63,12 +73,18 @@ public class FootboxStoreParser extends StoreParser {
             return product;
 
         } catch (IOException e) {
+            // TODO: 13.12.2022 обрати внимание на log.error(String var1, Throwable var2)
             log.error("Failed connection to {}: {}", url, e.getMessage());
+            // TODO: 13.12.2022 я бы вынес return из catch.
+            //  Насколько вообще корректно скрывать ошибку,
+            //  а не выбрасывать какой-нить RuntimeException в таком случае?
             return null;
         }
     }
 
+    // TODO: 13.12.2022 мб лучше buildProduct()?
     private void enrichProduct(FootboxProduct product, Document doc) {
+        // TODO: 13.12.2022 лишние пустые строки, исключая 101ю
         product.setName(parseName(doc));
 
         product.setSku(parseSku(doc));
@@ -89,8 +105,10 @@ public class FootboxStoreParser extends StoreParser {
     }
 
     private String parseName(Document doc) {
+        // TODO: 13.12.2022 строчка - точка
         String name = doc.getElementsByClass("item-info__title bx-title").first().text();
 
+        // TODO: 13.12.2022 извращение:)
         return name.substring(name.indexOf(' ') + 1);
     }
 
@@ -102,15 +120,18 @@ public class FootboxStoreParser extends StoreParser {
     }
 
     private Double parsePrice(Document doc) {
+        // TODO: 13.12.2022 .stream() на новой строке
         return doc.getElementsByAttributeValue("itemprop", "price").stream()
                 .map(element -> element.attr("content"))
                 .filter(price -> !price.isBlank())
                 .findFirst()
                 .map(Double::parseDouble)
+                // TODO: 13.12.2022 никогда не вызывай get() в явном виде
                 .get();
     }
 
     private String parseImage(Document doc) {
+        // TODO: 13.12.2022 явный вызов get() - зло. Посмотри в сторону String.format() вместо конкатенации
         return "https://footboxshop.ru" + doc.getElementsByClass("item-slider__main-image").get(0)
                 .attr("src");
     }
@@ -118,6 +139,8 @@ public class FootboxStoreParser extends StoreParser {
     private String parseSizes(Document doc) {
         StringBuilder stringBuilder = new StringBuilder();
 
+        // TODO: 13.12.2022 неудачное название. Предлоги - плохая практика в большинстве случаев,
+        //  сущ. во мн.ч. всегда последнее
         List<String> sizesFromHtml = doc.getElementsByClass("sizes-public-detail__list__item")
                 .eachAttr("title");
 
@@ -152,9 +175,11 @@ public class FootboxStoreParser extends StoreParser {
         Elements propertyValue = doc.getElementsByClass("product-item-detail-properties")
                 .select("dd");
 
+        // TODO: 13.12.2022 в .forEach()
         for (int i = 0; i < propertyNames.size(); i++) {
             switch (propertyNames.get(i).text()) {
-                case ("Пол"):
+                // TODO: 13.12.2022 значения кейсов в константы, в то и в поле элементов енама
+                case "Пол":// TODO: 13.12.2022 зачем скобки?
                     product.setGender(propertyValue.get(i).text());
                     break;
                 case ("Бренд"):

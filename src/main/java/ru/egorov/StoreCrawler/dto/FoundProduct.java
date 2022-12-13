@@ -22,6 +22,7 @@ public class FoundProduct implements Comparable<FoundProduct> {
     private String gender;
     private List<ProductDifferences> differences;
 
+    // TODO: 13.12.2022 скорее всего, compareTo тебе не нужен
     @Override
     public int compareTo(FoundProduct o) {
         return getDifferences().get(0)
