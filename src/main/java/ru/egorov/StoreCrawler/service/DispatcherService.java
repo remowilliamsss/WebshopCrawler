@@ -1,25 +1,25 @@
-package ru.egorov.StoreCrawler;
+package ru.egorov.StoreCrawler.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import ru.egorov.StoreCrawler.Store;
 import ru.egorov.StoreCrawler.mapper.ProductMapper;
-import ru.egorov.StoreCrawler.service.ProductsService;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class Dispatcher {
+public class DispatcherService {
     // TODO: 13.12.2022 с работой диспетчера надо подумать отдельно. сейчас выглядит очень неэффективным
     private final List<ProductsService> productsServices;
     private final List<ProductMapper> productMappers;
 
     // TODO: 13.12.2022 передавай enum параметром и будет тебе счастье
-    public ProductsService getService(String storeName) {
-        return getService(Store.valueOf(storeName.toUpperCase()));
+    public ProductsService getProductsService(String storeName) {
+        return getProductsService(Store.valueOf(storeName.toUpperCase()));
     }
 
-    public ProductsService getService(Store store) {
+    public ProductsService getProductsService(Store store) {
         // TODO: 13.12.2022 чем тебе switch-case не мил?
         //  храни сервисы не в листе, а в мапе и жизнь станет проще.
         //  Спринг ключом подставит имя бина.

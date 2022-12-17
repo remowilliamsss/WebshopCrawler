@@ -4,18 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import ru.egorov.StoreCrawler.Dispatcher;
+import org.springframework.stereotype.Service;
 import ru.egorov.StoreCrawler.parser.StoreParser;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class Crawler {
-    private static final Logger log = LoggerFactory.getLogger(Crawler.class);
+public class CrawlerService {
+    private static final Logger log = LoggerFactory.getLogger(CrawlerService.class);
     private final List<StoreParser> parsers;
-    private final Dispatcher dispatcher;
+    private final DispatcherService dispatcherService;
 
     @Scheduled(cron = "@daily")
     public void crawl() {
@@ -24,7 +23,7 @@ public class Crawler {
         parsers.forEach(parser ->
                 // TODO: 13.12.2022 executorService. Никогда не работай с голыми тредами в spring-приложении
             new Thread(() -> {// TODO: 13.12.2022 избыточные {} в однострочной лямбде
-                dispatcher.getService(parser.getStore())
+                dispatcherService.getProductsService(parser.getStore())
                     .updateProducts(parser
                         .parseProducts());
             }).start());

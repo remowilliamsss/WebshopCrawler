@@ -1,21 +1,31 @@
 package ru.egorov.StoreCrawler.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import ru.egorov.StoreCrawler.dto.ProductDto;
 import ru.egorov.StoreCrawler.dto.SearchResponse;
 import ru.egorov.StoreCrawler.dto.FoundProduct;
 import ru.egorov.StoreCrawler.dto.ProductDifferences;
+import ru.egorov.StoreCrawler.mapper.ProductMapper;
 import ru.egorov.StoreCrawler.model.Product;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-@Component
+@Slf4j
+@Service
 @RequiredArgsConstructor
 // TODO: 13.12.2022 уже писал, но: некорректное название и аннотация над классом
-public class Search {
+public class SearchService {
+
+    private final DispatcherService dispatcherService;
+
     private final List<ProductsService> productsServices;
 
     public SearchResponse search(String query) {
+        log.info("Search for \"{}\" starts", query);
+
         if (query.isBlank()) {
             return new SearchResponse(Collections.emptyList());
         }
@@ -48,11 +58,49 @@ public class Search {
         foundProductList.forEach(foundProduct -> Collections.sort(foundProduct.getDifferences()));
         Collections.sort(foundProductList);
 
+        log.info("Search for \"{}\" finished with {} results", query, foundProductList.size());
+
         // TODO: 13.12.2022 зачем в этой схеме SearchResponse?
         return new SearchResponse(foundProductList);
     }
 
+    public List<ProductDto> findByStore(String storeName) {
+        log.info("Search for \"{}\" starts", storeName);
+
+        ProductsService productsService = dispatcherService.getProductsService(storeName);
+        var products = productsService.findAll();
+
+        List<ProductDto> productDtos = convertToDto(storeName, products);
+
+        log.info("Search for \"{}\" finished with {} results", storeName, productDtos.size());
+
+        return productDtos;
+    }
+
+    public List<ProductDto> findByStore(String storeName, Integer page, Integer productsPerPage) {
+        log.info("Search for \"{}\" starts", storeName);
+
+        ProductsService productsService = dispatcherService.getProductsService(storeName);
+        var products = productsService.findAll(page, productsPerPage);
+
+        List<ProductDto> productDtos = convertToDto(storeName, products);
+
+        log.info("Search for \"{}\" finished with {} results", storeName, productDtos.size());
+
+        return productDtos;
+    }
+
+    private List<ProductDto> convertToDto(String storeName, List<? extends Product> products) {
+        ProductMapper mapper = dispatcherService.getMapper(storeName);
+
+        return products.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public SearchResponse findBySku(String sku) {
+        log.info("Search for \"{}\" starts", sku);
+
         if (sku.isBlank()) {
             return new SearchResponse(Collections.emptyList());
         }
@@ -77,6 +125,8 @@ public class Search {
 
         // TODO: 13.12.2022 если пришлось написать get(0) - ты почти гарантированно ошибся
         Collections.sort(foundProductList.get(0).getDifferences());
+
+        log.info("Search for \"{}\" finished", sku);
 
         return new SearchResponse(foundProductList);
     }
