@@ -1,15 +1,16 @@
 package ru.egorov.StoreCrawler.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SearchRequest {
-    // TODO: 13.12.2022 месседж избыточен. как и сеттер
-    // TODO: 13.12.2022 кажется, тебе нужен @NotEmpty
-    @NotNull(message = "Query is null")
+
+    @NotEmpty
     private String query;
 }

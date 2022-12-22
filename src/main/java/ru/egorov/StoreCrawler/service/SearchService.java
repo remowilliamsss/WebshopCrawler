@@ -26,10 +26,6 @@ public class SearchService {
     public SearchResponse search(String query) {
         log.info("Search for \"{}\" starts", query);
 
-        if (query.isBlank()) {
-            return new SearchResponse(Collections.emptyList());
-        }
-
         List<FoundProduct> foundProductList = new ArrayList<>();
 
         productsServices.stream()
@@ -100,10 +96,6 @@ public class SearchService {
 
     public SearchResponse findBySku(String sku) {
         log.info("Search for \"{}\" starts", sku);
-
-        if (sku.isBlank()) {
-            return new SearchResponse(Collections.emptyList());
-        }
 
         List<FoundProduct> foundProductList = new ArrayList<>(1);
 
