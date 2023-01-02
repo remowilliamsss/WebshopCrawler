@@ -34,25 +34,23 @@ class ProductsControllerTest {
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
-        Mockito.verify(searchService,
-                        Mockito.times(1))
-                .search(
-                        ArgumentMatchers.eq(
-                                searchRequest.getQuery()));
+        Mockito.verify(searchService, Mockito.times(1))
+                .search(ArgumentMatchers.eq(searchRequest.getQuery()));
     }
 
     @Test
     void searchForNullQuery() {
-        SearchRequest searchRequest = new SearchRequest();
+        SearchRequest searchRequest = new SearchRequest(null);
 
         assertThrows(ConstraintViolationException.class, () -> {
             ResponseEntity<SearchResponse> response = productsController.search(searchRequest);
+
+            assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+
         }, "ConstraintViolationException was expected");
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .search(
-                        ArgumentMatchers.anyString());
+        Mockito.verify(searchService, Mockito.times(0))
+                .search(ArgumentMatchers.anyString());
     }
 
     @Test
@@ -61,12 +59,13 @@ class ProductsControllerTest {
 
         assertThrows(ConstraintViolationException.class, () -> {
             ResponseEntity<SearchResponse> response = productsController.search(searchRequest);
+
+            assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+
         }, "ConstraintViolationException was expected");
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .search(
-                        ArgumentMatchers.anyString());
+        Mockito.verify(searchService, Mockito.times(0))
+                .search(ArgumentMatchers.anyString());
     }
 
     @Test
@@ -77,25 +76,23 @@ class ProductsControllerTest {
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
-        Mockito.verify(searchService,
-                        Mockito.times(1))
-                .findBySku(
-                        ArgumentMatchers.eq(
-                                searchRequest.getQuery()));
+        Mockito.verify(searchService, Mockito.times(1))
+                .findBySku(ArgumentMatchers.eq(searchRequest.getQuery()));
     }
 
     @Test
     void findBySkuForNullQuery() {
-        SearchRequest searchRequest = new SearchRequest();
+        SearchRequest searchRequest = new SearchRequest(null);
 
         assertThrows(ConstraintViolationException.class, () -> {
             ResponseEntity<SearchResponse> response = productsController.findBySku(searchRequest);
+
+            assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+
         }, "ConstraintViolationException was expected");
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findBySku(
-                        ArgumentMatchers.anyString());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findBySku(ArgumentMatchers.anyString());
     }
 
     @Test
@@ -104,102 +101,85 @@ class ProductsControllerTest {
 
         assertThrows(ConstraintViolationException.class, () -> {
             ResponseEntity<SearchResponse> response = productsController.findBySku(searchRequest);
+
+            assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+
         }, "ConstraintViolationException was expected");
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findBySku(
-                        ArgumentMatchers.anyString());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findBySku(ArgumentMatchers.anyString());
     }
 
     @Test
-    void findByStoreWithoutPagination() {
+    void findByStore() {
         String storeName = "sneakerhead";
 
-        ResponseEntity<List<ProductDto>> response = productsController
-                .findByStore(storeName, null, null);
+        ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, null,
+                null);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
-        Mockito.verify(searchService,
-                        Mockito.times(1))
-                .findByStore(
-                        ArgumentMatchers.eq(storeName));
+        Mockito.verify(searchService, Mockito.times(1))
+                .findByStore(ArgumentMatchers.eq(storeName));
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findByStore(
-                        ArgumentMatchers.anyString(),
-                        ArgumentMatchers.anyInt(),
-                        ArgumentMatchers.anyInt());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt());
     }
 
     @Test
-    void findByStoreWithoutPaginationForNotSupportedStore() {
+    void findByStoreForNotSupportedStore() {
         String storeName = "some store";
 
         assertThrows(ConstraintViolationException.class, () -> {
-            ResponseEntity<List<ProductDto>> response = productsController
-                    .findByStore(storeName, null, null);
+            ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, null,
+                    null);
+
+            assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+
         }, "ConstraintViolationException was expected");
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findByStore(
-                        ArgumentMatchers.anyString());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findByStore(ArgumentMatchers.anyString());
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findByStore(
-                        ArgumentMatchers.anyString(),
-                        ArgumentMatchers.anyInt(),
-                        ArgumentMatchers.anyInt());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt());
     }
 
     @Test
     void findByStoreWithPagination() {
         String storeName = "sneakerhead";
-        Integer page = 1;
+        Integer page = 0;
         Integer productsPerPage = 30;
 
         ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, productsPerPage);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
-        Mockito.verify(searchService,
-                        Mockito.times(1))
-                .findByStore(
-                        ArgumentMatchers.eq(storeName),
-                        ArgumentMatchers.eq(page),
+        Mockito.verify(searchService, Mockito.times(1))
+                .findByStore(ArgumentMatchers.eq(storeName), ArgumentMatchers.eq(page),
                         ArgumentMatchers.eq(productsPerPage));
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findByStore(
-                        ArgumentMatchers.anyString());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findByStore(ArgumentMatchers.anyString());
     }
 
     @Test
     void findByStoreWithPaginationForNotSupportedStore() {
         String storeName = "some store";
-        Integer page = 1;
+        Integer page = 0;
         Integer productsPerPage = 30;
 
         assertThrows(ConstraintViolationException.class, () -> {
-            ResponseEntity<List<ProductDto>> response = productsController
-                    .findByStore(storeName, page, productsPerPage);
+            ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, productsPerPage);
+
+            assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+
         }, "ConstraintViolationException was expected");
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findByStore(
-                        ArgumentMatchers.anyString());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findByStore(ArgumentMatchers.anyString());
 
-        Mockito.verify(searchService,
-                        Mockito.times(0))
-                .findByStore(
-                        ArgumentMatchers.anyString(),
-                        ArgumentMatchers.anyInt(),
-                        ArgumentMatchers.anyInt());
+        Mockito.verify(searchService, Mockito.times(0))
+                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt());
     }
 }

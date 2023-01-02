@@ -9,5 +9,4 @@ class StoreCrawlerApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
