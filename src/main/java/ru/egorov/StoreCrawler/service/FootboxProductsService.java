@@ -1,7 +1,9 @@
 package ru.egorov.StoreCrawler.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.egorov.StoreCrawler.Store;
@@ -26,9 +28,8 @@ public class FootboxProductsService extends ProductsService {
     }
 
     @Override
-    public List<FootboxProduct> findAll(Integer page, Integer productPerPage) {
-        return footboxProductsRepository.findAll(PageRequest
-                .of(page, productPerPage)).getContent();
+    public Page<FootboxProduct> findAll(Pageable pageable) {
+        return footboxProductsRepository.findAll(pageable);
     }
 
     @Override

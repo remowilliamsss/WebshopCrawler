@@ -2,6 +2,7 @@ package ru.egorov.StoreCrawler.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.egorov.StoreCrawler.dto.ProductDto;
 import ru.egorov.StoreCrawler.dto.SearchResponse;
@@ -73,11 +74,12 @@ public class SearchService {
         return productDtos;
     }
 
-    public List<ProductDto> findByStore(String storeName, Integer page, Integer productsPerPage) {
+    public List<ProductDto> findByStore(String storeName, Pageable pageable) {
         log.info("Search for \"{}\" starts", storeName);
 
         ProductsService productsService = dispatcherService.getProductsService(storeName);
-        var products = productsService.findAll(page, productsPerPage);
+        var products = productsService.findAll(pageable)
+                .getContent();
 
         List<ProductDto> productDtos = convertToDto(storeName, products);
 

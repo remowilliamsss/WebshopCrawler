@@ -1,5 +1,7 @@
 package ru.egorov.StoreCrawler.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.egorov.StoreCrawler.Store;
 import ru.egorov.StoreCrawler.model.Product;
 
@@ -11,7 +13,7 @@ import java.util.Optional;
 public abstract class ProductsService {
     public abstract List<? extends Product> findAll();
 
-    public abstract List<? extends Product> findAll(Integer page, Integer productsPerPage);
+    public abstract Page<? extends Product> findAll(Pageable pageable);
 
     public abstract List<? extends Product> findAllByName(String name);
 

@@ -1,7 +1,9 @@
 package ru.egorov.StoreCrawler.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.egorov.StoreCrawler.Store;
@@ -26,9 +28,8 @@ public class SneakerheadProductsService extends ProductsService {
     }
 
     @Override
-    public List<SneakerheadProduct> findAll(Integer page, Integer productPerPage) {
-        return sneakerheadProductsRepository.findAll(PageRequest
-                .of(page, productPerPage)).getContent();
+    public Page<SneakerheadProduct> findAll(Pageable pageable) {
+        return sneakerheadProductsRepository.findAll(pageable);
     }
 
     @Override

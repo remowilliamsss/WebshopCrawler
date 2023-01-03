@@ -6,6 +6,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.egorov.StoreCrawler.dto.ProductDto;
@@ -123,7 +125,7 @@ class ProductsControllerTest {
                 .findByStore(ArgumentMatchers.eq(storeName));
 
         Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt());
+                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.any(Pageable.class));
     }
 
     @Test
@@ -142,22 +144,22 @@ class ProductsControllerTest {
                 .findByStore(ArgumentMatchers.anyString());
 
         Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt());
+                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.any(Pageable.class));
     }
 
     @Test
     void findByStoreWithPagination() {
         String storeName = "sneakerhead";
-        Integer page = 0;
-        Integer productsPerPage = 30;
+        int page = 0;
+        int pageSize = 30;
+        Pageable pageable = PageRequest.of(page, pageSize);
 
-        ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, productsPerPage);
+        ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, pageSize);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
         Mockito.verify(searchService, Mockito.times(1))
-                .findByStore(ArgumentMatchers.eq(storeName), ArgumentMatchers.eq(page),
-                        ArgumentMatchers.eq(productsPerPage));
+                .findByStore(ArgumentMatchers.eq(storeName), ArgumentMatchers.eq(pageable));
 
         Mockito.verify(searchService, Mockito.times(0))
                 .findByStore(ArgumentMatchers.anyString());
@@ -166,11 +168,12 @@ class ProductsControllerTest {
     @Test
     void findByStoreWithPaginationForNotSupportedStore() {
         String storeName = "some store";
-        Integer page = 0;
-        Integer productsPerPage = 30;
+        int page = 0;
+        int pageSize = 30;
+        Pageable pageable = PageRequest.of(page, pageSize);
 
         assertThrows(ConstraintViolationException.class, () -> {
-            ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, productsPerPage);
+            ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, pageSize);
 
             assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
 
@@ -180,6 +183,6 @@ class ProductsControllerTest {
                 .findByStore(ArgumentMatchers.anyString());
 
         Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt());
+                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.eq(pageable));
     }
 }
