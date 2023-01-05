@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FoundProduct implements Comparable<FoundProduct> {
+public class FoundProduct {
     private String name;
     private String sku;
     private String image;
@@ -21,11 +21,4 @@ public class FoundProduct implements Comparable<FoundProduct> {
     private String country;
     private String gender;
     private List<ProductDifferences> differences;
-
-    // TODO: 13.12.2022 скорее всего, compareTo тебе не нужен
-    @Override
-    public int compareTo(FoundProduct o) {
-        return getDifferences().get(0)
-                .compareTo(o.getDifferences().get(0));
-    }
 }

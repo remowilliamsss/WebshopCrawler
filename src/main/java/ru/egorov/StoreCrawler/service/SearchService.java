@@ -52,9 +52,6 @@ public class SearchService {
                 });
             });
 
-        foundProductList.forEach(foundProduct -> Collections.sort(foundProduct.getDifferences()));
-        Collections.sort(foundProductList);
-
         log.info("Search for \"{}\" finished with {} results", query, foundProductList.size());
 
         // TODO: 13.12.2022 зачем в этой схеме SearchResponse?
@@ -103,9 +100,6 @@ public class SearchService {
                                 .add(createProductDifferences(product));
                     }
                 });
-
-        // TODO: 13.12.2022 если пришлось написать get(0) - ты почти гарантированно ошибся
-        Collections.sort(foundProductList.get(0).getDifferences());
 
         log.info("Search for \"{}\" finished", sku);
 
