@@ -11,8 +11,6 @@ import java.util.Optional;
 // TODO: 13.12.2022 выглядит как интерфейс
 // TODO: 13.12.2022 ProductService. В ед.ч.
 public abstract class ProductsService {
-    public abstract List<? extends Product> findAll();
-
     public abstract Page<? extends Product> findAll(Pageable pageable);
 
     public abstract List<? extends Product> findAllByName(String name);

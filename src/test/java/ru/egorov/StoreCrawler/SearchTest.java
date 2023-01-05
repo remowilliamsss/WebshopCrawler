@@ -217,7 +217,7 @@ public class SearchTest {
     public void findByStoreWithPaginationForSneakerhead() throws Exception {
         this.mockMvc.perform(get("/api/products/sneakerhead")
                         .param("page", "0")
-                        .param("page_size", "2"))
+                        .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[1]").exists())
                 .andExpect(jsonPath("$[2]").doesNotExist());
@@ -234,7 +234,7 @@ public class SearchTest {
     public void findByStoreWithPaginationForFootbox() throws Exception {
         this.mockMvc.perform(get("/api/products/footbox")
                         .param("page", "1")
-                        .param("page_size", "2"))
+                        .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[1]").exists())
                 .andExpect(jsonPath("$[2]").doesNotExist());

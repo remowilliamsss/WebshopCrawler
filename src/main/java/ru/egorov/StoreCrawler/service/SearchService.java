@@ -61,19 +61,6 @@ public class SearchService {
         return new SearchResponse(foundProductList);
     }
 
-    public List<ProductDto> findByStore(String storeName) {
-        log.info("Search for \"{}\" starts", storeName);
-
-        ProductsService productsService = dispatcherService.getProductsService(storeName);
-        var products = productsService.findAll();
-
-        List<ProductDto> productDtos = convertToDto(storeName, products);
-
-        log.info("Search for \"{}\" finished with {} results", storeName, productDtos.size());
-
-        return productDtos;
-    }
-
     public List<ProductDto> findByStore(String storeName, Pageable pageable) {
         log.info("Search for \"{}\" starts", storeName);
 

@@ -115,74 +115,29 @@ class ProductsControllerTest {
     @Test
     void findByStore() {
         String storeName = "sneakerhead";
+        Pageable pageable = PageRequest.of(0, 20);
 
-        ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, null,
-                null);
-
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
-
-        Mockito.verify(searchService, Mockito.times(1))
-                .findByStore(ArgumentMatchers.eq(storeName));
-
-        Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.any(Pageable.class));
-    }
-
-    @Test
-    void findByStoreForNotSupportedStore() {
-        String storeName = "some store";
-
-        assertThrows(ConstraintViolationException.class, () -> {
-            ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, null,
-                    null);
-
-            assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
-
-        }, "ConstraintViolationException was expected");
-
-        Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString());
-
-        Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.any(Pageable.class));
-    }
-
-    @Test
-    void findByStoreWithPagination() {
-        String storeName = "sneakerhead";
-        int page = 0;
-        int pageSize = 30;
-        Pageable pageable = PageRequest.of(page, pageSize);
-
-        ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, pageSize);
+        ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, pageable);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
         Mockito.verify(searchService, Mockito.times(1))
                 .findByStore(ArgumentMatchers.eq(storeName), ArgumentMatchers.eq(pageable));
-
-        Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString());
     }
 
     @Test
-    void findByStoreWithPaginationForNotSupportedStore() {
+    void findByStoreForNotSupportedStore() {
         String storeName = "some store";
-        int page = 0;
-        int pageSize = 30;
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(0, 20);
 
         assertThrows(ConstraintViolationException.class, () -> {
-            ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, page, pageSize);
+            ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeName, pageable);
 
             assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
 
         }, "ConstraintViolationException was expected");
 
         Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString());
-
-        Mockito.verify(searchService, Mockito.times(0))
-                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.eq(pageable));
+                .findByStore(ArgumentMatchers.anyString(), ArgumentMatchers.any(Pageable.class));
     }
 }

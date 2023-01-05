@@ -21,12 +21,7 @@ import java.util.stream.Collectors;
 public class FootboxProductsService extends ProductsService {
     private final FootboxProductsRepository footboxProductsRepository;
 
-    @Override
     // TODO: 13.12.2022 советую прикрутить пагинацию. Посмотри на Pageable, Page и @PageableDefault
-    public List<FootboxProduct> findAll() {
-        return footboxProductsRepository.findAll();
-    }
-
     @Override
     public Page<FootboxProduct> findAll(Pageable pageable) {
         return footboxProductsRepository.findAll(pageable);

@@ -1,7 +1,7 @@
 package ru.egorov.StoreCrawler.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,12 +42,9 @@ public class ProductsController {
 
     @GetMapping("/{store_name}")
     public ResponseEntity<List<ProductDto>> findByStore(@PathVariable("store_name") @StoreName String storeName,
-                                @RequestParam(value = "page", required = false) Integer page,
-                                @RequestParam(value = "page_size", required = false) Integer pageSize) {
+                                                        Pageable pageable) {
 
-        List<ProductDto> productDtos = page == null || pageSize == null
-                ? searchService.findByStore(storeName)
-                : searchService.findByStore(storeName, PageRequest.of(page, pageSize));
+        List<ProductDto> productDtos = searchService.findByStore(storeName, pageable);
 
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }

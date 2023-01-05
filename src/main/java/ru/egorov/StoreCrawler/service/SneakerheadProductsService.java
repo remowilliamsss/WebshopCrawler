@@ -23,11 +23,6 @@ public class SneakerheadProductsService extends ProductsService {
     private final SneakerheadProductsRepository sneakerheadProductsRepository;
 
     @Override
-    public List<SneakerheadProduct> findAll() {
-        return sneakerheadProductsRepository.findAll();
-    }
-
-    @Override
     public Page<SneakerheadProduct> findAll(Pageable pageable) {
         return sneakerheadProductsRepository.findAll(pageable);
     }
