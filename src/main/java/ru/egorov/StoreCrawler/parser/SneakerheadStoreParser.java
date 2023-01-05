@@ -7,7 +7,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.egorov.StoreCrawler.Store;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 
 import java.io.IOException;
@@ -36,8 +36,8 @@ public class SneakerheadStoreParser extends StoreParser {
     }
 
     @Override
-    public Store getStore() {
-        return Store.SNEAKERHEAD;
+    public StoreType getStore() {
+        return StoreType.sneakerhead;
     }
 
     @Override

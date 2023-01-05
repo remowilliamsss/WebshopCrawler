@@ -2,11 +2,10 @@ package ru.egorov.StoreCrawler.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.egorov.StoreCrawler.Store;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.model.Product;
 import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 import ru.egorov.StoreCrawler.repository.SneakerheadProductsRepository;
@@ -51,7 +50,7 @@ public class SneakerheadProductsService extends ProductsService {
     }
 
     @Override
-    public Store getStore() {
-        return Store.SNEAKERHEAD;
+    public StoreType getStore() {
+        return StoreType.sneakerhead;
     }
 }

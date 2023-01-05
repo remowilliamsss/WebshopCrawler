@@ -1,7 +1,7 @@
 package ru.egorov.StoreCrawler.mapper;
 
 import org.mapstruct.Mapper;
-import ru.egorov.StoreCrawler.Store;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.dto.FootboxProductDto;
 import ru.egorov.StoreCrawler.model.FootboxProduct;
 import ru.egorov.StoreCrawler.model.Product;
@@ -20,7 +20,7 @@ public interface FootboxProductMapper extends ProductMapper{
 
     @Override
     // TODO: 13.12.2022 Что этот метод делает в эом маппере?)
-    default Store getStore() {
-        return Store.FOOTBOX;
+    default StoreType getStore() {
+        return StoreType.footbox;
     }
 }

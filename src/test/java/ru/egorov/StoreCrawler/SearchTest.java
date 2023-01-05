@@ -11,13 +11,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.egorov.StoreCrawler.dto.SearchRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -59,7 +59,7 @@ public class SearchTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
-                        .value("Sneakerhead"))
+                        .value("sneakerhead"))
                 .andExpect(jsonPath("foundProductList[0].differences[1]").doesNotExist());
     }
 
@@ -73,7 +73,7 @@ public class SearchTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
-                        .value("Footbox"))
+                        .value("footbox"))
                 .andExpect(jsonPath("foundProductList[0].differences[1]").doesNotExist());
     }
 
@@ -96,7 +96,7 @@ public class SearchTest {
         this.mockMvc.perform(post("/api/products/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(searchRequest)))
-                .andDo(MockMvcResultHandlers.print())
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("foundProductList[3]").exists());
@@ -109,10 +109,10 @@ public class SearchTest {
         this.mockMvc.perform(post("/api/products/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(searchRequest)))
-                .andDo(MockMvcResultHandlers.print())
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message").value("must not be empty"));
+                .andExpect(jsonPath("message").value("query - must not be empty;"));
     }
 
     @Test
@@ -122,10 +122,10 @@ public class SearchTest {
         this.mockMvc.perform(post("/api/products/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(searchRequest)))
-                .andDo(MockMvcResultHandlers.print())
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message").value("must not be empty"));
+                .andExpect(jsonPath("message").value("query - must not be empty;"));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class SearchTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
-                        .value("Sneakerhead"))
+                        .value("sneakerhead"))
                 .andExpect(jsonPath("foundProductList[0].differences[1]").doesNotExist());
     }
 
@@ -164,7 +164,7 @@ public class SearchTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
-                        .value("Footbox"))
+                        .value("footbox"))
                 .andExpect(jsonPath("foundProductList[0].differences[1]").doesNotExist());
     }
 
@@ -187,10 +187,10 @@ public class SearchTest {
         this.mockMvc.perform(post("/api/products/find_by_sku")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(searchRequest)))
-                .andDo(MockMvcResultHandlers.print())
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message").value("must not be empty"));
+                .andExpect(jsonPath("message").value("query - must not be empty;"));
     }
 
     @Test
@@ -200,22 +200,24 @@ public class SearchTest {
         this.mockMvc.perform(post("/api/products/find_by_sku")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(searchRequest)))
-                .andDo(MockMvcResultHandlers.print())
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message").value("must not be empty"));
+                .andExpect(jsonPath("message").value("query - must not be empty;"));
     }
 
     @Test
     public void findByStoreForSneakerhead() throws Exception {
-        this.mockMvc.perform(get("/api/products/sneakerhead"))
+        this.mockMvc.perform(get("/api/products")
+                        .param("store", "sneakerhead"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[4]").exists());
     }
 
     @Test
     public void findByStoreWithPaginationForSneakerhead() throws Exception {
-        this.mockMvc.perform(get("/api/products/sneakerhead")
+        this.mockMvc.perform(get("/api/products")
+                        .param("store", "sneakerhead")
                         .param("page", "0")
                         .param("size", "2"))
                 .andExpect(status().isOk())
@@ -225,14 +227,16 @@ public class SearchTest {
 
     @Test
     public void findByStoreForFootbox() throws Exception {
-        this.mockMvc.perform(get("/api/products/footbox"))
+        this.mockMvc.perform(get("/api/products")
+                        .param("store", "footbox"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[4]").exists());
     }
 
     @Test
     public void findByStoreWithPaginationForFootbox() throws Exception {
-        this.mockMvc.perform(get("/api/products/footbox")
+        this.mockMvc.perform(get("/api/products")
+                        .param("store", "footbox")
                         .param("page", "1")
                         .param("size", "2"))
                 .andExpect(status().isOk())
@@ -242,17 +246,18 @@ public class SearchTest {
 
     @Test
     public void findByStoreForNotSupportedStore() throws Exception {
-        this.mockMvc.perform(get("/api/products/some_store"))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("The store with this name is not supported"));
+        this.mockMvc.perform(get("/api/products")
+                        .param("store", "some_store"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
     public void findByStoreWithPaginationForNotSupportedStore() throws Exception {
-        this.mockMvc.perform(get("/api/products/some_store")
+        this.mockMvc.perform(get("/api/products")
+                        .param("store", "some_store")
                         .param("page", "0")
                         .param("page_size", "2"))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("The store with this name is not supported"));
+                .andExpect(status().is4xxClientError());
     }
 }

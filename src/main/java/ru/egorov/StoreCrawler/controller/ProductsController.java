@@ -4,18 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.egorov.StoreCrawler.dto.ProductDto;
 import ru.egorov.StoreCrawler.dto.SearchRequest;
 import ru.egorov.StoreCrawler.dto.SearchResponse;
+import ru.egorov.StoreCrawler.exception.BadQueryException;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.SearchService;
-import ru.egorov.StoreCrawler.validator.StoreName;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@Validated
 @RestController
 @RequestMapping("api/products")
 @RequiredArgsConstructor
@@ -23,7 +23,12 @@ public class ProductsController {
     private final SearchService searchService;
 
     @PostMapping("/search")
-    public ResponseEntity<SearchResponse> search(@Valid @RequestBody SearchRequest request) {
+    public ResponseEntity<SearchResponse> search(@Valid @RequestBody SearchRequest request,
+                                                 BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new BadQueryException(getErrorMessage(bindingResult));
+        }
+
         String query = request.getQuery();
 
         SearchResponse searchResponse = searchService.search(query);
@@ -32,7 +37,12 @@ public class ProductsController {
     }
 
     @PostMapping("/find_by_sku")
-    public ResponseEntity<SearchResponse> findBySku(@Valid @RequestBody SearchRequest request) {
+    public ResponseEntity<SearchResponse> findBySku(@Valid @RequestBody SearchRequest request,
+                                                    BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new BadQueryException(getErrorMessage(bindingResult));
+        }
+
         String query = request.getQuery();
 
         SearchResponse searchResponse = searchService.findBySku(query);
@@ -40,12 +50,26 @@ public class ProductsController {
         return new ResponseEntity<>(searchResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/{store_name}")
-    public ResponseEntity<List<ProductDto>> findByStore(@PathVariable("store_name") @StoreName String storeName,
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> findByStore(@RequestParam(name = "store") StoreType store,
                                                         Pageable pageable) {
 
-        List<ProductDto> productDtos = searchService.findByStore(storeName, pageable);
+        List<ProductDto> productDtos = searchService.findByStore(store, pageable);
 
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
+    }
+
+    private String getErrorMessage(BindingResult bindingResult) {
+        StringBuilder errorMessage = new StringBuilder();
+
+        bindingResult.getFieldErrors()
+                .forEach((error) -> {
+                    errorMessage.append(error.getField())
+                            .append(" - ")
+                            .append(error.getDefaultMessage())
+                            .append(";");
+                });
+
+        return errorMessage.toString();
     }
 }

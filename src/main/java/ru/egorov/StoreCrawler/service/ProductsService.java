@@ -2,7 +2,7 @@ package ru.egorov.StoreCrawler.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.egorov.StoreCrawler.Store;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.model.Product;
 
 import java.util.List;
@@ -19,5 +19,5 @@ public abstract class ProductsService {
 
     public abstract Optional<? extends Product> findBySku(String sku);
 
-    public abstract Store getStore();
+    public abstract StoreType getStore();
 }

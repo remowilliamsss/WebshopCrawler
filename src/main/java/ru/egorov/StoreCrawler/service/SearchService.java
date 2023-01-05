@@ -10,6 +10,7 @@ import ru.egorov.StoreCrawler.dto.FoundProduct;
 import ru.egorov.StoreCrawler.dto.ProductDifferences;
 import ru.egorov.StoreCrawler.mapper.ProductMapper;
 import ru.egorov.StoreCrawler.model.Product;
+import ru.egorov.StoreCrawler.model.StoreType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,22 +59,22 @@ public class SearchService {
         return new SearchResponse(foundProductList);
     }
 
-    public List<ProductDto> findByStore(String storeName, Pageable pageable) {
-        log.info("Search for \"{}\" starts", storeName);
+    public List<ProductDto> findByStore(StoreType storeType, Pageable pageable) {
+        log.info("Search for \"{}\" starts", storeType);
 
-        ProductsService productsService = dispatcherService.getProductsService(storeName);
+        ProductsService productsService = dispatcherService.getProductsService(storeType);
         var products = productsService.findAll(pageable)
                 .getContent();
 
-        List<ProductDto> productDtos = convertToDto(storeName, products);
+        List<ProductDto> productDtos = convertToDto(storeType, products);
 
-        log.info("Search for \"{}\" finished with {} results", storeName, productDtos.size());
+        log.info("Search for \"{}\" finished with {} results", storeType, productDtos.size());
 
         return productDtos;
     }
 
-    private List<ProductDto> convertToDto(String storeName, List<? extends Product> products) {
-        ProductMapper mapper = dispatcherService.getMapper(storeName);
+    private List<ProductDto> convertToDto(StoreType storeType, List<? extends Product> products) {
+        ProductMapper mapper = dispatcherService.getMapper(storeType);
 
         return products.stream()
                 .map(mapper::toDto)
@@ -123,7 +124,7 @@ public class SearchService {
 
     private ProductDifferences createProductDifferences(Product product) {
         return new ProductDifferences(
-                product.getStore().getName(),
+                product.getStore().toString(),
                 product.getPrice(), product.getPriceCurrency(),
                 product.getSizes(), product.getUrl());
     }

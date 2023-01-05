@@ -4,7 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.egorov.StoreCrawler.Store;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.model.Product;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public abstract class StoreParser {
 
     protected abstract void addItemPages(Set<String> urls);
 
-    public abstract Store getStore();
+    public abstract StoreType getStore();
 
     // TODO: 13.12.2022 возможно, стоит разбить парсер магазина и парсер продукта
     public abstract Product parseProduct(String url);

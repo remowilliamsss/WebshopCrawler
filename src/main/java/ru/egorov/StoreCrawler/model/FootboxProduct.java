@@ -2,7 +2,6 @@ package ru.egorov.StoreCrawler.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.egorov.StoreCrawler.Store;
 
 import javax.persistence.*;
 
@@ -16,7 +15,7 @@ public class FootboxProduct extends Product {
 
     @Override
     @Transient
-    public Store getStore() {
-        return Store.FOOTBOX;
+    public StoreType getStore() {
+        return StoreType.footbox;
     }
 }

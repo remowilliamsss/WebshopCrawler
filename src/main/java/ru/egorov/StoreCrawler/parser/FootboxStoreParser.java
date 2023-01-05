@@ -8,7 +8,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.egorov.StoreCrawler.Store;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.model.FootboxProduct;
 
 import java.io.IOException;
@@ -34,8 +34,8 @@ public class FootboxStoreParser extends StoreParser {
     }
 
     @Override
-    public Store getStore() {
-        return Store.FOOTBOX;
+    public StoreType getStore() {
+        return StoreType.footbox;
     }
 
     @Override

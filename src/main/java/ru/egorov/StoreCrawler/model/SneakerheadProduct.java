@@ -1,7 +1,5 @@
 package ru.egorov.StoreCrawler.model;
 
-import ru.egorov.StoreCrawler.Store;
-
 import javax.persistence.*;
 
 @Entity
@@ -10,7 +8,7 @@ public class SneakerheadProduct extends Product {
 
     @Override
     @Transient
-    public Store getStore() {
-        return Store.SNEAKERHEAD;
+    public StoreType getStore() {
+        return StoreType.sneakerhead;
     }
 }

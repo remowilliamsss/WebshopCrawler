@@ -2,7 +2,6 @@ package ru.egorov.StoreCrawler.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.egorov.StoreCrawler.Store;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -37,7 +36,7 @@ public abstract class Product {
     @Transient
     // TODO: 13.12.2022 технически верное, но спорно решение. Почему бы не хранить поле type? 
     //  на одну колонку в таблицах больше, но с логикой работать проще 
-    public abstract Store getStore();
+    public abstract StoreType getStore();
 
     @Override
     public boolean equals(Object o) {
