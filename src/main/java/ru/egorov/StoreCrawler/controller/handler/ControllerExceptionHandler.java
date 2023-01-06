@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.egorov.StoreCrawler.dto.ErrorResponse;
 import ru.egorov.StoreCrawler.exception.BadQueryException;
 
@@ -18,5 +19,19 @@ public class ControllerExceptionHandler {
         log.error("Handled the exception with the message: \"{}\"", message);
 
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException e) {
+        String message = e.getMessage();
+        String paramName = e.getName();
+
+        if (paramName.equals("store")) {
+            message = "this store is not supported";
+        }
+
+        log.error("Handled the exception with the message: \"{}\"", message);
+
+        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.NOT_FOUND);
     }
 }

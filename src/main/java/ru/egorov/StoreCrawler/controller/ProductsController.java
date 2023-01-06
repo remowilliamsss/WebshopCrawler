@@ -17,8 +17,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/products")
 @RequiredArgsConstructor
+@RequestMapping("api/products")
 public class ProductsController {
     private final SearchService searchService;
 
@@ -51,9 +51,8 @@ public class ProductsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> findByStore(@RequestParam(name = "store") StoreType store,
+    public ResponseEntity<List<ProductDto>> findByStore(@RequestParam(name="store") StoreType store,
                                                         Pageable pageable) {
-
         List<ProductDto> productDtos = searchService.findByStore(store, pageable);
 
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
@@ -63,12 +62,11 @@ public class ProductsController {
         StringBuilder errorMessage = new StringBuilder();
 
         bindingResult.getFieldErrors()
-                .forEach((error) -> {
-                    errorMessage.append(error.getField())
-                            .append(" - ")
-                            .append(error.getDefaultMessage())
-                            .append(";");
-                });
+                .forEach(error -> errorMessage.append(error.getField())
+                        .append(" - ")
+                        .append(error.getDefaultMessage())
+                        .append(";")
+                );
 
         return errorMessage.toString();
     }
