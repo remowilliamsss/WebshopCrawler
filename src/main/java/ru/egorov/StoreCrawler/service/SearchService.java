@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.egorov.StoreCrawler.dto.ProductDto;
-import ru.egorov.StoreCrawler.dto.SearchResponse;
-import ru.egorov.StoreCrawler.dto.FoundProduct;
-import ru.egorov.StoreCrawler.dto.ProductDifferences;
+import ru.egorov.StoreCrawler.dto.search.FoundProductDto;
+import ru.egorov.StoreCrawler.dto.product.ProductDto;
+import ru.egorov.StoreCrawler.dto.search.SearchResultDto;
+import ru.egorov.StoreCrawler.dto.search.FoundProductDifference;
 import ru.egorov.StoreCrawler.mapper.ProductMapper;
 import ru.egorov.StoreCrawler.model.Product;
 import ru.egorov.StoreCrawler.model.StoreType;
@@ -25,10 +25,10 @@ public class SearchService {
 
     private final List<ProductsService> productsServices;
 
-    public SearchResponse search(String query) {
+    public SearchResultDto search(String query) {
         log.info("Search for \"{}\" starts", query);
 
-        List<FoundProduct> foundProductList = new ArrayList<>();
+        List<FoundProductDto> foundProductDtosList = new ArrayList<>();
 
         productsServices.stream()
             .map(productsService -> productsService.findAllByName(query))
@@ -37,26 +37,26 @@ public class SearchService {
                 // TODO: 13.12.2022 познакомься с flatMap() :)
                 products.forEach(product -> {
                     // TODO: 13.12.2022 условие ифа вынеси в переменную
-                    if (foundProductList.stream()
-                            .noneMatch(foundProduct -> foundProduct.getSku().equals(product.getSku()))) {
+                    if (foundProductDtosList.stream()
+                            .noneMatch(foundProductDto -> foundProductDto.getSku().equals(product.getSku()))) {
                         // TODO: 13.12.2022 кажется, огород с id-else здесь лишний, можно попробовать без него
-                        foundProductList.add(createFoundProduct(product));
+                        foundProductDtosList.add(createFoundProduct(product));
                     } else {
-                        foundProductList.stream()
-                                .filter(foundProduct -> foundProduct.getSku().equals(product.getSku()))
+                        foundProductDtosList.stream()
+                                .filter(foundProductDto -> foundProductDto.getSku().equals(product.getSku()))
                                 .findFirst()
                                 // TODO: 13.12.2022 вызов get()
                                 .get()
-                                .getDifferences()
+                                .getDifference()
                                 .add(createProductDifferences(product));
                     }
                 });
             });
 
-        log.info("Search for \"{}\" finished with {} results", query, foundProductList.size());
+        log.info("Search for \"{}\" finished with {} results", query, foundProductDtosList.size());
 
         // TODO: 13.12.2022 зачем в этой схеме SearchResponse?
-        return new SearchResponse(foundProductList);
+        return new SearchResultDto(foundProductDtosList);
     }
 
     public List<ProductDto> findByStore(StoreType storeType, Pageable pageable) {
@@ -81,10 +81,10 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
-    public SearchResponse findBySku(String sku) {
+    public SearchResultDto findBySku(String sku) {
         log.info("Search for \"{}\" starts", sku);
 
-        List<FoundProduct> foundProductList = new ArrayList<>(1);
+        List<FoundProductDto> foundProductDtoList = new ArrayList<>(1);
 
         productsServices.stream()
                 //findAllBySkuIn для репы. Сейчас куча лишних запросов в базу
@@ -93,28 +93,28 @@ public class SearchService {
                 .map(Optional::get)
                 .forEach(product -> {
                     // TODO: 13.12.2022 кажется, огород с id-else здесь лишний, можно попробовать без него
-                    if (foundProductList.isEmpty()) {
-                        foundProductList.add(createFoundProduct(product));
+                    if (foundProductDtoList.isEmpty()) {
+                        foundProductDtoList.add(createFoundProduct(product));
                     } else {
-                        foundProductList.get(0)
-                                .getDifferences()
+                        foundProductDtoList.get(0)
+                                .getDifference()
                                 .add(createProductDifferences(product));
                     }
                 });
 
         log.info("Search for \"{}\" finished", sku);
 
-        return new SearchResponse(foundProductList);
+        return new SearchResultDto(foundProductDtoList);
     }
 
     // TODO: 13.12.2022 выглядит как логика для маппера
-    private FoundProduct createFoundProduct(Product product) {
-        List<ProductDifferences> differences = new ArrayList<>();
+    private FoundProductDto createFoundProduct(Product product) {
+        List<FoundProductDifference> differences = new ArrayList<>();
 
         differences.add(createProductDifferences(product));
 
         // TODO: 13.12.2022 @Builder в Lombok
-        return new FoundProduct(
+        return new FoundProductDto(
                 product.getName(), product.getSku(),
                 product.getImage(), product.getCategory(),
                 product.getBrand(), product.getColor(),
@@ -122,8 +122,8 @@ public class SearchService {
                 differences);
     }
 
-    private ProductDifferences createProductDifferences(Product product) {
-        return new ProductDifferences(
+    private FoundProductDifference createProductDifferences(Product product) {
+        return new FoundProductDifference(
                 product.getStore().toString(),
                 product.getPrice(), product.getPriceCurrency(),
                 product.getSizes(), product.getUrl());

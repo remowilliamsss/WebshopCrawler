@@ -1,17 +1,18 @@
-package ru.egorov.StoreCrawler.dto;
+package ru.egorov.StoreCrawler.dto.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class FoundProduct {
+@NoArgsConstructor
+@AllArgsConstructor
+public class FoundProductDto {
     private String name;
     private String sku;
     private String image;
@@ -20,5 +21,9 @@ public class FoundProduct {
     private String color;
     private String country;
     private String gender;
-    private List<ProductDifferences> differences;
+    private List<FoundProductDifference> difference;
+
+    {
+        difference = Collections.emptyList();
+    }
 }

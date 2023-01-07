@@ -12,9 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import ru.egorov.StoreCrawler.dto.ProductDto;
-import ru.egorov.StoreCrawler.dto.SearchRequest;
-import ru.egorov.StoreCrawler.dto.SearchResponse;
+import ru.egorov.StoreCrawler.dto.product.ProductDto;
+import ru.egorov.StoreCrawler.dto.search.SearchRequest;
+import ru.egorov.StoreCrawler.dto.search.SearchResultDto;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.SearchService;
 
@@ -35,7 +35,7 @@ class ProductsControllerTest {
     void search() {
         SearchRequest searchRequest = new SearchRequest("some query");
 
-        ResponseEntity<SearchResponse> response = productsController.search(searchRequest, bindingResult);
+        ResponseEntity<SearchResultDto> response = productsController.search(searchRequest, bindingResult);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
@@ -47,7 +47,7 @@ class ProductsControllerTest {
     void findBySku() {
         SearchRequest searchRequest = new SearchRequest("some sku");
 
-        ResponseEntity<SearchResponse> response = productsController.findBySku(searchRequest, bindingResult);
+        ResponseEntity<SearchResultDto> response = productsController.findBySku(searchRequest, bindingResult);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 

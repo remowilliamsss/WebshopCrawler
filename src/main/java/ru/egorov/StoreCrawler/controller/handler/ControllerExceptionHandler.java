@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.egorov.StoreCrawler.dto.ErrorResponse;
+import ru.egorov.StoreCrawler.dto.ErrorDto;
 import ru.egorov.StoreCrawler.exception.BadQueryException;
 
 @Slf4j
@@ -13,16 +13,16 @@ import ru.egorov.StoreCrawler.exception.BadQueryException;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(BadQueryException e) {
+    public ResponseEntity<ErrorDto> handleException(BadQueryException e) {
         String message = e.getMessage();
 
         log.error("Handled the exception with the message: \"{}\"", message);
 
-        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorDto(message), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException e) {
+    public ResponseEntity<ErrorDto> handleException(MethodArgumentTypeMismatchException e) {
         String message = e.getMessage();
         String paramName = e.getName();
 
@@ -32,6 +32,6 @@ public class ControllerExceptionHandler {
 
         log.error("Handled the exception with the message: \"{}\"", message);
 
-        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorDto(message), HttpStatus.NOT_FOUND);
     }
 }

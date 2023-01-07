@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.egorov.StoreCrawler.dto.SearchRequest;
+import ru.egorov.StoreCrawler.dto.search.SearchRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,7 +47,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
                         .exists());
     }
 
@@ -63,9 +63,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
                         .value("sneakerhead"))
-                .andExpect(jsonPath("foundProductList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
                         .doesNotExist());
     }
 
@@ -81,9 +81,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
                         .value("footbox"))
-                .andExpect(jsonPath("foundProductList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
                         .doesNotExist());
     }
 
@@ -99,7 +99,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList")
+                .andExpect(jsonPath("foundProductDtosList")
                         .isEmpty());
     }
 
@@ -115,7 +115,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList[3]")
+                .andExpect(jsonPath("foundProductDtosList[3]")
                         .exists());
     }
 
@@ -163,7 +163,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
                         .exists());
     }
 
@@ -179,9 +179,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
                         .value("sneakerhead"))
-                .andExpect(jsonPath("foundProductList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
                         .doesNotExist());
     }
 
@@ -197,9 +197,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
                         .value("footbox"))
-                .andExpect(jsonPath("foundProductList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
                         .doesNotExist());
     }
 
@@ -215,7 +215,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductList")
+                .andExpect(jsonPath("foundProductDtosList")
                         .isEmpty());
     }
 

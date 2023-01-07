@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.dto;
+package ru.egorov.StoreCrawler.dto.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchRequest {
-
     @NotEmpty
     private String query;
 }
