@@ -47,7 +47,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .exists());
     }
 
@@ -63,9 +63,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
                         .value("sneakerhead"))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());
     }
 
@@ -81,9 +81,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
                         .value("footbox"))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());
     }
 
@@ -163,7 +163,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .exists());
     }
 
@@ -179,9 +179,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
                         .value("sneakerhead"))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());
     }
 
@@ -197,9 +197,9 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
                         .value("footbox"))
-                .andExpect(jsonPath("foundProductDtosList[0].differences[1]")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());
     }
 

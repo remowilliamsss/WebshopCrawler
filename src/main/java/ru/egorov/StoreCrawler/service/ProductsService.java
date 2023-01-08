@@ -18,6 +18,4 @@ public abstract class ProductsService {
     public abstract List<? extends Product> updateProducts(List<Product> products);
 
     public abstract Optional<? extends Product> findBySku(String sku);
-
-    public abstract StoreType getStore();
 }

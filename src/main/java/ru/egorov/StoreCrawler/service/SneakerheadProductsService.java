@@ -48,9 +48,4 @@ public class SneakerheadProductsService extends ProductsService {
     public Optional<SneakerheadProduct> findBySku(String sku) {
         return sneakerheadProductsRepository.findBySku(sku);
     }
-
-    @Override
-    public StoreType getStore() {
-        return StoreType.sneakerhead;
-    }
 }

@@ -52,10 +52,4 @@ public class FootboxProductsService extends ProductsService {
     public Optional<FootboxProduct> findBySku(String sku) {
         return footboxProductsRepository.findBySku(sku);
     }
-
-    @Override
-    // TODO: 13.12.2022
-    public StoreType getStore() {
-        return StoreType.footbox;
-    }
 }
