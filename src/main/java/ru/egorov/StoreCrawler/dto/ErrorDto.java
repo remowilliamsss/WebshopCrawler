@@ -6,5 +6,6 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 public class ErrorDto {
+
     private String message;
 }

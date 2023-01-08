@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("api/products")
 public class ProductsController {
+
     private final SearchService searchService;
 
     @PostMapping("/search")

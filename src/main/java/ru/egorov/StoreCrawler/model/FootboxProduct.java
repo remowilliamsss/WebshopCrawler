@@ -5,17 +5,13 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "footbox_product")
 @Getter
 @Setter
+@Entity
+@Table(name = "footbox_product")
 public class FootboxProduct extends Product {
-    private String composition;
-    private String coloring;
 
-    @Override
-    @Transient
-    public StoreType getStore() {
-        return StoreType.footbox;
-    }
+    private String composition;
+
+    private String coloring;
 }

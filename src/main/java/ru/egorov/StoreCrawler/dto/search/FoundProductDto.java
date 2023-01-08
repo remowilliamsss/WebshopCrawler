@@ -13,14 +13,23 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoundProductDto {
+
     private String name;
+
     private String sku;
+
     private String image;
+
     private String category;
+
     private String brand;
+
     private String color;
+
     private String country;
+
     private String gender;
+
     private List<FoundProductDifference> difference;
 
     {

@@ -63,7 +63,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
                         .value("sneakerhead"))
                 .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());
@@ -81,7 +81,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
                         .value("footbox"))
                 .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());
@@ -179,7 +179,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
                         .value("sneakerhead"))
                 .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());
@@ -197,7 +197,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeName")
+                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
                         .value("footbox"))
                 .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
                         .doesNotExist());

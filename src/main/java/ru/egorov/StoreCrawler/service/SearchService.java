@@ -124,7 +124,7 @@ public class SearchService {
 
     private FoundProductDifference createProductDifferences(Product product) {
         return new FoundProductDifference(
-                product.getStore().toString(),
+                product.getStoreType(),
                 product.getPrice(), product.getPriceCurrency(),
                 product.getSizes(), product.getUrl());
     }
