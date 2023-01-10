@@ -14,4 +14,8 @@ public class FootboxProduct extends Product {
     private String composition;
 
     private String coloring;
+
+    {
+        setStoreType(StoreType.footbox);
+    }
 }

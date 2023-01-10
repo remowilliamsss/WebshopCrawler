@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -44,7 +45,7 @@ public abstract class Product {
     @Column(unique = true)
     private String url;
 
-    @NotEmpty
+    @NotNull
     @Enumerated(EnumType.STRING)
     private StoreType storeType;
 

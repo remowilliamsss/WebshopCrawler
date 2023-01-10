@@ -1,23 +1,23 @@
 package ru.egorov.StoreCrawler.parser;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.model.FootboxProduct;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
+@Slf4j
 @Component
 public class FootboxStoreParser extends StoreParser {
-    private static final Logger log = LoggerFactory.getLogger(FootboxStoreParser.class);
 
     @Override
     protected void addCategories(Set<String> urls) {
@@ -72,6 +72,9 @@ public class FootboxStoreParser extends StoreParser {
 
             return product;
 
+        } catch (NoSuchElementException e) {
+            log.error("Failed connection to {}: {}", url, e.getMessage());
+            return null;
         } catch (IOException e) {
             // TODO: 13.12.2022 обрати внимание на log.error(String var1, Throwable var2)
             log.error("Failed connection to {}: {}", url, e.getMessage());
@@ -131,9 +134,17 @@ public class FootboxStoreParser extends StoreParser {
     }
 
     private String parseImage(Document doc) {
+
         // TODO: 13.12.2022 явный вызов get() - зло. Посмотри в сторону String.format() вместо конкатенации
-        return "https://footboxshop.ru" + doc.getElementsByClass("item-slider__main-image").get(0)
-                .attr("src");
+        /*return "https://footboxshop.ru" + doc.getElementsByClass("item-slider__main-image").get(0)
+                .attr("src");*/
+
+        return doc.getElementsByClass("item-slider__main-image")
+                .stream()
+                .map(element -> element.attr("src"))
+                .map(src -> "https://footboxshop.ru" + src)
+                .findFirst()
+                .orElseThrow();
     }
 
     private String parseSizes(Document doc) {

@@ -1,9 +1,8 @@
 package ru.egorov.StoreCrawler.parser;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.model.Product;
 
@@ -11,8 +10,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class StoreParser {
-    private static final Logger log = LoggerFactory.getLogger(StoreParser.class);
 
     public List<Product> parseProducts() {
         log.info("{} scanning starts", getStore());
