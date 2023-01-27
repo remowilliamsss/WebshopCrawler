@@ -126,6 +126,6 @@ public class SearchService {
         return new FoundProductDifference(
                 product.getStoreType(),
                 product.getPrice(), product.getPriceCurrency(),
-                product.getSizes(), product.getUrl());
+                product.getSize(), product.getUrl());
     }
 }

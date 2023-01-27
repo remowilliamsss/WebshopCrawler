@@ -1,7 +1,7 @@
 delete from sneakerhead_product;
 delete from footbox_product;
 
-insert into sneakerhead_product(name, sku, category, brand, image, color, price, price_currency, country, sizes, gender,
+insert into sneakerhead_product(name, sku, category, brand, image, color, price, price_currency, country, size, gender,
                                 url, store_type) values
     ('Nike x Travis Scott Air Trainer 1', 'DR7515-200', 'Кроссовки', 'Nike',
      'https://sneakerhead.ru/upload/iblock/060/060181d6eb75f77e373df9b511db7224.jpg', 'Коричневый', 35990, 'RUB',
@@ -24,7 +24,7 @@ insert into sneakerhead_product(name, sku, category, brand, image, color, price,
      15990, 'RUB', 'Вьетнам', '4.5 US, 5 US, 7 US', null,
      'https://sneakerhead.ru/shoes/sneakers/joyride-env-ispa-BV4584-400/', 'sneakerhead');
 
-insert into footbox_product(name, sku, category, brand, image, color, price, price_currency, country, sizes, gender,
+insert into footbox_product(name, sku, category, brand, image, color, price, price_currency, country, size, gender,
                                 url, store_type, composition, coloring) values
     ('Nike Travis Scott x Air Trainer 1', 'DR7515-200', 'Обувь', 'Nike',
      'https://footboxshop.ru/upload/resize_cache/iblock/cf0/600_600_2/gin5008b1tl1m8y1hiemaan1p0tq69g0.jpg',

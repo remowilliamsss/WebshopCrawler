@@ -37,7 +37,7 @@ public abstract class Product {
 
     private String country;
 
-    private String sizes;
+    private String size;
 
     private String gender;
 

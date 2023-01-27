@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.egorov.StoreCrawler.parser.StoreParser;
+import ru.egorov.StoreCrawler.parser.product.ProductParser;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 @Service
 @RequiredArgsConstructor
 public class CrawlerService {
-    private final List<StoreParser> parsers;
+    private final List<ProductParser> parsers;
     private final DispatcherService dispatcherService;
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
