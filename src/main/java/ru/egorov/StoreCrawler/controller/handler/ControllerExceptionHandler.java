@@ -11,26 +11,27 @@ import ru.egorov.StoreCrawler.exception.BadQueryException;
 @Slf4j
 @RestControllerAdvice
 public class ControllerExceptionHandler {
+    public static final String STORE = "store";
+    public static final String HANDLED_EXCEPTION = "Handled the exception:";
+    public static final String STORE_NOT_SUPPORTED = "this store is not supported";
 
     @ExceptionHandler
     public ResponseEntity<ErrorDto> handleException(BadQueryException e) {
-        String message = e.getMessage();
+        log.error(HANDLED_EXCEPTION, e);
 
-        log.error("Handled the exception with the message: \"{}\"", message);
-
-        return new ResponseEntity<>(new ErrorDto(message), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorDto(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorDto> handleException(MethodArgumentTypeMismatchException e) {
+        log.error(HANDLED_EXCEPTION, e);
+
         String message = e.getMessage();
         String paramName = e.getName();
 
-        if (paramName.equals("store")) {
-            message = "this store is not supported";
+        if (paramName.equals(STORE)) {
+            message = STORE_NOT_SUPPORTED;
         }
-
-        log.error("Handled the exception with the message: \"{}\"", message);
 
         return new ResponseEntity<>(new ErrorDto(message), HttpStatus.NOT_FOUND);
     }

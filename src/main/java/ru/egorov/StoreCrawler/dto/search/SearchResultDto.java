@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class SearchResultDto {
-
     private List<FoundProductDto> foundProductDtosList;
 
     {

@@ -1,13 +1,19 @@
-package ru.egorov.StoreCrawler.parser;
+package ru.egorov.StoreCrawler.parser.store;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
+import ru.egorov.StoreCrawler.exception.FailedConnectionException;
 
 import java.io.IOException;
 import java.util.*;
 
 @Slf4j
 public abstract class StoreParser {
+    public static final String HREF = "href";
+    public static final String A_HREF = "a[href]";
+    public static final String ADDED_URL = "Added url: {}";
+    public static final String PAGEN = "PAGEN";
+    public static final String FAILED_CONNECTION = "Failed connection to {}:";
 
     public Set<String> parsePages() {
         Set<String> urls = new HashSet<>();
@@ -29,15 +35,16 @@ public abstract class StoreParser {
                     .timeout(10000)
                     .get()
                     .getElementsByClass(elementClassName)
-                    .select("a[href]")
+                    .select(A_HREF)
                     .forEach(element -> {
-                        String link = element.absUrl("href");
+                        String link = element.absUrl(HREF);
                         set.add(link);
-                        log.debug("Added url: {}", link);
+                        log.debug(ADDED_URL, link);
                     });
 
         } catch (IOException e) {
-            log.error("Error for url {} with message: \"{}\"", url, e.getMessage());
+            log.error(FAILED_CONNECTION, url, e);
+            throw new FailedConnectionException(url);
         }
     }
 

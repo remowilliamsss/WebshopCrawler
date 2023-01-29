@@ -10,7 +10,6 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchRequest {
-
     @NotEmpty
     private String query;
 }

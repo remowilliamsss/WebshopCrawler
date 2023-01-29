@@ -6,17 +6,33 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
+import ru.egorov.StoreCrawler.exception.FailedConnectionException;
 import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 import ru.egorov.StoreCrawler.model.StoreType;
-import ru.egorov.StoreCrawler.parser.SneakerheadStoreParser;
+import ru.egorov.StoreCrawler.parser.store.SneakerheadStoreParser;
+import ru.egorov.StoreCrawler.parser.store.StoreParser;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Component
 public class SneakerheadProductParser extends ProductParser {
+    public static final String PRODUCT = "product";
+    public static final String SKU = "sku";
+    public static final String IMAGE = "image";
+    public static final String COLOR = "color";
+    public static final String BRAND = "brand";
+    public static final String NAME = "name";
+    public static final String ADDITIONAL_PROPERTY = "additionalProperty";
+    public static final String ITEMPROP_NAME = "[itemprop=\"name\"]";
+    public static final String ITEMPROP_VALUE = "[itemprop=\"value\"]";
+    public static final String SIZES = "product-sizes__list is-visible";
+    public static final String SIZES_BUTTON_1 = "product-sizes__button styled-button styled-button--default is-active";
+    public static final String SIZES_BUTTON_2 = "product-sizes__button styled-button styled-button--default";
+    public static final String CLASS = "[class=\"";
+    public static final String DATA_NAME = "data-name";
+    public static final String DATA_SIZE = "data-size-chart-name";
 
     public SneakerheadProductParser(SneakerheadStoreParser storeParser) {
         super(storeParser);
@@ -29,13 +45,13 @@ public class SneakerheadProductParser extends ProductParser {
 
     @Override
     public SneakerheadProduct parseProduct(String url) {
-        log.debug("Parsing starts for url: \"{}\"", url);
+        log.debug(PARSE_START, url);
 
         try {
             Connection connection = Jsoup.connect(url).timeout(10000);
             Document doc = connection.get();
 
-            if (doc.getElementsByClass("product").isEmpty()) {
+            if (doc.getElementsByClass(PRODUCT).isEmpty()) {
                 return null;
             }
 
@@ -45,26 +61,22 @@ public class SneakerheadProductParser extends ProductParser {
 
             product.setUrl(url);
 
-            log.debug("Item with name \"{}\" was parsed", product.getName());
+            log.debug(PARSE_FINISH, product.getName());
 
             return product;
 
         } catch (IOException e) {
-            log.error("Failed connection to {}: {}", url, e.getMessage());
-            return null;
-            // TODO: 13.12.2022 если приходится кэтчить анчект эксепшн - ты где-то свернул не туда
-        } catch (NoSuchElementException e) {
-            log.error("Failed to parse name: {}", e.getMessage());
-            return null;
+            log.error(StoreParser.FAILED_CONNECTION, url, e);
+            throw new FailedConnectionException(url);
         }
     }
 
     private void buildProduct(SneakerheadProduct product, Document doc) {
-        product.setSku(parseFromItemprop(doc, "sku"));
-        product.setCategory(parseFromItemprop(doc, "category"));
-        product.setImage(parseFromItemprop(doc, "image"));
-        product.setColor(parseFromItemprop(doc, "color"));
-        product.setBrand(parseFromItemprop(doc, "brand"));
+        product.setSku(parseFromItemprop(doc, SKU));
+        product.setCategory(parseFromItemprop(doc, CATEGORY));
+        product.setImage(parseFromItemprop(doc, IMAGE));
+        product.setColor(parseFromItemprop(doc, COLOR));
+        product.setBrand(parseFromItemprop(doc, BRAND));
 
         setName(product, product.getBrand(), doc);
         setPrice(product, doc);
@@ -74,24 +86,24 @@ public class SneakerheadProductParser extends ProductParser {
     }
 
     private void setName(SneakerheadProduct product, String brand, Document doc) {
-        product.setName(doc.getElementsByAttributeValue("itemprop", "name")
+        product.setName(doc.getElementsByAttributeValue(ITEMPROP, NAME)
                 .stream()
-                .filter(element -> element.hasAttr("content"))
+                .filter(element -> element.hasAttr(CONTENT))
                 .findFirst()
-                .map(element -> brand + " " + element.attr("content").trim())
+                .map(element -> brand + " " + element.attr(CONTENT).trim())
                 .orElseThrow());
     }
 
     private void setPrice(SneakerheadProduct product, Document doc) {
-        String price = parseFromItemprop(doc, "price");
+        String price = parseFromItemprop(doc, PRICE);
 
         if (!price.isBlank()) {
             product.setPrice(Double.parseDouble(price));
-            product.setPriceCurrency(parseFromItemprop(doc, "priceCurrency"));
+            product.setPriceCurrency(parseFromItemprop(doc, PRICE_CURRENCY));
         }
     }
     private void setCountry(SneakerheadProduct product, Document doc) {
-        String country = parseAdditionalProperty(doc, "Страна");
+        String country = parseAdditionalProperty(doc, COUNTRY);
 
         if (country != null) {
             product.setCountry(country);
@@ -99,7 +111,7 @@ public class SneakerheadProductParser extends ProductParser {
     }
 
     private void setGender(SneakerheadProduct product, Document doc) {
-        String gender = parseAdditionalProperty(doc, "Пол");
+        String gender = parseAdditionalProperty(doc, GENDER);
 
         if (gender != null) {
             product.setGender(gender);
@@ -107,16 +119,16 @@ public class SneakerheadProductParser extends ProductParser {
     }
 
     private String parseAdditionalProperty(Document doc, String propertyName) {
-        return doc.getElementsByAttributeValue("itemprop", "additionalProperty")
+        return doc.getElementsByAttributeValue(ITEMPROP, ADDITIONAL_PROPERTY)
                 .stream()
-                .filter(element -> element.select("[itemprop=\"name\"]").text().equals(propertyName))
+                .filter(element -> element.select(ITEMPROP_NAME).text().equals(propertyName))
                 .findFirst()
-                .map(element -> element.select("[itemprop=\"value\"]").text())
+                .map(element -> element.select(ITEMPROP_VALUE).text())
                 .orElse(null);
     }
 
     private void setSizes(SneakerheadProduct product, Document doc) {
-        Elements elements = doc.getElementsByClass("product-sizes__list is-visible");
+        Elements elements = doc.getElementsByClass(SIZES);
 
         if (!elements.isEmpty()) {
             List<String> sizesFromHtml = getSizesFromHtml(elements);
@@ -134,18 +146,17 @@ public class SneakerheadProductParser extends ProductParser {
     }
 
     private List<String> getSizesFromHtml(Elements elements) {
-        List<String> sizesFromHtml = getSizesFromHtml(elements,
-                "product-sizes__button styled-button styled-button--default is-active");
+        List<String> sizesFromHtml = getSizesFromHtml(elements, SIZES_BUTTON_1);
 
         sizesFromHtml.addAll(getSizesFromHtml(
-                elements, "product-sizes__button styled-button styled-button--default"));
+                elements, SIZES_BUTTON_2));
 
         return sizesFromHtml;
     }
 
     private List<String> getSizesFromHtml(Elements elements, String className) {
-        return elements.select("[class=\"" + className + "\"]")
-                .eachAttr("data-name");
+        return elements.select(CLASS + className + "\"]")
+                .eachAttr(DATA_NAME);
     }
 
     private void addSize(StringBuilder line, String size, Elements elements) {
@@ -155,8 +166,8 @@ public class SneakerheadProductParser extends ProductParser {
     }
 
     private void addSizeCountry(StringBuilder line, Elements elements) {
-        if (!elements.attr("data-size-chart-name").isBlank()) {
-            line.append(" ").append(elements.attr("data-size-chart-name"));
+        if (!elements.attr(DATA_SIZE).isBlank()) {
+            line.append(" ").append(elements.attr(DATA_SIZE));
         }
     }
 }

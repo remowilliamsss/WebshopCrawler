@@ -16,7 +16,7 @@ public class FoundProductDifference {
 
     private String priceCurrency;
 
-    private String sizes;
+    private String size;
 
     private String url;
 }

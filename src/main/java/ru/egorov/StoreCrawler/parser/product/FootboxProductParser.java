@@ -7,17 +7,37 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
+import ru.egorov.StoreCrawler.exception.FailedConnectionException;
 import ru.egorov.StoreCrawler.model.FootboxProduct;
 import ru.egorov.StoreCrawler.model.StoreType;
-import ru.egorov.StoreCrawler.parser.FootboxStoreParser;
+import ru.egorov.StoreCrawler.parser.store.FootboxStoreParser;
+import ru.egorov.StoreCrawler.parser.store.StoreParser;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Component
 public class FootboxProductParser extends ProductParser {
+    public static final String ITEM_CONTAINER = "item-container";
+    public static final String NOT_AVAIL = "not-avail";
+    public static final String STYLE = "style";
+    public static final String FLEX = "display: flex;";
+    public static final String ITEM_TITLE = "item-info__title bx-title";
+    public static final String ART = "item-info__art";
+    public static final String IMAGE = "item-slider__main-image";
+    public static final String SRC = "src";
+    public static final String MAIN_PAGE = "https://footboxshop.ru";
+    public static final String SIZES_1 = "sizes-public-detail__list__item";
+    public static final String SIZES_2 = "_item-sizes__item";
+    public static final String TITLE = "title";
+    public static final String COLOR = "colorValue";
+    public static final String DETAIL_PROPERTIES = "product-item-detail-properties";
+    public static final String DT = "dt";
+    public static final String DD = "dd";
+    public static final String BRAND = "Бренд";
+    public static final String COMPOSITION = "Состав";
+    public static final String COLORING = "Расцветка";
 
     public FootboxProductParser(FootboxStoreParser storeParser) {
         super(storeParser);
@@ -30,13 +50,11 @@ public class FootboxProductParser extends ProductParser {
 
     @Override
     public FootboxProduct parseProduct(String url) {
-        log.debug("Parsing starts for url: \"{}\"", url);
+        log.debug(PARSE_START, url);
 
         try {
             Connection connection = Jsoup.connect(url).timeout(10000);
             Document doc = connection.get();
-
-            //  TODO: И подумай насчет вынесения литералов в константы
 
             if (!isAvailableItem(doc)) {
                 return null;
@@ -48,38 +66,31 @@ public class FootboxProductParser extends ProductParser {
 
             product.setUrl(url);
 
-            log.debug("Item with name \"{}\" was parsed", product.getName());
+            log.debug(PARSE_FINISH, product.getName());
 
             return product;
 
-        } catch (NoSuchElementException e) {
-            log.error("Failed connection to {}: {}", url, e.getMessage());
-            return null;
         } catch (IOException e) {
-            // TODO: 13.12.2022 обрати внимание на log.error(String var1, Throwable var2)
-            log.error("Failed connection to {}: {}", url, e.getMessage());
-            // TODO: 13.12.2022 я бы вынес return из catch.
-            //  Насколько вообще корректно скрывать ошибку,
-            //  а не выбрасывать какой-нить RuntimeException в таком случае?
-            return null;
+            log.error(StoreParser.FAILED_CONNECTION, url, e);
+            throw new FailedConnectionException(url);
         }
     }
 
     private boolean isAvailableItem(Document doc) {
-        return !doc.getElementsByClass("item-container")
+        return !doc.getElementsByClass(ITEM_CONTAINER)
                 .isEmpty()
-                && !doc.getElementsByClass("not-avail")
+                && !doc.getElementsByClass(NOT_AVAIL)
                 .first()
-                .attr("style")
-                .equals("display: flex;");
+                .attr(STYLE)
+                .equals(FLEX);
     }
 
     private void buildProduct(FootboxProduct product, Document doc) {
         product.setName(parseName(doc));
         product.setSku(parseSku(doc));
         product.setPrice(parsePrice(doc));
-        product.setPriceCurrency(parseFromItemprop(doc, "priceCurrency"));
-        product.setCategory(parseFromItemprop(doc, "category"));
+        product.setPriceCurrency(parseFromItemprop(doc, PRICE_CURRENCY));
+        product.setCategory(parseFromItemprop(doc, CATEGORY));
         product.setImage(parseImage(doc));
         product.setSize(parseSizeRange(doc));
 
@@ -88,7 +99,7 @@ public class FootboxProductParser extends ProductParser {
     }
 
     private String parseName(Document doc) {
-        String name = doc.getElementsByClass("item-info__title bx-title")
+        String name = doc.getElementsByClass(ITEM_TITLE)
                 .first()
                 .text();
 
@@ -97,7 +108,7 @@ public class FootboxProductParser extends ProductParser {
     }
 
     private String parseSku(Document doc) {
-        return doc.getElementsByClass("item-info__art")
+        return doc.getElementsByClass(ART)
                 .first()
                 .text()
                 .substring(9);
@@ -105,9 +116,9 @@ public class FootboxProductParser extends ProductParser {
 
     private Double parsePrice(Document doc) {
         // TODO: 13.12.2022 .stream() на новой строке
-        return doc.getElementsByAttributeValue("itemprop", "price")
+        return doc.getElementsByAttributeValue(ITEMPROP, PRICE)
                 .stream()
-                .map(element -> element.attr("content"))
+                .map(element -> element.attr(CONTENT))
                 .filter(price -> !price.isBlank())
                 .findFirst()
                 .map(Double::parseDouble)
@@ -120,10 +131,10 @@ public class FootboxProductParser extends ProductParser {
         /*return "https://footboxshop.ru" + doc.getElementsByClass("item-slider__main-image").get(0)
                 .attr("src");*/
 
-        return doc.getElementsByClass("item-slider__main-image")
+        return doc.getElementsByClass(IMAGE)
                 .stream()
-                .map(element -> element.attr("src"))
-                .map(src -> "https://footboxshop.ru" + src)
+                .map(element -> element.attr(SRC))
+                .map(src -> MAIN_PAGE + src)
                 .findFirst()
                 .orElseThrow();
     }
@@ -131,12 +142,12 @@ public class FootboxProductParser extends ProductParser {
     private String parseSizeRange(Document doc) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        List<String> sizeFromHtml = doc.getElementsByClass("sizes-public-detail__list__item")
-                .eachAttr("title");
+        List<String> sizeFromHtml = doc.getElementsByClass(SIZES_1)
+                .eachAttr(TITLE);
 
         if (sizeFromHtml.isEmpty()) {
-            sizeFromHtml = doc.getElementsByClass("_item-sizes__item")
-                    .eachAttr("title");
+            sizeFromHtml = doc.getElementsByClass(SIZES_2)
+                    .eachAttr(TITLE);
         }
 
         sizeFromHtml.forEach(size -> stringBuilder.append(", ")
@@ -152,7 +163,7 @@ public class FootboxProductParser extends ProductParser {
     }
 
     private void setColor(FootboxProduct product, Document doc) {
-        Element color = doc.getElementById("colorValue");
+        Element color = doc.getElementById(COLOR);
 
         if (color != null) {
             product.setColor(color.text());
@@ -160,10 +171,10 @@ public class FootboxProductParser extends ProductParser {
     }
 
     private void setOtherProperties(FootboxProduct product, Document doc) {
-        Elements propertyNames = doc.getElementsByClass("product-item-detail-properties")
-                .select("dt");
-        Elements propertyValues = doc.getElementsByClass("product-item-detail-properties")
-                .select("dd");
+        Elements propertyNames = doc.getElementsByClass(DETAIL_PROPERTIES)
+                .select(DT);
+        Elements propertyValues = doc.getElementsByClass(DETAIL_PROPERTIES)
+                .select(DD);
 
         for (int i = 0; i < propertyNames.size(); i++) {
             setProperty(propertyNames.get(i), propertyValues.get(i), product);
@@ -173,11 +184,11 @@ public class FootboxProductParser extends ProductParser {
     private void setProperty(Element name, Element value, FootboxProduct product) {
         switch (name.text()) {
             // TODO: 13.12.2022 значения кейсов в константы, в то и в поле элементов енама
-            case "Пол" -> product.setGender(value.text());
-            case "Бренд" -> product.setBrand(value.text());
-            case "Страна"-> product.setCountry(value.text());
-            case "Состав" -> product.setComposition(value.text());
-            case "Расцветка" -> product.setColoring(value.text());
+            case GENDER -> product.setGender(value.text());
+            case BRAND -> product.setBrand(value.text());
+            case COUNTRY -> product.setCountry(value.text());
+            case COMPOSITION -> product.setComposition(value.text());
+            case COLORING -> product.setColoring(value.text());
         }
     }
 }
