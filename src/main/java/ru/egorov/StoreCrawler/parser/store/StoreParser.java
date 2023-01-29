@@ -10,9 +10,9 @@ import java.util.*;
 @Slf4j
 public abstract class StoreParser {
     public static final String HREF = "href";
+    public static final String PAGEN = "PAGEN";
     public static final String A_HREF = "a[href]";
     public static final String ADDED_URL = "Added url: {}";
-    public static final String PAGEN = "PAGEN";
     public static final String FAILED_CONNECTION = "Failed connection to {}:";
 
     public Set<String> parsePages() {

@@ -18,21 +18,21 @@ import java.util.List;
 @Slf4j
 @Component
 public class SneakerheadProductParser extends ProductParser {
-    public static final String PRODUCT = "product";
     public static final String SKU = "sku";
+    public static final String NAME = "name";
     public static final String IMAGE = "image";
     public static final String COLOR = "color";
     public static final String BRAND = "brand";
-    public static final String NAME = "name";
-    public static final String ADDITIONAL_PROPERTY = "additionalProperty";
+    public static final String PRODUCT = "product";
+    public static final String CLASS = "[class=\"%s\"]";
+    public static final String DATA_NAME = "data-name";
+    public static final String DATA_SIZE = "data-size-chart-name";
     public static final String ITEMPROP_NAME = "[itemprop=\"name\"]";
     public static final String ITEMPROP_VALUE = "[itemprop=\"value\"]";
     public static final String SIZES = "product-sizes__list is-visible";
-    public static final String SIZES_BUTTON_1 = "product-sizes__button styled-button styled-button--default is-active";
+    public static final String ADDITIONAL_PROPERTY = "additionalProperty";
     public static final String SIZES_BUTTON_2 = "product-sizes__button styled-button styled-button--default";
-    public static final String CLASS = "[class=\"";
-    public static final String DATA_NAME = "data-name";
-    public static final String DATA_SIZE = "data-size-chart-name";
+    public static final String SIZES_BUTTON_1 = "product-sizes__button styled-button styled-button--default is-active";
 
     public SneakerheadProductParser(SneakerheadStoreParser storeParser) {
         super(storeParser);
@@ -82,15 +82,17 @@ public class SneakerheadProductParser extends ProductParser {
         setPrice(product, doc);
         setCountry(product, doc);
         setGender(product, doc);
-        setSizes(product, doc);
+        setSize(product, doc);
     }
 
     private void setName(SneakerheadProduct product, String brand, Document doc) {
         product.setName(doc.getElementsByAttributeValue(ITEMPROP, NAME)
                 .stream()
                 .filter(element -> element.hasAttr(CONTENT))
+                .map(element -> element.attr(CONTENT)
+                        .trim())
+                .map(name -> String.format("%s %s", brand, name))
                 .findFirst()
-                .map(element -> brand + " " + element.attr(CONTENT).trim())
                 .orElseThrow());
     }
 
@@ -121,53 +123,59 @@ public class SneakerheadProductParser extends ProductParser {
     private String parseAdditionalProperty(Document doc, String propertyName) {
         return doc.getElementsByAttributeValue(ITEMPROP, ADDITIONAL_PROPERTY)
                 .stream()
-                .filter(element -> element.select(ITEMPROP_NAME).text().equals(propertyName))
+                .filter(element -> element.select(ITEMPROP_NAME)
+                        .text()
+                        .equals(propertyName))
+                .map(element -> element.select(ITEMPROP_VALUE)
+                        .text())
                 .findFirst()
-                .map(element -> element.select(ITEMPROP_VALUE).text())
                 .orElse(null);
     }
 
-    private void setSizes(SneakerheadProduct product, Document doc) {
+    private void setSize(SneakerheadProduct product, Document doc) {
         Elements elements = doc.getElementsByClass(SIZES);
 
         if (!elements.isEmpty()) {
-            List<String> sizesFromHtml = getSizesFromHtml(elements);
+            List<String> sizesFromHtml = getSizeFromHtml(elements);
 
-            StringBuilder sizes = new StringBuilder(sizesFromHtml.get(0));
+            StringBuilder size = new StringBuilder(sizesFromHtml.get(0));
 
-            addSizeCountry(sizes, elements);
+            addSizeCountry(size, elements);
 
             for (int i = 1; i < sizesFromHtml.size(); i++) {
-                addSize(sizes, sizesFromHtml.get(i), elements);
+                addSize(size, sizesFromHtml.get(i), elements);
             }
 
-            product.setSize(sizes.toString());
+            product.setSize(size.toString());
         }
     }
 
-    private List<String> getSizesFromHtml(Elements elements) {
-        List<String> sizesFromHtml = getSizesFromHtml(elements, SIZES_BUTTON_1);
+    private List<String> getSizeFromHtml(Elements elements) {
+        List<String> sizesFromHtml = getSizeFromHtml(elements, SIZES_BUTTON_1);
 
-        sizesFromHtml.addAll(getSizesFromHtml(
-                elements, SIZES_BUTTON_2));
+        sizesFromHtml.addAll(getSizeFromHtml(elements, SIZES_BUTTON_2));
 
         return sizesFromHtml;
     }
 
-    private List<String> getSizesFromHtml(Elements elements, String className) {
-        return elements.select(CLASS + className + "\"]")
+    private List<String> getSizeFromHtml(Elements elements, String className) {
+        return elements.select(String.format(CLASS, className))
                 .eachAttr(DATA_NAME);
     }
 
     private void addSize(StringBuilder line, String size, Elements elements) {
-        line.append(", ").append(size);
+        line.append(", ")
+                .append(size);
 
         addSizeCountry(line, elements);
     }
 
     private void addSizeCountry(StringBuilder line, Elements elements) {
-        if (!elements.attr(DATA_SIZE).isBlank()) {
-            line.append(" ").append(elements.attr(DATA_SIZE));
+        if (!elements.attr(DATA_SIZE)
+                .isBlank()) {
+
+            line.append(" ")
+                    .append(elements.attr(DATA_SIZE));
         }
     }
 }

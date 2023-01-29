@@ -19,25 +19,25 @@ import java.util.List;
 @Slf4j
 @Component
 public class FootboxProductParser extends ProductParser {
-    public static final String ITEM_CONTAINER = "item-container";
-    public static final String NOT_AVAIL = "not-avail";
-    public static final String STYLE = "style";
-    public static final String FLEX = "display: flex;";
-    public static final String ITEM_TITLE = "item-info__title bx-title";
-    public static final String ART = "item-info__art";
-    public static final String IMAGE = "item-slider__main-image";
-    public static final String SRC = "src";
-    public static final String MAIN_PAGE = "https://footboxshop.ru";
-    public static final String SIZES_1 = "sizes-public-detail__list__item";
-    public static final String SIZES_2 = "_item-sizes__item";
-    public static final String TITLE = "title";
-    public static final String COLOR = "colorValue";
-    public static final String DETAIL_PROPERTIES = "product-item-detail-properties";
     public static final String DT = "dt";
     public static final String DD = "dd";
+    public static final String SRC = "src";
     public static final String BRAND = "Бренд";
+    public static final String STYLE = "style";
+    public static final String TITLE = "title";
+    public static final String COLOR = "colorValue";
+    public static final String ART = "item-info__art";
     public static final String COMPOSITION = "Состав";
     public static final String COLORING = "Расцветка";
+    public static final String NOT_AVAIL = "not-avail";
+    public static final String FLEX = "display: flex;";
+    public static final String SIZES_2 = "_item-sizes__item";
+    public static final String ITEM_CONTAINER = "item-container";
+    public static final String IMAGE = "item-slider__main-image";
+    public static final String MAIN_PAGE = "https://footboxshop.ru%s";
+    public static final String ITEM_TITLE = "item-info__title bx-title";
+    public static final String SIZES_1 = "sizes-public-detail__list__item";
+    public static final String DETAIL_PROPERTIES = "product-item-detail-properties";
 
     public FootboxProductParser(FootboxStoreParser storeParser) {
         super(storeParser);
@@ -80,9 +80,11 @@ public class FootboxProductParser extends ProductParser {
         return !doc.getElementsByClass(ITEM_CONTAINER)
                 .isEmpty()
                 && !doc.getElementsByClass(NOT_AVAIL)
-                .first()
-                .attr(STYLE)
-                .equals(FLEX);
+                .stream()
+                .map(element -> element.attr(STYLE)
+                        .equals(FLEX))
+                .findFirst()
+                .orElseThrow();
     }
 
     private void buildProduct(FootboxProduct product, Document doc) {
@@ -95,46 +97,42 @@ public class FootboxProductParser extends ProductParser {
         product.setSize(parseSizeRange(doc));
 
         setColor(product, doc);
-        setOtherProperties(product, doc);
+        setOther(product, doc);
     }
 
     private String parseName(Document doc) {
-        String name = doc.getElementsByClass(ITEM_TITLE)
-                .first()
-                .text();
-
-        // TODO: 13.12.2022 извращение:)
-        return name.substring(name.indexOf(' ') + 1);
+        return doc.getElementsByClass(ITEM_TITLE)
+                .stream()
+                .map(Element::text)
+                .map(text -> text.substring(text.indexOf(' ') + 1))
+                .findFirst()
+                .orElseThrow();
     }
 
     private String parseSku(Document doc) {
         return doc.getElementsByClass(ART)
-                .first()
-                .text()
-                .substring(9);
+                .stream()
+                .map(Element::text)
+                .map(text -> text.substring(9))
+                .findFirst()
+                .orElseThrow();
     }
 
     private Double parsePrice(Document doc) {
-        // TODO: 13.12.2022 .stream() на новой строке
         return doc.getElementsByAttributeValue(ITEMPROP, PRICE)
                 .stream()
                 .map(element -> element.attr(CONTENT))
                 .filter(price -> !price.isBlank())
-                .findFirst()
                 .map(Double::parseDouble)
+                .findFirst()
                 .orElseThrow();
     }
 
     private String parseImage(Document doc) {
-
-        // TODO: 13.12.2022 явный вызов get() - зло. Посмотри в сторону String.format() вместо конкатенации
-        /*return "https://footboxshop.ru" + doc.getElementsByClass("item-slider__main-image").get(0)
-                .attr("src");*/
-
         return doc.getElementsByClass(IMAGE)
                 .stream()
                 .map(element -> element.attr(SRC))
-                .map(src -> MAIN_PAGE + src)
+                .map(src -> String.format(MAIN_PAGE, src))
                 .findFirst()
                 .orElseThrow();
     }
@@ -170,7 +168,7 @@ public class FootboxProductParser extends ProductParser {
         }
     }
 
-    private void setOtherProperties(FootboxProduct product, Document doc) {
+    private void setOther(FootboxProduct product, Document doc) {
         Elements propertyNames = doc.getElementsByClass(DETAIL_PROPERTIES)
                 .select(DT);
         Elements propertyValues = doc.getElementsByClass(DETAIL_PROPERTIES)
@@ -183,7 +181,6 @@ public class FootboxProductParser extends ProductParser {
 
     private void setProperty(Element name, Element value, FootboxProduct product) {
         switch (name.text()) {
-            // TODO: 13.12.2022 значения кейсов в константы, в то и в поле элементов енама
             case GENDER -> product.setGender(value.text());
             case BRAND -> product.setBrand(value.text());
             case COUNTRY -> product.setCountry(value.text());
