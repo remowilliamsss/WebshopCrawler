@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public abstract class ProductParser {
     private final StoreParser storeParser;
 
+    public static final String COMMA = ", ";
     public static final String GENDER = "Пол";
     public static final String PRICE = "price";
     public static final String COUNTRY = "Страна";

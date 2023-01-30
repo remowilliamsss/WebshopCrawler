@@ -60,9 +60,7 @@ public class FootboxProductParser extends ProductParser {
                 return null;
             }
 
-            FootboxProduct product = new FootboxProduct();
-
-            buildProduct(product, doc);
+            FootboxProduct product = buildProduct(doc);
 
             product.setUrl(url);
 
@@ -87,17 +85,21 @@ public class FootboxProductParser extends ProductParser {
                 .orElseThrow();
     }
 
-    private void buildProduct(FootboxProduct product, Document doc) {
+    private FootboxProduct buildProduct(Document doc) {
+        FootboxProduct product = new FootboxProduct();
+
         product.setName(parseName(doc));
         product.setSku(parseSku(doc));
         product.setPrice(parsePrice(doc));
         product.setPriceCurrency(parseFromItemprop(doc, PRICE_CURRENCY));
         product.setCategory(parseFromItemprop(doc, CATEGORY));
         product.setImage(parseImage(doc));
-        product.setSize(parseSizeRange(doc));
+        product.setSize(parseSize(doc));
 
         setColor(product, doc);
         setOther(product, doc);
+
+        return product;
     }
 
     private String parseName(Document doc) {
@@ -137,27 +139,25 @@ public class FootboxProductParser extends ProductParser {
                 .orElseThrow();
     }
 
-    private String parseSizeRange(Document doc) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private String parseSize(Document doc) {
+        List<String> sizeFromHtml = parseSizeFromHtml(doc);
 
-        List<String> sizeFromHtml = doc.getElementsByClass(SIZES_1)
-                .eachAttr(TITLE);
+        return String.join(COMMA, sizeFromHtml);
+    }
+
+    private List<String> parseSizeFromHtml(Document doc) {
+        List<String> sizeFromHtml = parseSizeFromHtml(doc, SIZES_1);
 
         if (sizeFromHtml.isEmpty()) {
-            sizeFromHtml = doc.getElementsByClass(SIZES_2)
-                    .eachAttr(TITLE);
+            sizeFromHtml = parseSizeFromHtml(doc, SIZES_2);
         }
 
-        sizeFromHtml.forEach(size -> stringBuilder.append(", ")
-                .append(size));
+        return sizeFromHtml;
+    }
 
-        String size = stringBuilder.toString();
-
-        if (size.startsWith(", ")) {
-            size = size.substring(2);
-        }
-
-        return size;
+    private List<String> parseSizeFromHtml(Document doc, String attrName) {
+        return doc.getElementsByClass(attrName)
+                .eachAttr(TITLE);
     }
 
     private void setColor(FootboxProduct product, Document doc) {
@@ -175,11 +175,11 @@ public class FootboxProductParser extends ProductParser {
                 .select(DD);
 
         for (int i = 0; i < propertyNames.size(); i++) {
-            setProperty(propertyNames.get(i), propertyValues.get(i), product);
+            setProperty(product, propertyNames.get(i), propertyValues.get(i));
         }
     }
 
-    private void setProperty(Element name, Element value, FootboxProduct product) {
+    private void setProperty(FootboxProduct product, Element name, Element value) {
         switch (name.text()) {
             case GENDER -> product.setGender(value.text());
             case BRAND -> product.setBrand(value.text());
