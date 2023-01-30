@@ -15,6 +15,7 @@ import ru.egorov.StoreCrawler.service.SearchService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,15 +60,9 @@ public class ProductsController {
     }
 
     private String getErrorMessage(BindingResult bindingResult) {
-        StringBuilder errorMessage = new StringBuilder();
-
-        bindingResult.getFieldErrors()
-                .forEach(error -> errorMessage.append(error.getField())
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";")
-                );
-
-        return errorMessage.toString();
+        return bindingResult.getFieldErrors()
+                .stream()
+                .map(error -> String.format("%s - %s;", error.getField(), error.getDefaultMessage()))
+                .collect(Collectors.joining("\n"));
     }
 }
