@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.egorov.StoreCrawler.controller.ProductsController;
+import ru.egorov.StoreCrawler.controller.ProductController;
 import ru.egorov.StoreCrawler.controller.handler.ControllerExceptionHandler;
 import ru.egorov.StoreCrawler.dto.search.SearchRequest;
 
@@ -31,31 +31,25 @@ public class SearchTest {
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
 
+    public static final String SEARCH_URL = "/api/products/search";
+    public static final String FIND_BY_SKU_URL = "/api/products/find_by_sku";
+    public static final String FIND_BY_STORE_URL = "/api/products";
+    public static final String SNEAKERHEAD = "sneakerhead";
+    public static final String FOOTBOX = "footbox";
+    public static final String QUERY_FOR_SNEAKERHEAD = "Nike Joyride ENV ISPA";
+    public static final String QUERY_FOR_FOOTBOX = "Jordan Legacy 312 \"Exploration Unit\"";
+    public static final String QUERY_FOR_ALL_STORES = "Air Trainer 1";
+    public static final String QUERY_FOR_MANY_RESULTS = "nike";
+    public static final String SKU_FOR_SNEAKERHEAD = "BV4584-400";
+    public static final String SKU_FOR_FOOTBOX = "FB1875-141";
+    public static final String SKU_FOR_ALL_STORES = "DR7515-200";
     public static final String PAGE = "page";
     public static final String SIZE = "size";
     public static final String MESSAGE = "message";
-    public static final String FOOTBOX = "footbox";
-    public static final String FIFTH_RESULT = "$[4]";
-    public static final String SIXTH_RESULT = "$[5]";
-    public static final String THIRD_RESULT = "$[2]";
-    public static final String SECOND_RESULT = "$[1]";
-    public static final String SNEAKERHEAD = "sneakerhead";
     public static final String SOME_STRING = "some string";
-    public static final String SKU_FOR_FOOTBOX = "FB1875-141";
-    public static final String QUERY_FOR_MANY_RESULTS = "nike";
-    public static final String RESULTS = "foundProductDtosList";
-    public static final String SKU_FOR_ALL_STORES = "DR7515-200";
-    public static final String SKU_FOR_SNEAKERHEAD = "BV4584-400";
-    public static final String SEARCH_URL = "/api/products/search";
-    public static final String FIND_BY_STORE_URL = "/api/products";
-    public static final String QUERY_FOR_ALL_STORES = "Air Trainer 1";
-    public static final String FOURTH_RESULT = "foundProductDtosList[3]";
-    public static final String FIND_BY_SKU_URL = "/api/products/find_by_sku";
-    public static final String QUERY_FOR_SNEAKERHEAD = "Nike Joyride ENV ISPA";
     public static final String EMPTY_QUERY_MESSAGE = "query - must not be empty;";
-    public static final String QUERY_FOR_FOOTBOX = "Jordan Legacy 312 \"Exploration Unit\"";
-    public static final String FIRST_RESULT_SECOND_STORE = "foundProductDtosList[0].difference[1]";
-    public static final String FIRST_RESULT_FIRST_STORE_NAME = "foundProductDtosList[0].difference[0].storeType";
+    public static final String FIRST_RESULT_SECOND_STORE = "$[0].difference[1]";
+    public static final String FIRST_RESULT_FIRST_STORE_NAME = "$[0].difference[0].storeType";
 
     @BeforeEach
     public void setup() {
@@ -127,7 +121,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(RESULTS)
+                .andExpect(jsonPath("$")
                         .isEmpty());
     }
 
@@ -143,7 +137,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(FOURTH_RESULT)
+                .andExpect(jsonPath("$[3]")
                         .exists());
     }
 
@@ -243,7 +237,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(RESULTS)
+                .andExpect(jsonPath("$")
                         .isEmpty());
     }
 
@@ -282,59 +276,59 @@ public class SearchTest {
     @Test
     public void findByStoreForSneakerhead() throws Exception {
         this.mockMvc.perform(get(FIND_BY_STORE_URL)
-                        .param(ProductsController.STORE, SNEAKERHEAD))
+                        .param(ProductController.STORE, SNEAKERHEAD))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath(FIFTH_RESULT)
+                .andExpect(jsonPath("$[4]")
                         .exists())
-                .andExpect(jsonPath(SIXTH_RESULT)
+                .andExpect(jsonPath("$[5]")
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreWithPaginationForSneakerhead() throws Exception {
         this.mockMvc.perform(get(FIND_BY_STORE_URL)
-                        .param(ProductsController.STORE, SNEAKERHEAD)
+                        .param(ProductController.STORE, SNEAKERHEAD)
                         .param(PAGE, "0")
                         .param(SIZE, "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath(SECOND_RESULT)
+                .andExpect(jsonPath("$[1]")
                         .exists())
-                .andExpect(jsonPath(THIRD_RESULT)
+                .andExpect(jsonPath("$[2]")
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreForFootbox() throws Exception {
         this.mockMvc.perform(get(FIND_BY_STORE_URL)
-                        .param(ProductsController.STORE, FOOTBOX))
+                        .param(ProductController.STORE, FOOTBOX))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath(FIFTH_RESULT)
+                .andExpect(jsonPath("$[4]")
                         .exists())
-                .andExpect(jsonPath(SIXTH_RESULT)
+                .andExpect(jsonPath("$[5]")
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreWithPaginationForFootbox() throws Exception {
         this.mockMvc.perform(get(FIND_BY_STORE_URL)
-                        .param(ProductsController.STORE, FOOTBOX)
+                        .param(ProductController.STORE, FOOTBOX)
                         .param(PAGE, "1")
                         .param(SIZE, "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath(SECOND_RESULT)
+                .andExpect(jsonPath("$[1]")
                         .exists())
-                .andExpect(jsonPath(THIRD_RESULT)
+                .andExpect(jsonPath("$[2]")
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreForNotSupportedStore() throws Exception {
         this.mockMvc.perform(get(FIND_BY_STORE_URL)
-                        .param(ProductsController.STORE, SOME_STRING))
+                        .param(ProductController.STORE, SOME_STRING))
                 .andExpect(status()
                         .isNotFound())
                 .andExpect(content()
@@ -346,7 +340,7 @@ public class SearchTest {
     @Test
     public void findByStoreWithPaginationForNotSupportedStore() throws Exception {
         this.mockMvc.perform(get(FIND_BY_STORE_URL)
-                        .param(ProductsController.STORE, SOME_STRING)
+                        .param(ProductController.STORE, SOME_STRING)
                         .param(PAGE, "0")
                         .param(SIZE, "2"))
                 .andExpect(status()

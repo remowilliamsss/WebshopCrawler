@@ -14,8 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import ru.egorov.StoreCrawler.SearchTest;
 import ru.egorov.StoreCrawler.dto.product.ProductDto;
+import ru.egorov.StoreCrawler.dto.search.FoundProductDto;
 import ru.egorov.StoreCrawler.dto.search.SearchRequest;
-import ru.egorov.StoreCrawler.dto.search.SearchResultDto;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.SearchService;
 
@@ -24,9 +24,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ProductsControllerTest {
+class ProductControllerTest {
     @Autowired
-    private ProductsController productsController;
+    private ProductController productController;
     @MockBean
     private SearchService searchService;
     @Mock
@@ -36,7 +36,7 @@ class ProductsControllerTest {
     void search() {
         SearchRequest searchRequest = new SearchRequest(SearchTest.SOME_STRING);
 
-        ResponseEntity<SearchResultDto> response = productsController.search(searchRequest, bindingResult);
+        ResponseEntity<List<FoundProductDto>> response = productController.search(searchRequest, bindingResult);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
@@ -48,7 +48,7 @@ class ProductsControllerTest {
     void findBySku() {
         SearchRequest searchRequest = new SearchRequest(SearchTest.SOME_STRING);
 
-        ResponseEntity<SearchResultDto> response = productsController.findBySku(searchRequest, bindingResult);
+        ResponseEntity<List<FoundProductDto>> response = productController.findBySku(searchRequest, bindingResult);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
@@ -61,7 +61,7 @@ class ProductsControllerTest {
         StoreType storeType = StoreType.sneakerhead;
         Pageable pageable = PageRequest.of(0, 20);
 
-        ResponseEntity<List<ProductDto>> response = productsController.findByStore(storeType, pageable);
+        ResponseEntity<List<ProductDto>> response = productController.findByStore(storeType, pageable);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 

@@ -9,11 +9,8 @@ import java.util.*;
 
 @Slf4j
 public abstract class StoreParser {
-    public static final String HREF = "href";
-    public static final String PAGEN = "PAGEN";
-    public static final String A_HREF = "a[href]";
-    public static final String ADDED_URL = "Added url: {}";
     public static final String FAILED_CONNECTION = "Failed connection to {}:";
+    public static final String PAGEN = "PAGEN";
 
     public Set<String> parsePages() {
         Set<String> urls = new HashSet<>();
@@ -35,11 +32,11 @@ public abstract class StoreParser {
                     .timeout(10000)
                     .get()
                     .getElementsByClass(elementClassName)
-                    .select(A_HREF)
+                    .select("a[href]")
                     .forEach(element -> {
-                        String link = element.absUrl(HREF);
+                        String link = element.absUrl("href");
                         set.add(link);
-                        log.debug(ADDED_URL, link);
+                        log.debug("Added url: {}", link);
                     });
 
         } catch (IOException e) {

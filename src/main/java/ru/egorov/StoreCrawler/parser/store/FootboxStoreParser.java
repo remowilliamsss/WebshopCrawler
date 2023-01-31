@@ -6,11 +6,11 @@ import java.util.Set;
 
 @Component
 public class FootboxStoreParser extends StoreParser {
-    public static final String ITEM = "catalog-card__model";
-    public static final String PAGINATION = "pagination__item";
     public static final String SHOES = "https://www.footboxshop.ru/catalog/obuv/";
     public static final String CLOTHES = "https://www.footboxshop.ru/catalog/odezhda/";
     public static final String STUFF = "https://www.footboxshop.ru/catalog/aksessuary/";
+    public static final String ITEM = "catalog-card__model";
+    public static final String PAGINATION = "pagination__item";
 
     @Override
     protected void addCategories(Set<String> urls) {

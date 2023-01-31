@@ -10,13 +10,13 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class DispatcherService {
-    private final Map<String, ProductsService> productsServices;
+    private final Map<String, ProductService> productsServices;
     private final Map<String, ProductMapper> productMappers;
 
-    public ProductsService getProductsService(StoreType storeType) {
+    public ProductService getProductsService(StoreType storeType) {
         return switch (storeType) {
-            case sneakerhead -> productsServices.get("sneakerheadProductsService");
-            case footbox -> productsServices.get("footboxProductsService");
+            case sneakerhead -> productsServices.get("sneakerheadProductService");
+            case footbox -> productsServices.get("footboxProductService");
         };
     }
 

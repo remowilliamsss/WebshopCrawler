@@ -12,6 +12,7 @@ import ru.egorov.StoreCrawler.model.FootboxProduct;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.parser.store.FootboxStoreParser;
 import ru.egorov.StoreCrawler.parser.store.StoreParser;
+import ru.egorov.StoreCrawler.service.FootboxProductService;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,28 +20,20 @@ import java.util.List;
 @Slf4j
 @Component
 public class FootboxProductParser extends ProductParser {
-    public static final String DT = "dt";
-    public static final String DD = "dd";
-    public static final String SRC = "src";
     public static final String BRAND = "Бренд";
-    public static final String STYLE = "style";
-    public static final String TITLE = "title";
-    public static final String COLOR = "colorValue";
-    public static final String ART = "item-info__art";
     public static final String COMPOSITION = "Состав";
     public static final String COLORING = "Расцветка";
-    public static final String NOT_AVAIL = "not-avail";
-    public static final String FLEX = "display: flex;";
-    public static final String SIZES_2 = "_item-sizes__item";
-    public static final String ITEM_CONTAINER = "item-container";
+    public static final String ART = "item-info__art";
     public static final String IMAGE = "item-slider__main-image";
-    public static final String MAIN_PAGE = "https://footboxshop.ru%s";
-    public static final String ITEM_TITLE = "item-info__title bx-title";
     public static final String SIZES_1 = "sizes-public-detail__list__item";
+    public static final String SIZES_2 = "_item-sizes__item";
     public static final String DETAIL_PROPERTIES = "product-item-detail-properties";
+    public static final String ITEM_TITLE = "item-info__title bx-title";
+    public static final String FLEX = "display: flex;";
+    public static final String MAIN_PAGE = "https://footboxshop.ru%s";
 
-    public FootboxProductParser(FootboxStoreParser storeParser) {
-        super(storeParser);
+    public FootboxProductParser(FootboxStoreParser storeParser, FootboxProductService productService) {
+        super(storeParser, productService);
     }
 
     @Override
@@ -75,11 +68,11 @@ public class FootboxProductParser extends ProductParser {
     }
 
     private boolean isAvailableItem(Document doc) {
-        return !doc.getElementsByClass(ITEM_CONTAINER)
+        return !doc.getElementsByClass("item-container")
                 .isEmpty()
-                && !doc.getElementsByClass(NOT_AVAIL)
+                && !doc.getElementsByClass("not-avail")
                 .stream()
-                .map(element -> element.attr(STYLE)
+                .map(element -> element.attr("style")
                         .equals(FLEX))
                 .findFirst()
                 .orElseThrow();
@@ -91,10 +84,10 @@ public class FootboxProductParser extends ProductParser {
         product.setName(parseName(doc));
         product.setSku(parseSku(doc));
         product.setPrice(parsePrice(doc));
-        product.setPriceCurrency(parseFromItemprop(doc, PRICE_CURRENCY));
-        product.setCategory(parseFromItemprop(doc, CATEGORY));
         product.setImage(parseImage(doc));
         product.setSize(parseSize(doc));
+        product.setPriceCurrency(parseFromItemprop(doc, PRICE_CURRENCY));
+        product.setCategory(parseFromItemprop(doc, CATEGORY));
 
         setColor(product, doc);
         setOther(product, doc);
@@ -133,7 +126,7 @@ public class FootboxProductParser extends ProductParser {
     private String parseImage(Document doc) {
         return doc.getElementsByClass(IMAGE)
                 .stream()
-                .map(element -> element.attr(SRC))
+                .map(element -> element.attr("src"))
                 .map(src -> String.format(MAIN_PAGE, src))
                 .findFirst()
                 .orElseThrow();
@@ -157,11 +150,11 @@ public class FootboxProductParser extends ProductParser {
 
     private List<String> parseSizeFromHtml(Document doc, String attrName) {
         return doc.getElementsByClass(attrName)
-                .eachAttr(TITLE);
+                .eachAttr("title");
     }
 
     private void setColor(FootboxProduct product, Document doc) {
-        Element color = doc.getElementById(COLOR);
+        Element color = doc.getElementById("colorValue");
 
         if (color != null) {
             product.setColor(color.text());
@@ -170,9 +163,9 @@ public class FootboxProductParser extends ProductParser {
 
     private void setOther(FootboxProduct product, Document doc) {
         Elements propertyNames = doc.getElementsByClass(DETAIL_PROPERTIES)
-                .select(DT);
+                .select("dt");
         Elements propertyValues = doc.getElementsByClass(DETAIL_PROPERTIES)
-                .select(DD);
+                .select("dd");
 
         for (int i = 0; i < propertyNames.size(); i++) {
             setProperty(product, propertyNames.get(i), propertyValues.get(i));

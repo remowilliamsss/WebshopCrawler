@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.egorov.StoreCrawler.controller.ProductsController;
+import ru.egorov.StoreCrawler.controller.ProductController;
 import ru.egorov.StoreCrawler.dto.ErrorDto;
 import ru.egorov.StoreCrawler.exception.BadQueryException;
 
@@ -29,7 +29,7 @@ public class ControllerExceptionHandler {
         String message = e.getMessage();
         String paramName = e.getName();
 
-        if (paramName.equals(ProductsController.STORE)) {
+        if (paramName.equals(ProductController.STORE)) {
             message = STORE_NOT_SUPPORTED;
         }
 

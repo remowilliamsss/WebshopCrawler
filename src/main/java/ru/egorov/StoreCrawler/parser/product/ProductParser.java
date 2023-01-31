@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import ru.egorov.StoreCrawler.model.Product;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.parser.store.StoreParser;
+import ru.egorov.StoreCrawler.service.ProductService;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,28 +17,27 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public abstract class ProductParser {
     private final StoreParser storeParser;
+    private final ProductService productService;
 
-    public static final String COMMA = ", ";
-    public static final String GENDER = "Пол";
-    public static final String PRICE = "price";
-    public static final String COUNTRY = "Страна";
-    public static final String CONTENT = "content";
-    public static final String CATEGORY = "category";
-    public static final String ITEMPROP = "itemprop";
-    public static final String PRICE_CURRENCY = "priceCurrency";
-    public static final String SCAN_FINISH = "{} scanning finished.";
-    public static final String SCAN_START = "{} scanning is starting.";
     public static final String PARSE_START = "Parsing is starting for url: {}.";
     public static final String PARSE_FINISH = "Item with name \"{}\" was parsed.";
+    public static final String CONTENT = "content";
+    public static final String ITEMPROP = "itemprop";
+    public static final String CATEGORY = "category";
+    public static final String PRICE = "price";
+    public static final String PRICE_CURRENCY = "priceCurrency";
+    public static final String GENDER = "Пол";
+    public static final String COUNTRY = "Страна";
+    public static final String COMMA = ", ";
 
-    public List<Product> parseProducts() {
-        log.info(SCAN_START, getStore());
+    public void parseProducts() {
+        log.info("{} scanning is starting.", getStore());
 
         List<Product> products = parseProducts(storeParser.parsePages());
 
-        log.info(SCAN_FINISH, getStore());
+        productService.updateAll(products);
 
-        return products;
+        log.info("{} scanning finished.", getStore());
     }
 
     public List<Product> parseProducts (Collection<String> urls) {

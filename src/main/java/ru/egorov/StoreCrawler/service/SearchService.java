@@ -18,31 +18,33 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-// TODO: 13.12.2022 уже писал, но: некорректное название и аннотация над классом
 public class SearchService {
-
     private final DispatcherService dispatcherService;
+    private final List<ProductService> productServices;
 
-    private final List<ProductsService> productsServices;
-
-    public SearchResultDto search(String query) {
+    public List<FoundProductDto> search(String query) {
         log.info("Search for \"{}\" starts", query);
 
-        List<FoundProductDto> foundProductDtosList = new ArrayList<>();
+        List<FoundProductDto> foundProductDtos = new ArrayList<>();
 
-        productsServices.stream()
+        productServices.stream()
+                .flatMap(productService -> productService.findAllByName(query)
+                        .stream())
+                .collect(Collectors.toList());
+
+        productServices.stream()
             .map(productsService -> productsService.findAllByName(query))
             .filter(products -> !products.isEmpty())
             .forEach(products -> {// TODO: 13.12.2022 избыточные {}
                 // TODO: 13.12.2022 познакомься с flatMap() :)
                 products.forEach(product -> {
                     // TODO: 13.12.2022 условие ифа вынеси в переменную
-                    if (foundProductDtosList.stream()
+                    if (foundProductDtos.stream()
                             .noneMatch(foundProductDto -> foundProductDto.getSku().equals(product.getSku()))) {
                         // TODO: 13.12.2022 кажется, огород с id-else здесь лишний, можно попробовать без него
-                        foundProductDtosList.add(createFoundProduct(product));
+                        foundProductDtos.add(createFoundProduct(product));
                     } else {
-                        foundProductDtosList.stream()
+                        foundProductDtos.stream()
                                 .filter(foundProductDto -> foundProductDto.getSku().equals(product.getSku()))
                                 .findFirst()
                                 // TODO: 13.12.2022 вызов get()
@@ -53,17 +55,17 @@ public class SearchService {
                 });
             });
 
-        log.info("Search for \"{}\" finished with {} results", query, foundProductDtosList.size());
+        log.info("Search for \"{}\" finished with {} results", query, foundProductDtos.size());
 
         // TODO: 13.12.2022 зачем в этой схеме SearchResponse?
-        return new SearchResultDto(foundProductDtosList);
+        return foundProductDtos;
     }
 
     public List<ProductDto> findByStore(StoreType storeType, Pageable pageable) {
         log.info("Search for \"{}\" starts", storeType);
 
-        ProductsService productsService = dispatcherService.getProductsService(storeType);
-        var products = productsService.findAll(pageable)
+        ProductService productService = dispatcherService.getProductsService(storeType);
+        var products = productService.findAll(pageable)
                 .getContent();
 
         List<ProductDto> productDtos = convertToDto(storeType, products);
@@ -81,22 +83,21 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
-    public SearchResultDto findBySku(String sku) {
+    public List<FoundProductDto> findBySku(String sku) {
         log.info("Search for \"{}\" starts", sku);
 
-        List<FoundProductDto> foundProductDtoList = new ArrayList<>(1);
+        List<FoundProductDto> foundProductDtos = new ArrayList<>(1);
 
-        productsServices.stream()
+        productServices.stream()
                 //findAllBySkuIn для репы. Сейчас куча лишних запросов в базу
                 .map(productsService -> productsService.findBySku(sku))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .filter(Objects::nonNull)
                 .forEach(product -> {
                     // TODO: 13.12.2022 кажется, огород с id-else здесь лишний, можно попробовать без него
-                    if (foundProductDtoList.isEmpty()) {
-                        foundProductDtoList.add(createFoundProduct(product));
+                    if (foundProductDtos.isEmpty()) {
+                        foundProductDtos.add(createFoundProduct(product));
                     } else {
-                        foundProductDtoList.get(0)
+                        foundProductDtos.get(0)
                                 .getDifference()
                                 .add(createProductDifferences(product));
                     }
@@ -104,7 +105,7 @@ public class SearchService {
 
         log.info("Search for \"{}\" finished", sku);
 
-        return new SearchResultDto(foundProductDtoList);
+        return foundProductDtos;
     }
 
     // TODO: 13.12.2022 выглядит как логика для маппера
