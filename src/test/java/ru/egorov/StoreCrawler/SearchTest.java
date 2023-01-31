@@ -13,6 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import ru.egorov.StoreCrawler.controller.ProductsController;
+import ru.egorov.StoreCrawler.controller.handler.ControllerExceptionHandler;
 import ru.egorov.StoreCrawler.dto.search.SearchRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,6 +31,32 @@ public class SearchTest {
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
 
+    public static final String PAGE = "page";
+    public static final String SIZE = "size";
+    public static final String MESSAGE = "message";
+    public static final String FOOTBOX = "footbox";
+    public static final String FIFTH_RESULT = "$[4]";
+    public static final String SIXTH_RESULT = "$[5]";
+    public static final String THIRD_RESULT = "$[2]";
+    public static final String SECOND_RESULT = "$[1]";
+    public static final String SNEAKERHEAD = "sneakerhead";
+    public static final String SOME_STRING = "some string";
+    public static final String SKU_FOR_FOOTBOX = "FB1875-141";
+    public static final String QUERY_FOR_MANY_RESULTS = "nike";
+    public static final String RESULTS = "foundProductDtosList";
+    public static final String SKU_FOR_ALL_STORES = "DR7515-200";
+    public static final String SKU_FOR_SNEAKERHEAD = "BV4584-400";
+    public static final String SEARCH_URL = "/api/products/search";
+    public static final String FIND_BY_STORE_URL = "/api/products";
+    public static final String QUERY_FOR_ALL_STORES = "Air Trainer 1";
+    public static final String FOURTH_RESULT = "foundProductDtosList[3]";
+    public static final String FIND_BY_SKU_URL = "/api/products/find_by_sku";
+    public static final String QUERY_FOR_SNEAKERHEAD = "Nike Joyride ENV ISPA";
+    public static final String EMPTY_QUERY_MESSAGE = "query - must not be empty;";
+    public static final String QUERY_FOR_FOOTBOX = "Jordan Legacy 312 \"Exploration Unit\"";
+    public static final String FIRST_RESULT_SECOND_STORE = "foundProductDtosList[0].difference[1]";
+    public static final String FIRST_RESULT_FIRST_STORE_NAME = "foundProductDtosList[0].difference[0].storeType";
+
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -37,9 +65,9 @@ public class SearchTest {
 
     @Test
     public void searchForProductAvailableInAllStores() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("Air Trainer 1");
+        SearchRequest searchRequest = new SearchRequest(QUERY_FOR_ALL_STORES);
 
-        this.mockMvc.perform(post("/api/products/search")
+        this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -47,15 +75,15 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
+                .andExpect(jsonPath(FIRST_RESULT_SECOND_STORE)
                         .exists());
     }
 
     @Test
     public void searchForProductOnlyAvailableOnSneakerhead() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("Nike Joyride ENV ISPA");
+        SearchRequest searchRequest = new SearchRequest(QUERY_FOR_SNEAKERHEAD);
 
-        this.mockMvc.perform(post("/api/products/search")
+        this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -63,17 +91,17 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
-                        .value("sneakerhead"))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
+                .andExpect(jsonPath(FIRST_RESULT_FIRST_STORE_NAME)
+                        .value(SNEAKERHEAD))
+                .andExpect(jsonPath(FIRST_RESULT_SECOND_STORE)
                         .doesNotExist());
     }
 
     @Test
     public void searchForProductOnlyAvailableOnFootbox() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("Jordan Legacy 312 \"Exploration Unit\"");
+        SearchRequest searchRequest = new SearchRequest(QUERY_FOR_FOOTBOX);
 
-        this.mockMvc.perform(post("/api/products/search")
+        this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -81,17 +109,17 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
-                        .value("footbox"))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
+                .andExpect(jsonPath(FIRST_RESULT_FIRST_STORE_NAME)
+                        .value(FOOTBOX))
+                .andExpect(jsonPath(FIRST_RESULT_SECOND_STORE)
                         .doesNotExist());
     }
 
     @Test
     public void searchForNotAvailableProduct() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("some query");
+        SearchRequest searchRequest = new SearchRequest(SOME_STRING);
 
-        this.mockMvc.perform(post("/api/products/search")
+        this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -99,15 +127,15 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList")
+                .andExpect(jsonPath(RESULTS)
                         .isEmpty());
     }
 
     @Test
     public void searchWithManyResults() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("nike");
+        SearchRequest searchRequest = new SearchRequest(QUERY_FOR_MANY_RESULTS);
 
-        this.mockMvc.perform(post("/api/products/search")
+        this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -115,7 +143,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[3]")
+                .andExpect(jsonPath(FOURTH_RESULT)
                         .exists());
     }
 
@@ -123,7 +151,7 @@ public class SearchTest {
     public void searchForNullQuery() throws Exception {
         SearchRequest searchRequest = new SearchRequest(null);
 
-        this.mockMvc.perform(post("/api/products/search")
+        this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -131,15 +159,15 @@ public class SearchTest {
                         .isBadRequest())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message")
-                        .value("query - must not be empty;"));
+                .andExpect(jsonPath(MESSAGE)
+                        .value(EMPTY_QUERY_MESSAGE));
     }
 
     @Test
     public void searchForEmptyQuery() throws Exception {
         SearchRequest searchRequest = new SearchRequest("");
 
-        this.mockMvc.perform(post("/api/products/search")
+        this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -147,15 +175,15 @@ public class SearchTest {
                         .isBadRequest())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message")
-                        .value("query - must not be empty;"));
+                .andExpect(jsonPath(MESSAGE)
+                        .value(EMPTY_QUERY_MESSAGE));
     }
 
     @Test
     public void findBySkuForProductAvailableInAllStores() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("DR7515-200");
+        SearchRequest searchRequest = new SearchRequest(SKU_FOR_ALL_STORES);
 
-        this.mockMvc.perform(post("/api/products/find_by_sku")
+        this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -163,15 +191,15 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
+                .andExpect(jsonPath(FIRST_RESULT_SECOND_STORE)
                         .exists());
     }
 
     @Test
     public void findBySkuForProductOnlyAvailableOnSneakerhead() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("BV4584-400");
+        SearchRequest searchRequest = new SearchRequest(SKU_FOR_SNEAKERHEAD);
 
-        this.mockMvc.perform(post("/api/products/find_by_sku")
+        this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -179,17 +207,17 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
-                        .value("sneakerhead"))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
+                .andExpect(jsonPath(FIRST_RESULT_FIRST_STORE_NAME)
+                        .value(SNEAKERHEAD))
+                .andExpect(jsonPath(FIRST_RESULT_SECOND_STORE)
                         .doesNotExist());
     }
 
     @Test
     public void findBySkuForProductOnlyAvailableOnFootbox() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("FB1875-141");
+        SearchRequest searchRequest = new SearchRequest(SKU_FOR_FOOTBOX);
 
-        this.mockMvc.perform(post("/api/products/find_by_sku")
+        this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -197,17 +225,17 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[0].storeType")
-                        .value("footbox"))
-                .andExpect(jsonPath("foundProductDtosList[0].difference[1]")
+                .andExpect(jsonPath(FIRST_RESULT_FIRST_STORE_NAME)
+                        .value(FOOTBOX))
+                .andExpect(jsonPath(FIRST_RESULT_SECOND_STORE)
                         .doesNotExist());
     }
 
     @Test
     public void findBySkuForNotAvailableProduct() throws Exception {
-        SearchRequest searchRequest = new SearchRequest("some query");
+        SearchRequest searchRequest = new SearchRequest(SOME_STRING);
 
-        this.mockMvc.perform(post("/api/products/find_by_sku")
+        this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -215,7 +243,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("foundProductDtosList")
+                .andExpect(jsonPath(RESULTS)
                         .isEmpty());
     }
 
@@ -223,7 +251,7 @@ public class SearchTest {
     public void findBySkuForNullQuery() throws Exception {
         SearchRequest searchRequest = new SearchRequest(null);
 
-        this.mockMvc.perform(post("/api/products/find_by_sku")
+        this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -231,15 +259,15 @@ public class SearchTest {
                         .isBadRequest())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message")
-                        .value("query - must not be empty;"));
+                .andExpect(jsonPath(MESSAGE)
+                        .value(EMPTY_QUERY_MESSAGE));
     }
 
     @Test
     public void findBySkuForEmptyQuery() throws Exception {
         SearchRequest searchRequest = new SearchRequest("");
 
-        this.mockMvc.perform(post("/api/products/find_by_sku")
+        this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper()
                                 .writeValueAsString(searchRequest)))
@@ -247,85 +275,85 @@ public class SearchTest {
                         .isBadRequest())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message")
-                        .value("query - must not be empty;"));
+                .andExpect(jsonPath(MESSAGE)
+                        .value(EMPTY_QUERY_MESSAGE));
     }
 
     @Test
     public void findByStoreForSneakerhead() throws Exception {
-        this.mockMvc.perform(get("/api/products")
-                        .param("store", "sneakerhead"))
+        this.mockMvc.perform(get(FIND_BY_STORE_URL)
+                        .param(ProductsController.STORE, SNEAKERHEAD))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[4]")
+                .andExpect(jsonPath(FIFTH_RESULT)
                         .exists())
-                .andExpect(jsonPath("$[5]")
+                .andExpect(jsonPath(SIXTH_RESULT)
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreWithPaginationForSneakerhead() throws Exception {
-        this.mockMvc.perform(get("/api/products")
-                        .param("store", "sneakerhead")
-                        .param("page", "0")
-                        .param("size", "2"))
+        this.mockMvc.perform(get(FIND_BY_STORE_URL)
+                        .param(ProductsController.STORE, SNEAKERHEAD)
+                        .param(PAGE, "0")
+                        .param(SIZE, "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[1]")
+                .andExpect(jsonPath(SECOND_RESULT)
                         .exists())
-                .andExpect(jsonPath("$[2]")
+                .andExpect(jsonPath(THIRD_RESULT)
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreForFootbox() throws Exception {
-        this.mockMvc.perform(get("/api/products")
-                        .param("store", "footbox"))
+        this.mockMvc.perform(get(FIND_BY_STORE_URL)
+                        .param(ProductsController.STORE, FOOTBOX))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[4]")
+                .andExpect(jsonPath(FIFTH_RESULT)
                         .exists())
-                .andExpect(jsonPath("$[5]")
+                .andExpect(jsonPath(SIXTH_RESULT)
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreWithPaginationForFootbox() throws Exception {
-        this.mockMvc.perform(get("/api/products")
-                        .param("store", "footbox")
-                        .param("page", "1")
-                        .param("size", "2"))
+        this.mockMvc.perform(get(FIND_BY_STORE_URL)
+                        .param(ProductsController.STORE, FOOTBOX)
+                        .param(PAGE, "1")
+                        .param(SIZE, "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[1]")
+                .andExpect(jsonPath(SECOND_RESULT)
                         .exists())
-                .andExpect(jsonPath("$[2]")
+                .andExpect(jsonPath(THIRD_RESULT)
                         .doesNotExist());
     }
 
     @Test
     public void findByStoreForNotSupportedStore() throws Exception {
-        this.mockMvc.perform(get("/api/products")
-                        .param("store", "some_store"))
+        this.mockMvc.perform(get(FIND_BY_STORE_URL)
+                        .param(ProductsController.STORE, SOME_STRING))
                 .andExpect(status()
                         .isNotFound())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message")
-                        .value("this store is not supported"));
+                .andExpect(jsonPath(MESSAGE)
+                        .value(ControllerExceptionHandler.STORE_NOT_SUPPORTED));
     }
 
     @Test
     public void findByStoreWithPaginationForNotSupportedStore() throws Exception {
-        this.mockMvc.perform(get("/api/products")
-                        .param("store", "some_store")
-                        .param("page", "0")
-                        .param("page_size", "2"))
+        this.mockMvc.perform(get(FIND_BY_STORE_URL)
+                        .param(ProductsController.STORE, SOME_STRING)
+                        .param(PAGE, "0")
+                        .param(SIZE, "2"))
                 .andExpect(status()
                         .isNotFound())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("message")
-                        .value("this store is not supported"));
+                .andExpect(jsonPath(MESSAGE)
+                        .value(ControllerExceptionHandler.STORE_NOT_SUPPORTED));
     }
 }

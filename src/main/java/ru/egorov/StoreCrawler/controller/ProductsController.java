@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 public class ProductsController {
     private final SearchService searchService;
 
+    public static final String STORE = "store";
+
     @PostMapping("/search")
     public ResponseEntity<SearchResultDto> search(@Valid @RequestBody SearchRequest request,
                                                   BindingResult bindingResult) {
@@ -52,7 +54,7 @@ public class ProductsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> findByStore(@RequestParam(name="store") StoreType store,
+    public ResponseEntity<List<ProductDto>> findByStore(@RequestParam(name=STORE) StoreType store,
                                                         Pageable pageable) {
         List<ProductDto> productDtos = searchService.findByStore(store, pageable);
 

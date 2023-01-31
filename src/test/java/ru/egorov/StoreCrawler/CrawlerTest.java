@@ -21,8 +21,11 @@ public class CrawlerTest {
     @Autowired
     private DispatcherService dispatcherService;
 
+    public static final String FOOTBOX_SQL = "/crawler/delete-footbox-products.sql";
+    public static final String SNEAKERHEAD_SQL = "/crawler/delete-sneakerhead-products.sql";
+
     @Test
-    @Sql(value = {"/crawler/delete-sneakerhead-products.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {SNEAKERHEAD_SQL}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void crawlSneakerhead() {
         var parser = productParsers.get("sneakerheadProductParser");
 
@@ -31,7 +34,7 @@ public class CrawlerTest {
     }
 
     @Test
-    @Sql(value = {"/crawler/delete-footbox-products.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {FOOTBOX_SQL}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void crawlFootbox() {
         var parser = productParsers.get("footboxProductParser");
 
