@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.mapper;
+package ru.egorov.StoreCrawler.mapper.product;
 
 import org.mapstruct.Mapper;
 import ru.egorov.StoreCrawler.dto.product.SneakerheadProductDto;
