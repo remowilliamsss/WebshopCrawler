@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.service;
+package ru.egorov.StoreCrawler.service.product;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

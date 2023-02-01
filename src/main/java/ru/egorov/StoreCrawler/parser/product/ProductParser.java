@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document;
 import ru.egorov.StoreCrawler.model.Product;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.parser.store.StoreParser;
-import ru.egorov.StoreCrawler.service.ProductService;
+import ru.egorov.StoreCrawler.service.product.ProductService;
 
 import java.util.Collection;
 import java.util.List;

@@ -10,6 +10,7 @@ import ru.egorov.StoreCrawler.mapper.FoundProductMapper;
 import ru.egorov.StoreCrawler.mapper.product.ProductMapper;
 import ru.egorov.StoreCrawler.model.Product;
 import ru.egorov.StoreCrawler.model.StoreType;
+import ru.egorov.StoreCrawler.service.product.ProductService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class SearchService {
     private void addFoundProduct(List<FoundProductDto> foundProductDtos, Product product) {
         FoundProductDto foundProductDto = prepareFoundProduct(foundProductDtos, product);
 
-        foundProductDto.getDifference()
+        foundProductDto.getDifferences()
                 .add(foundProductMapper.extractDifference(product));
 
         foundProductDtos.add(foundProductDto);
@@ -76,6 +77,7 @@ public class SearchService {
         log.info(SEARCH_START, storeType);
 
         ProductService productService = dispatcherService.getProductsService(storeType);
+
         var products = productService.findAll(pageable)
                 .getContent();
 

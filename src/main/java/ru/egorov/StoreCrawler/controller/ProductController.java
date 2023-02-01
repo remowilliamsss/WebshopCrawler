@@ -2,7 +2,6 @@ package ru.egorov.StoreCrawler.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.egorov.StoreCrawler.dto.product.ProductDto;
 import ru.egorov.StoreCrawler.dto.search.FoundProductDto;
 import ru.egorov.StoreCrawler.dto.search.SearchRequest;
-import ru.egorov.StoreCrawler.dto.search.SearchResultDto;
 import ru.egorov.StoreCrawler.exception.BadQueryException;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.SearchService;

@@ -12,7 +12,7 @@ import ru.egorov.StoreCrawler.model.FootboxProduct;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.parser.store.FootboxStoreParser;
 import ru.egorov.StoreCrawler.parser.store.StoreParser;
-import ru.egorov.StoreCrawler.service.FootboxProductService;
+import ru.egorov.StoreCrawler.service.product.FootboxProductService;
 
 import java.io.IOException;
 import java.util.List;

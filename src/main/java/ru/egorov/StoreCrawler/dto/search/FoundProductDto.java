@@ -1,17 +1,14 @@
 package ru.egorov.StoreCrawler.dto.search;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.egorov.StoreCrawler.model.StoreType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class FoundProductDto {
 
     private String name;
@@ -30,9 +27,24 @@ public class FoundProductDto {
 
     private String gender;
 
-    private List<FoundProductDifference> difference;
+    private List<Difference> differences;
 
     {
-        difference = new ArrayList<>();
+        differences = new ArrayList<>();
+    }
+
+    @Getter
+    @Setter
+    public static class Difference {
+
+        private StoreType storeType;
+
+        private Double price;
+
+        private String priceCurrency;
+
+        private String size;
+
+        private String url;
     }
 }

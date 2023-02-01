@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.service;
+package ru.egorov.StoreCrawler.service.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -11,7 +11,7 @@ import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.parser.store.SneakerheadStoreParser;
 import ru.egorov.StoreCrawler.parser.store.StoreParser;
-import ru.egorov.StoreCrawler.service.SneakerheadProductService;
+import ru.egorov.StoreCrawler.service.product.SneakerheadProductService;
 
 import java.io.IOException;
 import java.util.List;

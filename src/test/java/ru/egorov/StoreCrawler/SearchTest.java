@@ -48,8 +48,8 @@ public class SearchTest {
     public static final String MESSAGE = "message";
     public static final String SOME_STRING = "some string";
     public static final String EMPTY_QUERY_MESSAGE = "query - must not be empty;";
-    public static final String FIRST_RESULT_SECOND_STORE = "$[0].difference[1]";
-    public static final String FIRST_RESULT_FIRST_STORE_NAME = "$[0].difference[0].storeType";
+    public static final String FIRST_RESULT_SECOND_STORE = "$[0].differences[1]";
+    public static final String FIRST_RESULT_FIRST_STORE_NAME = "$[0].differences[0].storeType";
 
     @BeforeEach
     public void setup() {
@@ -63,8 +63,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -79,8 +78,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -97,8 +95,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -115,8 +112,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -131,8 +127,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -147,8 +142,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isBadRequest())
                 .andExpect(content()
@@ -163,8 +157,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(SEARCH_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isBadRequest())
                 .andExpect(content()
@@ -179,8 +172,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -195,8 +187,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -213,8 +204,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -231,8 +221,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isOk())
                 .andExpect(content()
@@ -247,8 +236,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isBadRequest())
                 .andExpect(content()
@@ -263,8 +251,7 @@ public class SearchTest {
 
         this.mockMvc.perform(post(FIND_BY_SKU_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper()
-                                .writeValueAsString(searchRequest)))
+                        .content(new ObjectMapper().writeValueAsString(searchRequest)))
                 .andExpect(status()
                         .isBadRequest())
                 .andExpect(content()

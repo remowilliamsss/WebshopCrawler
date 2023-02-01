@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.mapper.product.ProductMapper;
+import ru.egorov.StoreCrawler.service.product.ProductService;
 
 import java.util.Map;
 
