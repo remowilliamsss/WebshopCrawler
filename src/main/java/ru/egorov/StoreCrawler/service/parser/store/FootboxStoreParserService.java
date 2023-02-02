@@ -1,11 +1,11 @@
-package ru.egorov.StoreCrawler.parser.store;
+package ru.egorov.StoreCrawler.service.parser.store;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-@Component
-public class FootboxStoreParser extends StoreParser {
+@Service
+public class FootboxStoreParserService extends StoreParserService {
     public static final String SHOES = "https://www.footboxshop.ru/catalog/obuv/";
     public static final String CLOTHES = "https://www.footboxshop.ru/catalog/odezhda/";
     public static final String STUFF = "https://www.footboxshop.ru/catalog/aksessuary/";
