@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.parser.product;
+package ru.egorov.StoreCrawler.service.parser.product;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
@@ -6,20 +6,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.egorov.StoreCrawler.exception.FailedConnectionException;
 import ru.egorov.StoreCrawler.model.FootboxProduct;
 import ru.egorov.StoreCrawler.model.StoreType;
-import ru.egorov.StoreCrawler.parser.store.FootboxStoreParser;
-import ru.egorov.StoreCrawler.parser.store.StoreParser;
+import ru.egorov.StoreCrawler.service.parser.store.FootboxStoreParserService;
+import ru.egorov.StoreCrawler.service.parser.store.StoreParserService;
 import ru.egorov.StoreCrawler.service.product.FootboxProductService;
 
 import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-@Component
-public class FootboxProductParser extends ProductParser {
+@Service
+public class FootboxProductParserService extends ProductParserService {
     public static final String BRAND = "Бренд";
     public static final String COMPOSITION = "Состав";
     public static final String COLORING = "Расцветка";
@@ -32,7 +32,7 @@ public class FootboxProductParser extends ProductParser {
     public static final String FLEX = "display: flex;";
     public static final String MAIN_PAGE = "https://footboxshop.ru%s";
 
-    public FootboxProductParser(FootboxStoreParser storeParser, FootboxProductService productService) {
+    public FootboxProductParserService(FootboxStoreParserService storeParser, FootboxProductService productService) {
         super(storeParser, productService);
     }
 
@@ -62,7 +62,7 @@ public class FootboxProductParser extends ProductParser {
             return product;
 
         } catch (IOException e) {
-            log.error(StoreParser.FAILED_CONNECTION, url, e);
+            log.error(StoreParserService.FAILED_CONNECTION, url, e);
             throw new FailedConnectionException(url);
         }
     }

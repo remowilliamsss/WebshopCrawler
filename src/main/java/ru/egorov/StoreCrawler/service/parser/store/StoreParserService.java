@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.parser.store;
+package ru.egorov.StoreCrawler.service.parser.store;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Slf4j
-public abstract class StoreParser {
+public abstract class StoreParserService {
     public static final String FAILED_CONNECTION = "Failed connection to {}:";
     public static final String PAGEN = "PAGEN";
 

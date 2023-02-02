@@ -1,11 +1,11 @@
-package ru.egorov.StoreCrawler.parser.product;
+package ru.egorov.StoreCrawler.service.parser.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import ru.egorov.StoreCrawler.model.Product;
 import ru.egorov.StoreCrawler.model.StoreType;
-import ru.egorov.StoreCrawler.parser.store.StoreParser;
+import ru.egorov.StoreCrawler.service.parser.store.StoreParserService;
 import ru.egorov.StoreCrawler.service.product.ProductService;
 
 import java.util.Collection;
@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class ProductParser {
-    private final StoreParser storeParser;
+public abstract class ProductParserService {
+    private final StoreParserService storeParser;
     private final ProductService productService;
 
     public static final String PARSE_START = "Parsing is starting for url: {}.";

@@ -1,16 +1,16 @@
-package ru.egorov.StoreCrawler.parser.product;
+package ru.egorov.StoreCrawler.service.parser.product;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.egorov.StoreCrawler.exception.FailedConnectionException;
 import ru.egorov.StoreCrawler.model.SneakerheadProduct;
 import ru.egorov.StoreCrawler.model.StoreType;
-import ru.egorov.StoreCrawler.parser.store.SneakerheadStoreParser;
-import ru.egorov.StoreCrawler.parser.store.StoreParser;
+import ru.egorov.StoreCrawler.service.parser.store.SneakerheadStoreParserService;
+import ru.egorov.StoreCrawler.service.parser.store.StoreParserService;
 import ru.egorov.StoreCrawler.service.product.SneakerheadProductService;
 
 import java.io.IOException;
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
-public class SneakerheadProductParser extends ProductParser {
+@Service
+public class SneakerheadProductParserService extends ProductParserService {
     public static final String SIZES = "product-sizes__list is-visible";
     public static final String SIZES_BUTTON_1 = "product-sizes__button styled-button styled-button--default is-active";
     public static final String SIZES_BUTTON_2 = "product-sizes__button styled-button styled-button--default";
@@ -29,7 +29,7 @@ public class SneakerheadProductParser extends ProductParser {
     public static final String ITEMPROP_VALUE = "[itemprop=\"value\"]";
     public static final String WITH_SPACE = "%s %s";
 
-    public SneakerheadProductParser(SneakerheadStoreParser storeParser, SneakerheadProductService productService) {
+    public SneakerheadProductParserService(SneakerheadStoreParserService storeParser, SneakerheadProductService productService) {
         super(storeParser, productService);
     }
 
@@ -59,7 +59,7 @@ public class SneakerheadProductParser extends ProductParser {
             return product;
 
         } catch (IOException e) {
-            log.error(StoreParser.FAILED_CONNECTION, url, e);
+            log.error(StoreParserService.FAILED_CONNECTION, url, e);
             throw new FailedConnectionException(url);
         }
     }

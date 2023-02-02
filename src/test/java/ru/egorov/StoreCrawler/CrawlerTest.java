@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.egorov.StoreCrawler.parser.product.ProductParser;
+import ru.egorov.StoreCrawler.service.parser.product.ProductParserService;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ import java.util.Map;
 @TestPropertySource("/application-test.properties")
 public class CrawlerTest {
     @Autowired
-    private Map<String, ProductParser> productParsers;
+    private Map<String, ProductParserService> productParsers;
 
     public static final String FOOTBOX_SQL = "/crawler/delete-footbox-products.sql";
     public static final String SNEAKERHEAD_SQL = "/crawler/delete-sneakerhead-products.sql";
@@ -24,14 +24,14 @@ public class CrawlerTest {
     @Test
     @Sql(value = {SNEAKERHEAD_SQL}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void crawlSneakerhead() {
-        productParsers.get("sneakerheadProductParser")
+        productParsers.get("sneakerheadProductParserService")
                 .parseProducts();
     }
 
     @Test
     @Sql(value = {FOOTBOX_SQL}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void crawlFootbox() {
-        productParsers.get("footboxProductParser")
+        productParsers.get("footboxProductParserService")
                 .parseProducts();
     }
 }
