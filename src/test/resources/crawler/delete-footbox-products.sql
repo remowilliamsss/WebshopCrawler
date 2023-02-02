@@ -1,0 +1,1 @@
+delete from footbox_product;
