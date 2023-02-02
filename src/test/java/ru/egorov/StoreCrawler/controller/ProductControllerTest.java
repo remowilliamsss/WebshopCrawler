@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import ru.egorov.StoreCrawler.SearchTest;
 import ru.egorov.StoreCrawler.dto.product.ProductDto;
+import ru.egorov.StoreCrawler.dto.product.ProductResponse;
 import ru.egorov.StoreCrawler.dto.search.FoundProductDto;
 import ru.egorov.StoreCrawler.dto.search.SearchRequest;
 import ru.egorov.StoreCrawler.model.StoreType;
@@ -61,7 +62,7 @@ class ProductControllerTest {
         StoreType storeType = StoreType.sneakerhead;
         Pageable pageable = PageRequest.of(0, 20);
 
-        ResponseEntity<List<ProductDto>> response = productController.findByStore(storeType, pageable);
+        ResponseEntity<ProductResponse> response = productController.findByStore(storeType, pageable);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 

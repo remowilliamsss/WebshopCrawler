@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.egorov.StoreCrawler.dto.product.ProductDto;
+import ru.egorov.StoreCrawler.dto.product.ProductResponse;
 import ru.egorov.StoreCrawler.dto.search.FoundProductDto;
 import ru.egorov.StoreCrawler.dto.search.SearchRequest;
 import ru.egorov.StoreCrawler.exception.BadQueryException;
@@ -54,10 +54,10 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> findByStore(@RequestParam(name=STORE) StoreType store, Pageable pageable) {
-        List<ProductDto> productDtos = searchService.findByStore(store, pageable);
+    public ResponseEntity<ProductResponse> findByStore(@RequestParam(name=STORE) StoreType store, Pageable pageable) {
+        ProductResponse response = searchService.findByStore(store, pageable);
 
-        return new ResponseEntity<>(productDtos, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private String getErrorMessage(BindingResult bindingResult) {

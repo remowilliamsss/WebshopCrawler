@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.egorov.StoreCrawler.dto.product.ProductResponse;
 import ru.egorov.StoreCrawler.dto.search.FoundProductDto;
 import ru.egorov.StoreCrawler.dto.product.ProductDto;
 import ru.egorov.StoreCrawler.mapper.FoundProductMapper;
@@ -73,19 +74,21 @@ public class SearchService {
                 .orElse(foundProductMapper.toDto(product));
     }
 
-    public List<ProductDto> findByStore(StoreType storeType, Pageable pageable) {
+    public ProductResponse findByStore(StoreType storeType, Pageable pageable) {
         log.info(SEARCH_START, storeType);
 
         ProductService productService = dispatcherService.getProductsService(storeType);
 
-        var products = productService.findAll(pageable)
-                .getContent();
+        var page = productService.findAll(pageable);
 
+        var products = page.getContent();
         List<ProductDto> productDtos = convertToDto(storeType, products);
 
-        log.info(SEARCH_FINISH, storeType, productDtos.size());
+        ProductResponse response = new ProductResponse(productDtos, page.getTotalPages());
 
-        return productDtos;
+        log.info(SEARCH_FINISH, storeType, page.getTotalElements());
+
+        return response;
     }
 
     private List<ProductDto> convertToDto(StoreType storeType, List<? extends Product> products) {

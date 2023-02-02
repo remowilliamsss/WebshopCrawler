@@ -1,11 +1,18 @@
 package ru.egorov.StoreCrawler.dto.product;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.Setter;
 import ru.egorov.StoreCrawler.model.StoreType;
 
 @Getter
 @Setter
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "product")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = FootboxProductDto.class, name = "FootboxProductDto"),
+        @JsonSubTypes.Type(value = SneakerheadProductDto.class, name = "SneakerheadProductDto")
+})
 public abstract class ProductDto {
 
     private String name;

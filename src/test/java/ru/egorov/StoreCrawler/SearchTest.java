@@ -266,9 +266,9 @@ public class SearchTest {
                         .param(ProductController.STORE, SNEAKERHEAD))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[4]")
+                .andExpect(jsonPath("products[4]")
                         .exists())
-                .andExpect(jsonPath("$[5]")
+                .andExpect(jsonPath("products[5]")
                         .doesNotExist());
     }
 
@@ -280,9 +280,9 @@ public class SearchTest {
                         .param(SIZE, "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[1]")
+                .andExpect(jsonPath("products[1]")
                         .exists())
-                .andExpect(jsonPath("$[2]")
+                .andExpect(jsonPath("products[2]")
                         .doesNotExist());
     }
 
@@ -292,9 +292,9 @@ public class SearchTest {
                         .param(ProductController.STORE, FOOTBOX))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[4]")
+                .andExpect(jsonPath("products[4]")
                         .exists())
-                .andExpect(jsonPath("$[5]")
+                .andExpect(jsonPath("products[5]")
                         .doesNotExist());
     }
 
@@ -306,9 +306,9 @@ public class SearchTest {
                         .param(SIZE, "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("$[1]")
+                .andExpect(jsonPath("products[1]")
                         .exists())
-                .andExpect(jsonPath("$[2]")
+                .andExpect(jsonPath("products[2]")
                         .doesNotExist());
     }
 
