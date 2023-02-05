@@ -39,7 +39,7 @@ public class SneakerheadProductParserService extends ProductParserService {
     }
 
     @Override
-    public SneakerheadProduct parseProduct(String url) {
+    public SneakerheadProduct parse(String url) {
         log.debug(PARSE_START, url);
 
         try {
@@ -50,7 +50,7 @@ public class SneakerheadProductParserService extends ProductParserService {
                 return null;
             }
 
-            SneakerheadProduct product = buildProduct(doc);
+            SneakerheadProduct product = build(doc);
 
             product.setUrl(url);
 
@@ -70,7 +70,7 @@ public class SneakerheadProductParserService extends ProductParserService {
                 && !parseFromItemprop(doc, PRICE).isBlank();
     }
 
-    private SneakerheadProduct buildProduct(Document doc) {
+    private SneakerheadProduct build(Document doc) {
         SneakerheadProduct product = new SneakerheadProduct();
 
         product.setSku(parseFromItemprop(doc, "sku"));

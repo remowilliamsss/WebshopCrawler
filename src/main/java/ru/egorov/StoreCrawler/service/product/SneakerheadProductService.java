@@ -19,13 +19,13 @@ public class SneakerheadProductService implements ProductService {
     private final SneakerheadProductRepository sneakerheadProductRepository;
 
     @Override
-    public Page<SneakerheadProduct> findAll(Pageable pageable) {
-        return sneakerheadProductRepository.findAll(pageable);
+    public List<SneakerheadProduct> findAll() {
+        return sneakerheadProductRepository.findAll();
     }
 
     @Override
-    public List<SneakerheadProduct> findAllByName(String name) {
-        return sneakerheadProductRepository.findAllByNameContainingIgnoreCase(name);
+    public Page<SneakerheadProduct> findAll(Pageable pageable) {
+        return sneakerheadProductRepository.findAll(pageable);
     }
 
     @Override
@@ -39,10 +39,5 @@ public class SneakerheadProductService implements ProductService {
                 .stream()
                 .map(product -> (SneakerheadProduct) product)
                 .collect(Collectors.toList()));
-    }
-
-    @Override
-    public SneakerheadProduct findBySku(String sku) {
-        return sneakerheadProductRepository.findBySku(sku);
     }
 }

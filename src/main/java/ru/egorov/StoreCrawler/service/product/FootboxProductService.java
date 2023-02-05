@@ -19,13 +19,13 @@ public class FootboxProductService implements ProductService {
     private final FootboxProductRepository footboxProductRepository;
 
     @Override
-    public Page<FootboxProduct> findAll(Pageable pageable) {
-        return footboxProductRepository.findAll(pageable);
+    public List<FootboxProduct> findAll() {
+        return footboxProductRepository.findAll();
     }
 
     @Override
-    public List<FootboxProduct> findAllByName(String name) {
-        return footboxProductRepository.findAllByNameContainingIgnoreCase(name);
+    public Page<FootboxProduct> findAll(Pageable pageable) {
+        return footboxProductRepository.findAll(pageable);
     }
 
     @Override
@@ -39,10 +39,5 @@ public class FootboxProductService implements ProductService {
                 .stream()
                 .map(product -> (FootboxProduct) product)
                 .collect(Collectors.toList()));
-    }
-
-    @Override
-    public FootboxProduct findBySku(String sku) {
-        return footboxProductRepository.findBySku(sku);
     }
 }
