@@ -23,8 +23,8 @@ public class DispatcherService {
 
     public ProductMapper getMapper(StoreType storeType) {
         return switch (storeType) {
-            case sneakerhead -> productMappers.get("sneakerheadProductMapperImpl");
             case footbox -> productMappers.get("footboxProductMapperImpl");
+            default -> productMappers.get("productMapperImpl");
         };
     }
 }

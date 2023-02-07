@@ -11,9 +11,8 @@ import ru.egorov.StoreCrawler.model.StoreType;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "product")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = FootboxProductDto.class, name = "FootboxProductDto"),
-        @JsonSubTypes.Type(value = SneakerheadProductDto.class, name = "SneakerheadProductDto")
 })
-public abstract class ProductDto {
+public class ProductDto {
 
     private String name;
 
