@@ -1,3 +1,6 @@
+spring.application.name=
+eureka.client.service-url.default-zone=
+
 spring.datasource.driverClassName=
 spring.datasource.url=
 spring.datasource.username=
