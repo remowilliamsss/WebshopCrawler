@@ -2,7 +2,7 @@ package ru.egorov.StoreCrawler.service.product;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.egorov.StoreCrawler.model.Product;
+import ru.egorov.StoreCrawler.model.product.Product;
 
 import java.util.List;
 

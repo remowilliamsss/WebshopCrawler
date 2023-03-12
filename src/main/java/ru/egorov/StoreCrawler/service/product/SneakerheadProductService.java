@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.egorov.StoreCrawler.model.Product;
-import ru.egorov.StoreCrawler.model.SneakerheadProduct;
-import ru.egorov.StoreCrawler.repository.SneakerheadProductRepository;
+import ru.egorov.StoreCrawler.model.product.Product;
+import ru.egorov.StoreCrawler.model.product.SneakerheadProduct;
+import ru.egorov.StoreCrawler.repository.product.SneakerheadProductRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.Setter;
-import ru.egorov.StoreCrawler.model.StoreType;
+import ru.egorov.StoreCrawler.model.product.StoreType;
 
 @Getter
 @Setter

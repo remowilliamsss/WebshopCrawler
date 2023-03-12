@@ -1,4 +1,4 @@
-# StoreCrawler
+# store-crawler
 REST-сервис, который собирает и предоставляет информацию о товарах из
 интернет-магазинов.
 
@@ -41,5 +41,6 @@ REST-сервис, который собирает и предоставляет
 1. Spring Boot
 2. Spring REST
 3. Spring Data
-4. PostgreSQL
-5. jsoup
+4. Spring Security
+5. PostgreSQL
+6. jsoup

@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.egorov.StoreCrawler.dto.ProductResponse;
-import ru.egorov.StoreCrawler.model.StoreType;
+import ru.egorov.StoreCrawler.model.product.StoreType;
 import ru.egorov.StoreCrawler.service.ProductProviderService;
 
 import static org.junit.jupiter.api.Assertions.*;

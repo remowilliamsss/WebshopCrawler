@@ -1,4 +1,4 @@
-package ru.egorov.StoreCrawler.model;
+package ru.egorov.StoreCrawler.model.product;
 
 import lombok.Getter;
 

@@ -2,7 +2,7 @@ package ru.egorov.StoreCrawler.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.egorov.StoreCrawler.model.StoreType;
+import ru.egorov.StoreCrawler.model.product.StoreType;
 import ru.egorov.StoreCrawler.mapper.ProductMapper;
 import ru.egorov.StoreCrawler.service.product.ProductService;
 

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.egorov.StoreCrawler.dto.ProductResponse;
 import ru.egorov.StoreCrawler.dto.product.ProductDto;
 import ru.egorov.StoreCrawler.mapper.ProductMapper;
-import ru.egorov.StoreCrawler.model.Product;
-import ru.egorov.StoreCrawler.model.StoreType;
+import ru.egorov.StoreCrawler.model.product.Product;
+import ru.egorov.StoreCrawler.model.product.StoreType;
 import ru.egorov.StoreCrawler.service.product.ProductService;
 
 import java.util.*;
