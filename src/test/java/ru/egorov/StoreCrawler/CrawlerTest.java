@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.egorov.StoreCrawler.model.product.StoreType;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.DispatcherService;
 import ru.egorov.StoreCrawler.service.parser.product.ProductParserService;
 

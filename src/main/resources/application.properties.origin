@@ -11,3 +11,6 @@ spring.datasource.password=
 
 spring.jpa.properties.hibernate.dialect=
 spring.jpa.properties.hibernate.show_sql=
+
+spring.security.user.name=
+spring.security.user.password=

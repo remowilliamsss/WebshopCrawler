@@ -3,8 +3,8 @@ package ru.egorov.StoreCrawler.service.parser.product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
-import ru.egorov.StoreCrawler.model.product.Product;
-import ru.egorov.StoreCrawler.model.product.StoreType;
+import ru.egorov.StoreCrawler.model.Product;
+import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.parser.store.StoreParserService;
 import ru.egorov.StoreCrawler.service.product.ProductService;
 

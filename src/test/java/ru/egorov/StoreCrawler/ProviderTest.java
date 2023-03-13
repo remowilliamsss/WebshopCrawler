@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.egorov.StoreCrawler.controller.ProductController;
 import ru.egorov.StoreCrawler.controller.handler.ControllerExceptionHandler;
-import ru.egorov.StoreCrawler.model.product.StoreType;
+import ru.egorov.StoreCrawler.model.StoreType;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
