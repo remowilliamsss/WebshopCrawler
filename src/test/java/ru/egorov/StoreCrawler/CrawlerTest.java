@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/application-test.properties")
+@TestPropertySource("/application-test.yml")
 public class CrawlerTest {
     public static final String FOOTBOX_SQL = "/crawler/delete-footbox-products.sql";
     public static final String SNEAKERHEAD_SQL = "/crawler/delete-sneakerhead-products.sql";

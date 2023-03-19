@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.egorov.StoreCrawler.controller.ProductController;
 import ru.egorov.StoreCrawler.dto.ErrorDto;
 
 @Slf4j
@@ -20,7 +19,7 @@ public class ControllerExceptionHandler {
         String message = e.getMessage();
         String paramName = e.getName();
 
-        if (paramName.equals(ProductController.STORE)) {
+        if (paramName.equals("store")) {
             message = STORE_NOT_SUPPORTED;
         }
 

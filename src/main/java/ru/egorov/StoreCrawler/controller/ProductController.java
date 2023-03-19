@@ -13,16 +13,13 @@ import ru.egorov.StoreCrawler.service.ProductProviderService;
 @RequiredArgsConstructor
 @RequestMapping("api/products")
 public class ProductController {
-    public static final String STORE = "store";
-    public static final String PAGE = "page";
-    public static final String SIZE = "size";
 
     private final ProductProviderService productProviderService;
 
     @GetMapping
-    public ResponseEntity<ProductResponse> getMany(@RequestParam(name = STORE) StoreType store,
-                                                   @RequestParam(name = PAGE, required = false) Integer page,
-                                                   @RequestParam(name = SIZE, required = false) Integer size) {
+    public ResponseEntity<ProductResponse> getMany(@RequestParam(name = "store") StoreType store,
+                                                   @RequestParam(name = "page", required = false) Integer page,
+                                                   @RequestParam(name = "size", required = false) Integer size) {
 
         ProductResponse response = (page == null || size == null) ?
                 productProviderService.gain(store) : productProviderService.gain(store, PageRequest.of(page, size));

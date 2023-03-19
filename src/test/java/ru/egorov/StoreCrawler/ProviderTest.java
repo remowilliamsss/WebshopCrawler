@@ -12,7 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.egorov.StoreCrawler.controller.ProductController;
 import ru.egorov.StoreCrawler.controller.handler.ControllerExceptionHandler;
 import ru.egorov.StoreCrawler.model.StoreType;
 
@@ -21,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/application-test.properties")
+@TestPropertySource("/application-test.yml")
 @Sql(value = {"/search/create-products.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/search/delete-products.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ProviderTest {
@@ -40,7 +39,7 @@ public class ProviderTest {
     @Test
     public void gainSneakerheadProducts() throws Exception {
         this.mockMvc.perform(get(URL)
-                        .param(ProductController.STORE, StoreType.sneakerhead.toString()))
+                        .param("store", StoreType.sneakerhead.toString()))
                 .andExpect(status()
                         .isOk())
                 .andExpect(jsonPath("products[4]")
@@ -52,9 +51,9 @@ public class ProviderTest {
     @Test
     public void gainSneakerheadProductsWithPagination() throws Exception {
         this.mockMvc.perform(get(URL)
-                        .param(ProductController.STORE, StoreType.sneakerhead.toString())
-                        .param(ProductController.PAGE, "0")
-                        .param(ProductController.SIZE, "2"))
+                        .param("store", StoreType.sneakerhead.toString())
+                        .param("page", "0")
+                        .param("size", "2"))
                 .andExpect(status()
                         .isOk())
                 .andExpect(jsonPath("products[1]")
@@ -66,7 +65,7 @@ public class ProviderTest {
     @Test
     public void gainFootboxProducts() throws Exception {
         this.mockMvc.perform(get(URL)
-                        .param(ProductController.STORE, StoreType.footbox.toString()))
+                        .param("store", StoreType.footbox.toString()))
                 .andExpect(status()
                         .isOk())
                 .andExpect(jsonPath("products[4]")
@@ -78,9 +77,9 @@ public class ProviderTest {
     @Test
     public void gainFootboxProductsWithPagination() throws Exception {
         this.mockMvc.perform(get(URL)
-                        .param(ProductController.STORE, StoreType.footbox.toString())
-                        .param(ProductController.PAGE, "1")
-                        .param(ProductController.SIZE, "2"))
+                        .param("store", StoreType.footbox.toString())
+                        .param("page", "1")
+                        .param("size", "2"))
                 .andExpect(status()
                         .isOk())
                 .andExpect(jsonPath("products[1]")
@@ -92,7 +91,7 @@ public class ProviderTest {
     @Test
     public void gainProductsFromNotSupportedStore() throws Exception {
         this.mockMvc.perform(get(URL)
-                        .param(ProductController.STORE, "some string"))
+                        .param("store", "some string"))
                 .andExpect(status()
                         .isNotFound())
                 .andExpect(content()
@@ -104,9 +103,9 @@ public class ProviderTest {
     @Test
     public void gainProductsFromNotSupportedStoreWithPagination() throws Exception {
         this.mockMvc.perform(get(URL)
-                        .param(ProductController.STORE, "some string")
-                        .param(ProductController.PAGE, "0")
-                        .param(ProductController.SIZE, "2"))
+                        .param("store", "some string")
+                        .param("page", "0")
+                        .param("size", "2"))
                 .andExpect(status()
                         .isNotFound())
                 .andExpect(content()
