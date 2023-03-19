@@ -41,8 +41,9 @@ REST-сервис, который собирает и предоставляет
 
 В проекте использовались:
 1. Spring Boot
-2. Spring REST
-3. Spring Data
-4. Spring Security
-5. PostgreSQL
-6. jsoup
+2. Spring Cloud
+3. Spring REST
+4. Spring Data
+5. Spring Security
+6. PostgreSQL
+7. jsoup
