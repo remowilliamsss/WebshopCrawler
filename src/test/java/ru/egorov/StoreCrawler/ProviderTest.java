@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/application-test.yml")
+@TestPropertySource("/application-test.properties")
 @Sql(value = {"/sql/create-products.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/sql/delete-products.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ProviderTest {
@@ -42,9 +42,9 @@ public class ProviderTest {
                         .param("store", StoreType.sneakerhead.toString()))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("products[4]")
+                .andExpect(jsonPath("content[4]")
                         .exists())
-                .andExpect(jsonPath("products[5]")
+                .andExpect(jsonPath("content[5]")
                         .doesNotExist());
     }
 
@@ -56,9 +56,9 @@ public class ProviderTest {
                         .param("size", "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("products[1]")
+                .andExpect(jsonPath("content[1]")
                         .exists())
-                .andExpect(jsonPath("products[2]")
+                .andExpect(jsonPath("content[2]")
                         .doesNotExist());
     }
 
@@ -68,9 +68,9 @@ public class ProviderTest {
                         .param("store", StoreType.footbox.toString()))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("products[4]")
+                .andExpect(jsonPath("content[4]")
                         .exists())
-                .andExpect(jsonPath("products[5]")
+                .andExpect(jsonPath("content[5]")
                         .doesNotExist());
     }
 
@@ -82,9 +82,9 @@ public class ProviderTest {
                         .param("size", "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("products[1]")
+                .andExpect(jsonPath("content[1]")
                         .exists())
-                .andExpect(jsonPath("products[2]")
+                .andExpect(jsonPath("content[2]")
                         .doesNotExist());
     }
 

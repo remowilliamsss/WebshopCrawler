@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/application-test.yml")
+@TestPropertySource("/application-test.properties")
 public class CrawlerTest {
     public static final String FOOTBOX_SQL = "/sql/delete-footbox-products.sql";
     public static final String SNEAKERHEAD_SQL = "/sql/delete-sneakerhead-products.sql";
@@ -34,7 +35,8 @@ public class CrawlerTest {
                 .parseAll();
 
         var products = dispatcherService.getProductsService(StoreType.sneakerhead)
-                .findAll();
+                .findAll(Pageable.unpaged())
+                .getContent();
 
         assertTrue(products.size() > 900);
     }
@@ -46,7 +48,8 @@ public class CrawlerTest {
                 .parseAll();
 
         var products = dispatcherService.getProductsService(StoreType.footbox)
-                .findAll();
+                .findAll(Pageable.unpaged())
+                .getContent();
 
         assertTrue(products.size() > 1000);
     }

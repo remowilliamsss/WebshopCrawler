@@ -19,11 +19,6 @@ public class FootboxProductService implements ProductService {
     private final FootboxProductRepository footboxProductRepository;
 
     @Override
-    public List<FootboxProduct> findAll() {
-        return footboxProductRepository.findAll();
-    }
-
-    @Override
     public Page<FootboxProduct> findAll(Pageable pageable) {
         return footboxProductRepository.findAll(pageable);
     }

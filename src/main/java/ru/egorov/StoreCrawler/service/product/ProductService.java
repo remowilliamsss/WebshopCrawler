@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<? extends Product> findAll();
-
     Page<? extends Product> findAll(Pageable pageable);
 
     List<? extends Product> updateAll(List<Product> products);

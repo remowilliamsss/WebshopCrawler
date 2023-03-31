@@ -6,11 +6,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import ru.egorov.StoreCrawler.dto.ProductResponse;
+import ru.egorov.StoreCrawler.dto.product.ProductDto;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.ProductProviderService;
 
@@ -27,15 +28,12 @@ class ProductControllerTest {
     void getMany() {
         StoreType storeType = StoreType.sneakerhead;
 
-        ResponseEntity<ProductResponse> response = productController.getMany(storeType, null, null);
+        ResponseEntity<Page<ProductDto>> response = productController.getMany(storeType, Pageable.unpaged());
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
         Mockito.verify(productProviderService, Mockito.times(1))
-                .gain(ArgumentMatchers.eq(storeType));
-
-        Mockito.verify(productProviderService, Mockito.times(0))
-                .gain(ArgumentMatchers.any(StoreType.class), ArgumentMatchers.any(Pageable.class));
+                .gain(ArgumentMatchers.eq(storeType), ArgumentMatchers.eq(Pageable.unpaged()));
     }
 
     @Test
@@ -44,14 +42,11 @@ class ProductControllerTest {
         int page = 0;
         int size = 20;
 
-        ResponseEntity<ProductResponse> response = productController.getMany(storeType, page, size);
+        ResponseEntity<Page<ProductDto>> response = productController.getMany(storeType, PageRequest.of(page, size));
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
         Mockito.verify(productProviderService, Mockito.times(1))
                 .gain(ArgumentMatchers.eq(storeType), ArgumentMatchers.eq(PageRequest.of(page, size)));
-
-        Mockito.verify(productProviderService, Mockito.times(0))
-                .gain(ArgumentMatchers.any(StoreType.class));
     }
 }

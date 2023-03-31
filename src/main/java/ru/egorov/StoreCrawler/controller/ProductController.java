@@ -1,11 +1,13 @@
 package ru.egorov.StoreCrawler.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.egorov.StoreCrawler.dto.ProductResponse;
+import ru.egorov.StoreCrawler.dto.product.ProductDto;
 import ru.egorov.StoreCrawler.model.StoreType;
 import ru.egorov.StoreCrawler.service.ProductProviderService;
 
@@ -17,12 +19,10 @@ public class ProductController {
     private final ProductProviderService productProviderService;
 
     @GetMapping
-    public ResponseEntity<ProductResponse> getMany(@RequestParam(name = "store") StoreType store,
-                                                   @RequestParam(name = "page", required = false) Integer page,
-                                                   @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<Page<ProductDto>> getMany(@RequestParam(name = "store") StoreType store,
+                                    @PageableDefault(size = 30) Pageable pageable) {
 
-        ProductResponse response = (page == null || size == null) ?
-                productProviderService.gain(store) : productProviderService.gain(store, PageRequest.of(page, size));
+        Page<ProductDto> response = productProviderService.gain(store, pageable);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
