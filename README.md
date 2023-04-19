@@ -1,5 +1,5 @@
 # store-crawler
-REST-сервис, который собирает и предоставляет информацию о товарах из
+Собирает и предоставляет информацию о товарах из
 интернет-магазинов.
 
 При запросах требуется базовая аутентификация.
@@ -8,33 +8,79 @@ REST-сервис, который собирает и предоставляет
 1. sneakerhead.ru - при запросе используем "sneakerhead"
 2. footboxshop.ru - при запросе используем "footbox"
 
-Функционал:
+API:
 
 1. GET-запрос на адрес "api/products" с названием магазина в параметре "store" - в ответе
    приходит JSON с товарами этого магазина:
 
-   `{
-      "products":[
+   ```
+   
+   {
+      "totalElements": 0,
+      "totalPages": 0,
+      "size": 0,
+      "content": [
          {
-            "name": "Название модели",
-            "sku": "Номер артикула",
-            "category": "Категория",
-            "brand": "Название бренда",
-            "image": "URL изображения",
-            "color": "Цвет модели",
-            "price": "Цена",
-            "priceCurrency": "Обозначение валюты",
-            "country": "Страна производителя",
-            "size": "Доступные размеры",
-            "gender": "Пол",
-            "url": "URL товара",
-            "storeType": "Название магазина"
+            "name": "string",
+            "sku": "string",
+            "category": "string",
+            "brand": "string",
+            "image": "string",
+            "color": "string",
+            "price": 0,
+            "priceCurrency": "string",
+            "country": "string",
+            "size": "string",
+            "gender": "string",
+            "url": "string",
+            "storeType": "sneakerhead",
+            "product": "string"
          },
-         ...
+         {
+            "name": "string",
+            "sku": "string",
+            "category": "string",
+            "brand": "string",
+            "image": "string",
+            "color": "string",
+            "price": 0,
+            "priceCurrency": "string",
+            "country": "string",
+            "size": "string",
+            "gender": "string",
+            "url": "string",
+            "storeType": "footbox",
+            "product": "string",
+            "composition": "string",
+            "coloring": "string"
+         }
       ],
-      "pageCount" = "Количество страниц"
-   }`
-
+      "number": 0,
+      "sort": {
+         "empty": true,
+         "sorted": true,
+         "unsorted": true
+      },
+      "first": true,
+      "last": true,
+      "numberOfElements": 0,
+      "pageable": {
+         "offset": 0,
+         "sort": {
+            "empty": true,
+            "sorted": true,
+            "unsorted": true
+         },
+         "pageSize": 0,
+         "pageNumber": 0,
+         "paged": true,
+         "unpaged": true
+      },
+      "empty": true
+   }
+   
+   ```
+   
    Поддерживается пагинация. Чтобы
    настроить разбитие на страницы, нужно передать параметры: "page" - номер
    страницы и "size" - количество товаров на странице.
@@ -45,5 +91,6 @@ REST-сервис, который собирает и предоставляет
 3. Spring REST
 4. Spring Data
 5. Spring Security
-6. PostgreSQL
-7. jsoup
+6. Springdoc
+7. PostgreSQL
+8. jsoup
