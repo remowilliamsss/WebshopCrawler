@@ -88,9 +88,8 @@ API:
 В проекте использовались:
 1. Spring Boot
 2. Spring Cloud
-3. Spring REST
-4. Spring Data
-5. Spring Security
-6. Springdoc
-7. PostgreSQL
-8. jsoup
+3. Spring Data
+4. Spring Security 
+5. Springdoc 
+6. PostgreSQL 
+7. jsoup
