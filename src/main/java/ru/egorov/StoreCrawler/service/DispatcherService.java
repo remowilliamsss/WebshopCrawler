@@ -3,7 +3,7 @@ package ru.egorov.StoreCrawler.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.egorov.StoreCrawler.model.StoreType;
-import ru.egorov.StoreCrawler.mapper.product.ProductMapper;
+import ru.egorov.StoreCrawler.mapper.ProductMapper;
 import ru.egorov.StoreCrawler.service.product.ProductService;
 
 import java.util.Map;
@@ -23,8 +23,8 @@ public class DispatcherService {
 
     public ProductMapper getMapper(StoreType storeType) {
         return switch (storeType) {
-            case sneakerhead -> productMappers.get("sneakerheadProductMapperImpl");
             case footbox -> productMappers.get("footboxProductMapperImpl");
+            default -> productMappers.get("productMapperImpl");
         };
     }
 }

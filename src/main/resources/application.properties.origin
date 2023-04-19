@@ -1,3 +1,8 @@
+server.port=
+
+spring.application.name=
+eureka.client.service-url.default-zone=
+
 spring.datasource.driverClassName=
 spring.datasource.url=
 spring.datasource.username=
@@ -6,3 +11,6 @@ spring.datasource.password=
 
 spring.jpa.properties.hibernate.dialect=
 spring.jpa.properties.hibernate.show_sql=
+
+spring.security.user.name=
+spring.security.user.password=

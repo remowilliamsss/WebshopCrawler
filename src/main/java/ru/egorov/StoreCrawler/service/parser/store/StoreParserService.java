@@ -12,7 +12,7 @@ public abstract class StoreParserService {
     public static final String FAILED_CONNECTION = "Failed connection to {}:";
     public static final String PAGEN = "PAGEN";
 
-    public Set<String> parsePages() {
+    public Set<String> parse() {
         Set<String> urls = new HashSet<>();
 
         addCategories(urls);

@@ -24,11 +24,6 @@ public class SneakerheadProductService implements ProductService {
     }
 
     @Override
-    public List<SneakerheadProduct> findAllByName(String name) {
-        return sneakerheadProductRepository.findAllByNameContainingIgnoreCase(name);
-    }
-
-    @Override
     @Transactional
     public List<SneakerheadProduct> updateAll(List<Product> products) {
         sneakerheadProductRepository.deleteAll();
@@ -39,10 +34,5 @@ public class SneakerheadProductService implements ProductService {
                 .stream()
                 .map(product -> (SneakerheadProduct) product)
                 .collect(Collectors.toList()));
-    }
-
-    @Override
-    public SneakerheadProduct findBySku(String sku) {
-        return sneakerheadProductRepository.findBySku(sku);
     }
 }

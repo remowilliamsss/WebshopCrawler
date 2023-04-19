@@ -16,9 +16,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class ProductParserService {
-    private final StoreParserService storeParser;
-    private final ProductService productService;
-
     public static final String PARSE_START = "Parsing is starting for url: {}.";
     public static final String PARSE_FINISH = "Item with name \"{}\" was parsed.";
     public static final String CONTENT = "content";
@@ -30,19 +27,22 @@ public abstract class ProductParserService {
     public static final String COUNTRY = "Страна";
     public static final String COMMA = ", ";
 
-    public void parseProducts() {
+    private final StoreParserService storeParser;
+    private final ProductService productService;
+
+    public void parseAll() {
         log.info("{} scanning is starting.", getStore());
 
-        List<Product> products = parseProducts(storeParser.parsePages());
+        List<Product> products = parseAll(storeParser.parse());
 
         productService.updateAll(products);
 
         log.info("{} scanning finished.", getStore());
     }
 
-    public List<Product> parseProducts (Collection<String> urls) {
+    public List<Product> parseAll(Collection<String> urls) {
         return urls.parallelStream()
-                .map(this::parseProduct)
+                .map(this::parse)
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
@@ -50,7 +50,7 @@ public abstract class ProductParserService {
 
     public abstract StoreType getStore();
 
-    public abstract Product parseProduct(String url);
+    public abstract Product parse(String url);
 
     protected String parseFromItemprop(Document doc, String itemprop) {
         return doc.getElementsByAttributeValue(ITEMPROP, itemprop)

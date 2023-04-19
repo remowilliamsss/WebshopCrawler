@@ -24,11 +24,6 @@ public class FootboxProductService implements ProductService {
     }
 
     @Override
-    public List<FootboxProduct> findAllByName(String name) {
-        return footboxProductRepository.findAllByNameContainingIgnoreCase(name);
-    }
-
-    @Override
     @Transactional
     public List<FootboxProduct> updateAll(List<Product> products) {
         footboxProductRepository.deleteAll();
@@ -39,10 +34,5 @@ public class FootboxProductService implements ProductService {
                 .stream()
                 .map(product -> (FootboxProduct) product)
                 .collect(Collectors.toList()));
-    }
-
-    @Override
-    public FootboxProduct findBySku(String sku) {
-        return footboxProductRepository.findBySku(sku);
     }
 }

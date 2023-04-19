@@ -42,7 +42,7 @@ public class FootboxProductParserService extends ProductParserService {
     }
 
     @Override
-    public FootboxProduct parseProduct(String url) {
+    public FootboxProduct parse(String url) {
         log.debug(PARSE_START, url);
 
         try {
@@ -53,7 +53,7 @@ public class FootboxProductParserService extends ProductParserService {
                 return null;
             }
 
-            FootboxProduct product = buildProduct(doc);
+            FootboxProduct product = build(doc);
 
             product.setUrl(url);
 
@@ -78,7 +78,7 @@ public class FootboxProductParserService extends ProductParserService {
                 .orElseThrow();
     }
 
-    private FootboxProduct buildProduct(Document doc) {
+    private FootboxProduct build(Document doc) {
         FootboxProduct product = new FootboxProduct();
 
         product.setName(parseName(doc));
